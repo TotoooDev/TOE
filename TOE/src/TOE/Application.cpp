@@ -1,4 +1,6 @@
 #include <TOE/Application.h>
+#include <TOE/Window.h>
+#include <TOE/Event/WindowEvents.h>
 
 #include <spdlog/spdlog.h>
 
@@ -6,7 +8,7 @@ namespace TOE
 {
 	Application* Application::m_Instance = nullptr;
 
-	Application::Application()
+	Application::Application(const WindowData& data)
 	{
 		if (m_Instance == nullptr)
 		{
@@ -16,6 +18,11 @@ namespace TOE
 		{
 			spdlog::error("An application already exists!");
 		}
+
+		m_Window.CreateNewWindow(data);
+		m_Window.SetEventBus(&EventBus);
+
+		EventBus.Subscribe(this, &Application::OnWindowClosedEvent);
 	}
 
 	Application::~Application()
@@ -30,11 +37,19 @@ namespace TOE
 
 	void Application::Run()
 	{
-		spdlog::info("Application is running");
+		while (m_IsRunning)
+		{
+			m_Window.Update();
+		}
 	}
 
 	void Application::Stop()
 	{
+		m_IsRunning = false;
+	}
 
+	void Application::OnWindowClosedEvent(WindowClosedEvent* event)
+	{
+		m_IsRunning = false;
 	}
 }

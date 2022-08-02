@@ -2,5 +2,6 @@
 
 TOE::Application* CreateApplication()
 {
-	return new TOE::Application();
+	TOE::WindowData data;
+	return new TOE::Application(data);
 }
