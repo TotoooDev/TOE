@@ -154,7 +154,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\TOE\Application.cpp" />
-    <ClCompile Include="src\Source.cpp" />
+    <ClCompile Include="src\App.cpp" />
     <ClCompile Include="src\TOE\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -168,7 +168,12 @@
     <ClInclude Include="include\TOE\Application.h" />
     <ClInclude Include="include\TOE\Event\Event.h" />
     <ClInclude Include="include\TOE\Event\EventBus.h" />
+    <ClInclude Include="include\TOE\Event\Events.h" />
+    <ClInclude Include="include\TOE\Event\KeyboardEvents.h" />
+    <ClInclude Include="include\TOE\Event\Keycode.h" />
+    <ClInclude Include="include\TOE\Event\MouseEvents.h" />
     <ClInclude Include="include\TOE\Event\WindowEvents.h" />
+    <ClInclude Include="include\TOE\Layer.h" />
     <ClInclude Include="include\TOE\TOE.h" />
     <ClInclude Include="include\TOE\Window.h" />
   </ItemGroup>

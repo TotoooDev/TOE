@@ -1,4 +1,5 @@
 #pragma once
 
-#include "Application.h"
-#include "EntryPoint.h"
+#include <TOE/Application.h>
+#include <TOE/EntryPoint.h>
+#include <TOE/Event/Events.h>

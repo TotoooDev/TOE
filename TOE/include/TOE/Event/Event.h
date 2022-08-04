@@ -4,6 +4,7 @@
 
 namespace TOE
 {
+    // Base event class
     class Event
     {
     public:
@@ -23,7 +24,7 @@ namespace TOE
         }
 
     protected:
-        std::string m_Name = "Event";
+        std::string m_Name = "Unnamed Event";
         bool m_Handled = false;
     };
 }

@@ -1,8 +1,11 @@
 #pragma once
 
-#include "Window.h"
-#include "Event/EventBus.h"
-#include "Event/WindowEvents.h"
+#include <TOE/Window.h>
+#include <TOE/Layer.h>
+#include <TOE/Event/EventBus.h>
+#include <TOE/Event/WindowEvents.h>
+
+#include <vector>
 
 namespace TOE
 {
@@ -13,6 +16,7 @@ namespace TOE
 		~Application();
 
 		static Application& Get();
+		void AddLayer(Layer* layer);
 
 		void Run();
 		void Stop();
@@ -25,7 +29,10 @@ namespace TOE
 		static Application* m_Instance;
 
 		Window m_Window;
+		std::vector<Layer*> m_Layers;
 
 		bool m_IsRunning = true;
+		double m_Timestep = 0.0f;
+		double m_LastFrame = 0.0f;
 	};
 }

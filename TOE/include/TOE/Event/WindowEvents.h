@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Event.h"
+#include <TOE/Event/Event.h>
 
 namespace TOE
 {
