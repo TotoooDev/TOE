@@ -5,13 +5,14 @@ class CustomLayer : public TOE::Layer
 	virtual void OnCreate() override
 	{
 		spdlog::info("Layer created");
+		// Sub to the keyboard events
 		TOE::Application::Get().EventBus.Subscribe(this, &CustomLayer::KeyPressedEvent);
 		TOE::Application::Get().EventBus.Subscribe(this, &CustomLayer::KeyUpEvent);
 	}
 
 	virtual void OnUpdate(double timestep) override
 	{
-		// spdlog::info("Layer updated, timestep = {}", timestep);
+		
 	}
 
 private:

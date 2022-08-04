@@ -155,6 +155,7 @@
   <ItemGroup>
     <ClCompile Include="src\TOE\Application.cpp" />
     <ClCompile Include="src\App.cpp" />
+    <ClCompile Include="src\TOE\Shader.cpp" />
     <ClCompile Include="src\TOE\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -174,6 +175,7 @@
     <ClInclude Include="include\TOE\Event\MouseEvents.h" />
     <ClInclude Include="include\TOE\Event\WindowEvents.h" />
     <ClInclude Include="include\TOE\Layer.h" />
+    <ClInclude Include="include\TOE\Shader.h" />
     <ClInclude Include="include\TOE\TOE.h" />
     <ClInclude Include="include\TOE\Window.h" />
   </ItemGroup>
