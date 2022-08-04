@@ -5,9 +5,12 @@ class CustomLayer : public TOE::Layer
 	virtual void OnCreate() override
 	{
 		spdlog::info("Layer created");
+
 		// Sub to the keyboard events
 		TOE::Application::Get().EventBus.Subscribe(this, &CustomLayer::KeyPressedEvent);
 		TOE::Application::Get().EventBus.Subscribe(this, &CustomLayer::KeyUpEvent);
+
+		Shader.LoadFromFile("shader.vert", "shader.frag");
 	}
 
 	virtual void OnUpdate(double timestep) override
@@ -24,6 +27,8 @@ private:
 	{
 		spdlog::info("Key up, keycode = {}", event->Keycode);
 	}
+
+	TOE::Shader Shader;
 };
 
 TOE::Application* CreateApplication()
