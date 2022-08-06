@@ -25,6 +25,7 @@ namespace TOE
 
 	private:
 		void OnWindowClosedEvent(WindowClosedEvent* event);
+		void OnWindowResizedEvent(WindowResizedEvent* event);
 		
 		static Application* m_Instance;
 

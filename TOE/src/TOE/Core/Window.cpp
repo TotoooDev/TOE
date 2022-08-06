@@ -57,6 +57,8 @@ namespace TOE
 		glfwSetWindowSizeCallback(m_NativeWindow, [](GLFWwindow* window, int width, int height)
 			{
 				WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+				data->Width = width;
+				data->Height= height;
 				data->EventBus->Publish(new WindowResizedEvent(width, height));
 			});
 

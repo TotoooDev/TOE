@@ -24,8 +24,9 @@ namespace TOE
 		m_Window.CreateNewWindow(data);
 		m_Window.SetEventBus(&EventBus);
 
-		// Sub to the window close event so the app terminates when the window is closed
+		// Sub to the window events
 		EventBus.Subscribe(this, &Application::OnWindowClosedEvent);
+		EventBus.Subscribe(this, &Application::OnWindowResizedEvent);
 	}
 
 	Application::~Application()
@@ -72,5 +73,9 @@ namespace TOE
 	void Application::OnWindowClosedEvent(WindowClosedEvent* event)
 	{
 		m_IsRunning = false;
+	}
+	void Application::OnWindowResizedEvent(WindowResizedEvent* event)
+	{
+		glViewport(0, 0, m_Window.GetData().Width, m_Window.GetData().Height);
 	}
 }
