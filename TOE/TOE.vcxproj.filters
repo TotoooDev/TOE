@@ -18,10 +18,10 @@
     <ClCompile Include="src\App.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TOE\Application.cpp">
+    <ClCompile Include="src\TOE\Core\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TOE\Window.cpp">
+    <ClCompile Include="src\TOE\Core\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\TOE\Shader.cpp">
@@ -29,16 +29,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\TOE\Application.h">
+    <ClInclude Include="include\TOE\Core\Application.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\TOE\EntryPoint.h">
+    <ClInclude Include="include\TOE\Core\EntryPoint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\TOE\TOE.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\TOE\Window.h">
+    <ClInclude Include="include\TOE\Core\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\GL\eglew.h">
@@ -68,7 +68,7 @@
     <ClInclude Include="include\TOE\Event\WindowEvents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\TOE\Layer.h">
+    <ClInclude Include="include\TOE\Core\Layer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\TOE\Event\KeyboardEvents.h">

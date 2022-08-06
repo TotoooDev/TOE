@@ -1,4 +1,4 @@
-#include <TOE/Window.h>
+#include <TOE/Core/Window.h>
 #include <TOE/Event/Events.h>
 
 namespace TOE

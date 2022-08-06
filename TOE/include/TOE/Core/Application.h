@@ -1,7 +1,7 @@
 #pragma once
 
-#include <TOE/Window.h>
-#include <TOE/Layer.h>
+#include <TOE/Core/Window.h>
+#include <TOE/Core/Layer.h>
 #include <TOE/Event/EventBus.h>
 #include <TOE/Event/WindowEvents.h>
 

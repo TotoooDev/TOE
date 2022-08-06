@@ -1,5 +1,5 @@
-#include <TOE/Application.h>
-#include <TOE/Window.h>
+#include <TOE/Core/Application.h>
+#include <TOE/Core/Window.h>
 #include <TOE/Event/WindowEvents.h>
 
 #include <spdlog/spdlog.h>

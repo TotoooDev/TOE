@@ -1,6 +1,6 @@
 #pragma once
 
-#include <TOE/Application.h>
+#include <TOE/Core/Application.h>
 #include <spdlog/spdlog.h>
 
 // To be implemented by the user

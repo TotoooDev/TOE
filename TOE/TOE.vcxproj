@@ -132,7 +132,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glew32.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32.lib;glfw3dll.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -149,14 +149,14 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glew32.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32.lib;glfw3dll.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\TOE\Application.cpp" />
+    <ClCompile Include="src\TOE\Core\Application.cpp" />
     <ClCompile Include="src\App.cpp" />
     <ClCompile Include="src\TOE\Shader.cpp" />
-    <ClCompile Include="src\TOE\Window.cpp" />
+    <ClCompile Include="src\TOE\Core\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\GLFW\glfw3.h" />
@@ -188,8 +188,8 @@
     <ClInclude Include="include\GL\glew.h" />
     <ClInclude Include="include\GL\glxew.h" />
     <ClInclude Include="include\GL\wglew.h" />
-    <ClInclude Include="include\TOE\EntryPoint.h" />
-    <ClInclude Include="include\TOE\Application.h" />
+    <ClInclude Include="include\TOE\Core\EntryPoint.h" />
+    <ClInclude Include="include\TOE\Core\Application.h" />
     <ClInclude Include="include\TOE\Event\Event.h" />
     <ClInclude Include="include\TOE\Event\EventBus.h" />
     <ClInclude Include="include\TOE\Event\Events.h" />
@@ -197,10 +197,10 @@
     <ClInclude Include="include\TOE\Event\Keycode.h" />
     <ClInclude Include="include\TOE\Event\MouseEvents.h" />
     <ClInclude Include="include\TOE\Event\WindowEvents.h" />
-    <ClInclude Include="include\TOE\Layer.h" />
+    <ClInclude Include="include\TOE\Core\Layer.h" />
     <ClInclude Include="include\TOE\Shader.h" />
     <ClInclude Include="include\TOE\TOE.h" />
-    <ClInclude Include="include\TOE\Window.h" />
+    <ClInclude Include="include\TOE\Core\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="include\vendor\spdlog\.clang-format" />

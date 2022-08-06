@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Event/EventBus.h"
-
+#include <TOE/Event/EventBus.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
