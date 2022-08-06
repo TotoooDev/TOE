@@ -1,6 +1,8 @@
 #include <TOE/Core/Window.h>
 #include <TOE/Event/Events.h>
 
+#include <spdlog/spdlog.h>
+
 namespace TOE
 {
 	Window::Window()
@@ -19,6 +21,10 @@ namespace TOE
 		if (!WasGLFWInit)
 		{
 			glfwInit();
+			glfwSetErrorCallback([](int error_code, const char* description)
+				{
+					spdlog::error("GLFW error {0}: {1}", error_code, description);
+				});
 			WasGLFWInit = true;
 		}
 
@@ -35,7 +41,7 @@ namespace TOE
 			WasGLEWInit = true;
 		}
 
-		// Set glfw callbacks
+		// Set glfw callbacks 
 		
 		// Window callbacks
 		glfwSetWindowCloseCallback(m_NativeWindow, [](GLFWwindow* window)
