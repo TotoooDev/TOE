@@ -1,4 +1,5 @@
 #include <TOE/Core/Application.h>
+#include <TOE/Core/Core.h>
 #include <TOE/Core/Window.h>
 #include <TOE/Event/WindowEvents.h>
 
@@ -54,6 +55,7 @@ namespace TOE
 			{
 				layer->OnUpdate(m_Timestep);
 			}
+			glCheckError();
 
 			// Update timestep
 			double currentFrame = glfwGetTime();

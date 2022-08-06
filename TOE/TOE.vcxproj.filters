@@ -155,6 +155,9 @@
     <ClInclude Include="include\glm\vector_relational.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\TOE\Core\Core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\vendor\spdlog\.clang-format" />

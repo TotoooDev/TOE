@@ -188,6 +188,7 @@
     <ClInclude Include="include\GL\glew.h" />
     <ClInclude Include="include\GL\glxew.h" />
     <ClInclude Include="include\GL\wglew.h" />
+    <ClInclude Include="include\TOE\Core\Core.h" />
     <ClInclude Include="include\TOE\Core\EntryPoint.h" />
     <ClInclude Include="include\TOE\Core\Application.h" />
     <ClInclude Include="include\TOE\Event\Event.h" />
