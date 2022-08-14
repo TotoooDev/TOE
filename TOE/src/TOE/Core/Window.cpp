@@ -5,16 +5,6 @@
 
 namespace TOE
 {
-	Window::Window()
-	{
-
-	}
-
-	Window::~Window()
-	{
-
-	}
-
 	void Window::CreateNewWindow(const WindowData& data)
 	{
 		// Initialize glfw
@@ -98,6 +88,7 @@ namespace TOE
 
 	void Window::Update()
 	{
+		// Poll all GLFW events and display the graphics on the window
 		glfwPollEvents();
 		glfwSwapBuffers(m_NativeWindow);
 	}

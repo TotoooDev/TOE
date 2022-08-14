@@ -11,6 +11,7 @@ namespace TOE
 	static bool WasGLFWInit = false;
 	static bool WasGLEWInit = false;
 
+	// Simple struct to hold all the useful window data
 	struct WindowData
 	{
 		unsigned int Width;
@@ -28,9 +29,6 @@ namespace TOE
 	class Window
 	{
 	public:
-		Window();
-		~Window();
-
 		void CreateNewWindow(const WindowData& data);
 		void Update();
 		

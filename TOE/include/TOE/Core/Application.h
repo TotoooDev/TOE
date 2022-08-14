@@ -15,10 +15,13 @@ namespace TOE
 		Application(const WindowData& data);
 		~Application();
 
+		// Return the instance of the application
 		static Application& Get();
 		void AddLayer(Layer* layer);
 
+		// Run the main loop of the application
 		void Run();
+		// Close and clean the application
 		void Stop();
 
 		EventBus EventBus;

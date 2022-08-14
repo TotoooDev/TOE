@@ -56,6 +56,7 @@ namespace TOE
 			{
 				layer->OnUpdate(m_Timestep);
 			}
+			// Check for OpenGL errors
 			glCheckError();
 
 			// Update timestep
@@ -72,7 +73,7 @@ namespace TOE
 
 	void Application::OnWindowClosedEvent(WindowClosedEvent* event)
 	{
-		m_IsRunning = false;
+		Stop();
 	}
 	void Application::OnWindowResizedEvent(WindowResizedEvent* event)
 	{

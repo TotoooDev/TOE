@@ -1,4 +1,4 @@
-#include <TOE/Shader.h>
+#include <TOE/Graphics/Shader.h>
 
 #include <fstream>
 #include <sstream>
@@ -18,14 +18,20 @@ namespace TOE
 		std::stringstream vertexBuffer, fragmentBuffer, geometryBuffer;
 		std::string vertexSource, fragmentSource, geometrySource;
 
+		// Read files as a stringstream
 		vertexBuffer << vertexFile.rdbuf();
 		fragmentBuffer << fragmentFile.rdbuf();
 		geometryBuffer << geometryFile.rdbuf();
 
+		// Read as a string
 		vertexSource = vertexBuffer.str();
 		fragmentSource = fragmentBuffer.str();
 		geometrySource = geometryBuffer.str();
+		m_VertexSource = vertexSource;
+		m_FragmentSource = fragmentSource;
+		m_GeometrySource = geometrySource;
 
+		// Don't forget to close the files
 		vertexFile.close();
 		fragmentFile.close();
 		geometryFile.close();
@@ -127,7 +133,7 @@ namespace TOE
 
 	void Shader::Reload()
 	{
-		LoadFromFile(m_VertexPath, m_FragmentPath);
+		LoadFromString(m_VertexSource, m_FragmentSource, m_GeometrySource);
 	}
 
 	void Shader::Delete()

@@ -6,6 +6,7 @@
 
 GLenum glCheckError_(const char* file, int line)
 {
+	// Check for all OpenGL errors in a loop until there are none
 	GLenum errorCode;
 	while ((errorCode = glGetError()) != GL_NO_ERROR)
 	{
@@ -34,8 +35,10 @@ GLenum glCheckError_(const char* file, int line)
 			error = "INVALID_FRAMEBUFFER_OPERATION";
 			break;
 		}
+		// Log the error
 		spdlog::error("{0} | {1} ({2})", error, file, line);
 	}
 	return errorCode;
 }
+// Define a macro so we can get the file and line where the error occured
 #define glCheckError() glCheckError_(__FILE__, __LINE__);
