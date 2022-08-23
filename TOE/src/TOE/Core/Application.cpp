@@ -4,6 +4,7 @@
 #include <TOE/Event/WindowEvents.h>
 
 #include <spdlog/spdlog.h>
+#include "spdlog/sinks/rotating_file_sink.h"
 
 namespace TOE
 {
@@ -19,6 +20,9 @@ namespace TOE
 		{
 			spdlog::error("An application already exists!");
 		}
+		// Create a file rotating logger with 5mb size max and 3 rotated files.
+		auto rotating_logger = spdlog::rotating_logger_mt("Default Logger", "logs/TOE_logs.txt", 1048576 * 5, 3);
+		spdlog::set_default_logger(rotating_logger);
 
 		// Create a window
 		m_Window.CreateNewWindow(data);

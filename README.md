@@ -10,10 +10,10 @@ Still in developpement
 - [ ] Breakout clone
   - [x] Texture class
   - [x] OpenGL object abstraction
-  - [ ] Coordinate system
+  - [x] Coordinate system
   - [ ] Renderer class
 - [ ] Simple 2D platformer
   - [ ] ImGui
-  - [ ] Camera class
+  - [x] Camera class
   - [ ] ECS
 - [ ] Simple 3D scene

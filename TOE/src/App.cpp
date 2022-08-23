@@ -14,6 +14,7 @@ class CustomLayer : public TOE::Layer
 		Shader.Use();
 		Shader.SetInt("uTexture", 0);
 		Texture.CreateFromFile("image.png");
+		Camera.Pos.z = 2.0f;
 
 		// OpenGL setup
 		std::vector<float> vertices =
@@ -42,10 +43,17 @@ class CustomLayer : public TOE::Layer
 	virtual void OnUpdate(double timestep) override
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
+
 		Shader.Use();
+		Shader.SetMat4("uModel", glm::mat4(1.0f));
+		Shader.SetMat4("uView", Camera.GetViewMatrix());
+		Shader.SetMat4("uProjection", Camera.GetProjectionMatrix());
+
 		Texture.Use(0);
+
 		VAO.Use();
 		EBO.Use();
+
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
 
@@ -54,14 +62,16 @@ private:
 	{
 		switch (event->Keycode)
 		{
-
+		default:
+			break;
 		}
 	}
 	void KeyUpEvent(TOE::KeyUpEvent* event)
 	{
 		switch (event->Keycode)
 		{
-
+		default:
+			break;
 		}
 	}
 
@@ -69,6 +79,7 @@ private:
 	TOE::Texture2D Texture;
 	TOE::VAO VAO;
 	TOE::EBO EBO;
+	TOE::Camera Camera;
 };
 
 TOE::Application* CreateApplication()

@@ -156,6 +156,7 @@
     <ClCompile Include="src\stb_image\stb_image.cpp" />
     <ClCompile Include="src\TOE\Core\Application.cpp" />
     <ClCompile Include="src\App.cpp" />
+    <ClCompile Include="src\TOE\Core\Camera.cpp" />
     <ClCompile Include="src\TOE\Core\VertexObjects.cpp" />
     <ClCompile Include="src\TOE\Graphics\Shader.cpp" />
     <ClCompile Include="src\TOE\Core\Window.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="include\GL\glxew.h" />
     <ClInclude Include="include\GL\wglew.h" />
     <ClInclude Include="include\stb_image\stb_image.h" />
+    <ClInclude Include="include\TOE\Core\Camera.h" />
     <ClInclude Include="include\TOE\Core\Core.h" />
     <ClInclude Include="include\TOE\Core\EntryPoint.h" />
     <ClInclude Include="include\TOE\Core\Application.h" />

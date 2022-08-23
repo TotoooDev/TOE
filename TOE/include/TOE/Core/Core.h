@@ -8,7 +8,7 @@
 // Output the line and file and stop execution
 #define TOE_EXIT() spdlog::critical("Stopping execution at line {0} of file {1}", __LINE__, __FILE__); exit(1);
 
-GLenum glCheckError_(const char* file, int line)
+inline GLenum glCheckError_(const char* file, int line)
 {
 	// Check for all OpenGL errors in a loop until there are none
 	GLenum errorCode;
