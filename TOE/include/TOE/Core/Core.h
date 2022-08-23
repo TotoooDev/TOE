@@ -3,6 +3,10 @@
 #include <GL/glew.h>
 #include <spdlog/spdlog.h>
 #include <string>
+#include <stdlib.h>
+
+// Output the line and file and stop execution
+#define TOE_EXIT() spdlog::critical("Stopping execution at line {0} of file {1}", __LINE__, __FILE__); exit(1);
 
 GLenum glCheckError_(const char* file, int line)
 {

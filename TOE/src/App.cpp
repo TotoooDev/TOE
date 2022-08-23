@@ -16,7 +16,7 @@ class CustomLayer : public TOE::Layer
 		Texture.CreateFromFile("image.png");
 
 		// OpenGL setup
-		float vertices[] =
+		std::vector<float> vertices =
 		{
 			// positions          // colors           // texture coords
 			 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
@@ -24,33 +24,19 @@ class CustomLayer : public TOE::Layer
 			-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
 			-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
 		};
-		unsigned int indices[] =
+		std::vector<unsigned int> indices =
 		{
 			0, 1, 3, // first triangle
 			1, 2, 3  // second triangle
 		};
 
-		glGenVertexArrays(1, &VAO);
-		glGenBuffers(1, &VBO);
-		glGenBuffers(1, &EBO);
+		TOE::VertexLayout layout;
+		layout.AddAttribute(TOE::Type::Float, 3); // Pos
+		layout.AddAttribute(TOE::Type::Float, 3); // Color
+		layout.AddAttribute(TOE::Type::Float, 2); // Tex Coords
 
-		glBindVertexArray(VAO);
-
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-		// position attribute
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
-		// color attribute
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-		glEnableVertexAttribArray(1);
-		// texture coord attribute
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-		glEnableVertexAttribArray(2);
+		VAO.SetData(vertices, layout);
+		EBO.SetData(indices);
 	}
 
 	virtual void OnUpdate(double timestep) override
@@ -58,7 +44,8 @@ class CustomLayer : public TOE::Layer
 		glClear(GL_COLOR_BUFFER_BIT);
 		Shader.Use();
 		Texture.Use(0);
-		glBindVertexArray(VAO);
+		VAO.Use();
+		EBO.Use();
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
 
@@ -80,7 +67,8 @@ private:
 
 	TOE::Shader Shader;
 	TOE::Texture2D Texture;
-	unsigned int VAO, VBO, EBO;
+	TOE::VAO VAO;
+	TOE::EBO EBO;
 };
 
 TOE::Application* CreateApplication()
