@@ -27,6 +27,9 @@ namespace TOE
 		EventBus EventBus;
 
 	private:
+		void ImGuiBegin();
+		void ImGuiEnd();
+
 		void OnWindowClosedEvent(WindowClosedEvent* event);
 		void OnWindowResizedEvent(WindowResizedEvent* event);
 		

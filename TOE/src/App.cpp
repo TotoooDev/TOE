@@ -48,6 +48,16 @@ class CustomLayer : public TOE::Layer
 		Scene.Update(timestep);
 	}
 
+	virtual void OnImGuiRender() override
+	{
+		ImGui::Begin("Renderer Stats");
+		auto stats = TOE::Renderer::GetStats();
+		ImGui::Text("Draw calls: %d", stats.DrawCalls);
+		ImGui::Text("Vertex count: %d", stats.VertexCount);
+		ImGui::Text("Index count: %d", stats.IndexCount);
+		ImGui::End();
+	}
+
 private:
 	void KeyPressedEvent(TOE::KeyDownEvent* event)
 	{

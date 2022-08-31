@@ -37,6 +37,8 @@ namespace TOE
 		void SetEventBus(EventBus* bus);
 
 	private:
+		void SetCallbacks();
+
 		GLFWwindow* m_NativeWindow = nullptr;
 		WindowData m_Data;
 	};

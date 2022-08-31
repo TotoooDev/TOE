@@ -3,6 +3,10 @@
 
 #include <spdlog/spdlog.h>
 
+#include <ImGui/imgui.h>
+#include <ImGui/imgui_impl_glfw.h>
+#include <ImGui/imgui_impl_opengl3.h>
+
 namespace TOE
 {
 	void Window::CreateNewWindow(const WindowData& data)
@@ -32,7 +36,59 @@ namespace TOE
 		}
 
 		// Set glfw callbacks 
-		
+		SetCallbacks();
+
+		// ImGui setup
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+		// io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+
+		// Setup Dear ImGui style
+		ImGui::StyleColorsDark();
+		// ImGui::StyleColorsLight();
+
+		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
+		ImGuiStyle& style = ImGui::GetStyle();
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			style.WindowRounding = 0.0f;
+			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+		}
+
+		// Setup Platform/Renderer backends
+		ImGui_ImplGlfw_InitForOpenGL(m_NativeWindow, true);
+		ImGui_ImplOpenGL3_Init("#version 330 core");
+	}
+
+	void Window::Update()
+	{
+		// Poll all GLFW events and display the graphics on the window
+		glfwPollEvents();
+		glfwSwapBuffers(m_NativeWindow);
+	}
+
+	WindowData Window::GetData()
+	{
+		return m_Data;
+	}
+
+	void Window::SetData(const WindowData& data)
+	{
+		m_Data = data;
+	}
+
+	void Window::SetEventBus(EventBus* bus)
+	{
+		m_Data.EventBus = bus;
+	}
+
+	void Window::SetCallbacks()
+	{
 		// Window callbacks
 		glfwSetWindowCloseCallback(m_NativeWindow, [](GLFWwindow* window)
 			{
@@ -48,7 +104,7 @@ namespace TOE
 			{
 				WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
 				data->Width = width;
-				data->Height= height;
+				data->Height = height;
 				data->EventBus->Publish(new WindowResizedEvent(width, height));
 			});
 
@@ -84,27 +140,5 @@ namespace TOE
 					data->EventBus->Publish(new MouseButtonUpEvent(button));
 				}
 			});
-	}
-
-	void Window::Update()
-	{
-		// Poll all GLFW events and display the graphics on the window
-		glfwPollEvents();
-		glfwSwapBuffers(m_NativeWindow);
-	}
-
-	WindowData Window::GetData()
-	{
-		return m_Data;
-	}
-
-	void Window::SetData(const WindowData& data)
-	{
-		m_Data = data;
-	}
-
-	void Window::SetEventBus(EventBus* bus)
-	{
-		m_Data.EventBus = bus;
 	}
 }

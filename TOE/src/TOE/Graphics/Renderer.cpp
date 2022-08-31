@@ -11,7 +11,7 @@ namespace TOE
 	void Renderer::Clear()
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		m_NumDrawCalls = 0;
+		m_Stats = { 0, 0, 0 };
 	}
 
 	void Renderer::SetCurrentCamera(const Camera& camera)
@@ -31,12 +31,15 @@ namespace TOE
 		vao.Use();
 		ebo.Use();
 
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		m_NumDrawCalls++;
+		glDrawElements(GL_TRIANGLES, ebo.GetCount(), GL_UNSIGNED_INT, 0);
+		
+		m_Stats.DrawCalls++;
+		m_Stats.VertexCount += vao.GetVertexCount();
+		m_Stats.IndexCount += ebo.GetCount();
 	}
 
-	unsigned int Renderer::GetNumDrawCalls()
+	Renderer::Stats Renderer::GetStats()
 	{
-		return m_NumDrawCalls;
+		return m_Stats;
 	}
 }

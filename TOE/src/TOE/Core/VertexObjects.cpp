@@ -74,6 +74,10 @@ namespace TOE
 	{
 		glBindVertexArray(m_ID);
 	}
+	unsigned int VAO::GetVertexCount()
+	{
+		return m_VertexCount;
+	}
 
 	EBO::EBO()
 	{

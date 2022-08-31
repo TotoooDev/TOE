@@ -8,5 +8,6 @@ namespace TOE
 	public:
 		virtual void OnCreate() {}
 		virtual void OnUpdate(double timestep) {}
+		virtual void OnImGuiRender() {}
 	};
 }

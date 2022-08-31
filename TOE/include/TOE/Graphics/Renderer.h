@@ -30,6 +30,13 @@ namespace TOE
 	class Renderer
 	{
 	public:
+		struct Stats
+		{
+			unsigned int DrawCalls;
+			unsigned int VertexCount;
+			unsigned int IndexCount;
+		};
+
 		static void Init();
 
 		static void Clear();
@@ -38,11 +45,11 @@ namespace TOE
 		// TODO: implement BeginScene method or something
 		static void DrawVertexObject(const glm::mat4& transform, VAO vao, EBO ebo, Texture2D texture);
 
-		static unsigned int GetNumDrawCalls();
+		static Stats GetStats();
 
 	private:
 		inline static Shader m_Shader;
 
-		inline static unsigned int m_NumDrawCalls;
+		inline static Stats m_Stats;
 	};
 }

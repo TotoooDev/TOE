@@ -5,7 +5,11 @@
 #include <TOE/Graphics/Renderer.h>
 
 #include <spdlog/spdlog.h>
-#include "spdlog/sinks/rotating_file_sink.h"
+#include <spdlog/sinks/rotating_file_sink.h>
+
+#include <ImGui/imgui.h>
+#include <ImGui/imgui_impl_glfw.h>
+#include <ImGui/imgui_impl_opengl3.h>
 
 namespace TOE
 {
@@ -57,15 +61,24 @@ namespace TOE
 	{
 		while (m_IsRunning)
 		{
-			m_Window.Update();
-
 			// Update all layers
 			for (auto& layer : m_Layers)
 			{
 				layer->OnUpdate(m_Timestep);
 			}
+
 			// Check for OpenGL errors
 			glCheckError();
+
+			// ImGui
+			ImGuiBegin();
+			for (auto& layer : m_Layers)
+			{
+				layer->OnImGuiRender();
+			}
+			ImGuiEnd();
+
+			m_Window.Update();
 
 			// Update timestep
 			double currentFrame = glfwGetTime();
@@ -77,6 +90,25 @@ namespace TOE
 	void Application::Stop()
 	{
 		m_IsRunning = false;
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
+	}
+
+	void Application::ImGuiBegin()
+	{
+		// Start the Dear ImGui frame
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+	}
+
+	void Application::ImGuiEnd()
+	{
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
 	}
 
 	void Application::OnWindowClosedEvent(WindowClosedEvent* event)

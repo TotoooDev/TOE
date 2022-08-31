@@ -44,17 +44,20 @@ namespace TOE
 		VAO();
 
 		unsigned int GetID();
-		void SetData(void* data, int size, VertexLayout layout);
 		template <typename T>
 		void SetData(std::vector<T> data, VertexLayout layout)
 		{
 			SetData(data.data(), data.size() * sizeof(T), layout);
+			m_VertexCount += data.size() / layout.GetTotalCount();
 		}
+		void SetData(void* data, int size, VertexLayout layout);
 		void Use();
+		unsigned int GetVertexCount();
 
 	private:
 		unsigned int m_ID = 0;
 		unsigned int m_VBO = 0;
+		unsigned int m_VertexCount = 0;
 	};
 
 	class EBO
