@@ -86,13 +86,13 @@
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\intermediate\$(Platform)\$(Configuration)\</IntDir>
     <LibraryPath>D:\Dev\Libs;$(LibraryPath)</LibraryPath>
-    <IncludePath>include;$(IncludePath)</IncludePath>
+    <IncludePath>include;include\vendor;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\intermediate\$(Platform)\$(Configuration)\</IntDir>
     <LibraryPath>D:\Dev\Libs;$(LibraryPath)</LibraryPath>
-    <IncludePath>include;$(IncludePath)</IncludePath>
+    <IncludePath>include;include\vendor;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -128,6 +128,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -143,6 +144,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -158,41 +160,45 @@
     <ClCompile Include="src\App.cpp" />
     <ClCompile Include="src\TOE\Core\Camera.cpp" />
     <ClCompile Include="src\TOE\Core\VertexObjects.cpp" />
+    <ClCompile Include="src\TOE\Graphics\Renderer.cpp" />
     <ClCompile Include="src\TOE\Graphics\Shader.cpp" />
     <ClCompile Include="src\TOE\Core\Window.cpp" />
     <ClCompile Include="src\TOE\Graphics\Texture.cpp" />
+    <ClCompile Include="src\TOE\Scene\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\GLFW\glfw3.h" />
-    <ClInclude Include="include\GLFW\glfw3native.h" />
-    <ClInclude Include="include\glm\common.hpp" />
-    <ClInclude Include="include\glm\exponential.hpp" />
-    <ClInclude Include="include\glm\ext.hpp" />
-    <ClInclude Include="include\glm\fwd.hpp" />
-    <ClInclude Include="include\glm\geometric.hpp" />
-    <ClInclude Include="include\glm\glm.hpp" />
-    <ClInclude Include="include\glm\integer.hpp" />
-    <ClInclude Include="include\glm\mat2x2.hpp" />
-    <ClInclude Include="include\glm\mat2x3.hpp" />
-    <ClInclude Include="include\glm\mat2x4.hpp" />
-    <ClInclude Include="include\glm\mat3x2.hpp" />
-    <ClInclude Include="include\glm\mat3x3.hpp" />
-    <ClInclude Include="include\glm\mat3x4.hpp" />
-    <ClInclude Include="include\glm\mat4x2.hpp" />
-    <ClInclude Include="include\glm\mat4x3.hpp" />
-    <ClInclude Include="include\glm\mat4x4.hpp" />
-    <ClInclude Include="include\glm\matrix.hpp" />
-    <ClInclude Include="include\glm\packing.hpp" />
-    <ClInclude Include="include\glm\trigonometric.hpp" />
-    <ClInclude Include="include\glm\vec2.hpp" />
-    <ClInclude Include="include\glm\vec3.hpp" />
-    <ClInclude Include="include\glm\vec4.hpp" />
-    <ClInclude Include="include\glm\vector_relational.hpp" />
-    <ClInclude Include="include\GL\eglew.h" />
-    <ClInclude Include="include\GL\glew.h" />
-    <ClInclude Include="include\GL\glxew.h" />
-    <ClInclude Include="include\GL\wglew.h" />
-    <ClInclude Include="include\stb_image\stb_image.h" />
+    <ClInclude Include="include\vendor\entt\entt.hpp" />
+    <ClInclude Include="include\vendor\entt\fwd.hpp" />
+    <ClInclude Include="include\vendor\GLFW\glfw3.h" />
+    <ClInclude Include="include\vendor\GLFW\glfw3native.h" />
+    <ClInclude Include="include\vendor\glm\common.hpp" />
+    <ClInclude Include="include\vendor\glm\exponential.hpp" />
+    <ClInclude Include="include\vendor\glm\ext.hpp" />
+    <ClInclude Include="include\vendor\glm\fwd.hpp" />
+    <ClInclude Include="include\vendor\glm\geometric.hpp" />
+    <ClInclude Include="include\vendor\glm\glm.hpp" />
+    <ClInclude Include="include\vendor\glm\integer.hpp" />
+    <ClInclude Include="include\vendor\glm\mat2x2.hpp" />
+    <ClInclude Include="include\vendor\glm\mat2x3.hpp" />
+    <ClInclude Include="include\vendor\glm\mat2x4.hpp" />
+    <ClInclude Include="include\vendor\glm\mat3x2.hpp" />
+    <ClInclude Include="include\vendor\glm\mat3x3.hpp" />
+    <ClInclude Include="include\vendor\glm\mat3x4.hpp" />
+    <ClInclude Include="include\vendor\glm\mat4x2.hpp" />
+    <ClInclude Include="include\vendor\glm\mat4x3.hpp" />
+    <ClInclude Include="include\vendor\glm\mat4x4.hpp" />
+    <ClInclude Include="include\vendor\glm\matrix.hpp" />
+    <ClInclude Include="include\vendor\glm\packing.hpp" />
+    <ClInclude Include="include\vendor\glm\trigonometric.hpp" />
+    <ClInclude Include="include\vendor\glm\vec2.hpp" />
+    <ClInclude Include="include\vendor\glm\vec3.hpp" />
+    <ClInclude Include="include\vendor\glm\vec4.hpp" />
+    <ClInclude Include="include\vendor\glm\vector_relational.hpp" />
+    <ClInclude Include="include\vendor\GL\eglew.h" />
+    <ClInclude Include="include\vendor\GL\glew.h" />
+    <ClInclude Include="include\vendor\GL\glxew.h" />
+    <ClInclude Include="include\vendor\GL\wglew.h" />
+    <ClInclude Include="include\vendor\stb_image\stb_image.h" />
     <ClInclude Include="include\TOE\Core\Camera.h" />
     <ClInclude Include="include\TOE\Core\Core.h" />
     <ClInclude Include="include\TOE\Core\EntryPoint.h" />
@@ -206,8 +212,12 @@
     <ClInclude Include="include\TOE\Event\MouseEvents.h" />
     <ClInclude Include="include\TOE\Event\WindowEvents.h" />
     <ClInclude Include="include\TOE\Core\Layer.h" />
+    <ClInclude Include="include\TOE\Graphics\Renderer.h" />
     <ClInclude Include="include\TOE\Graphics\Shader.h" />
     <ClInclude Include="include\TOE\Graphics\Texture.h" />
+    <ClInclude Include="include\TOE\Scene\Components.h" />
+    <ClInclude Include="include\TOE\Scene\Entity.h" />
+    <ClInclude Include="include\TOE\Scene\Scene.h" />
     <ClInclude Include="include\TOE\TOE.h" />
     <ClInclude Include="include\TOE\Core\Window.h" />
   </ItemGroup>
@@ -223,7 +233,7 @@
     <None Include="include\vendor\spdlog\README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="include\glm\CMakeLists.txt" />
+    <Text Include="include\vendor\glm\CMakeLists.txt" />
     <Text Include="include\vendor\spdlog\CMakeLists.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

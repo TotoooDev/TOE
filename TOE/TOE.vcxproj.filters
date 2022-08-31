@@ -39,6 +39,12 @@
     <ClCompile Include="src\TOE\Core\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\TOE\Graphics\Renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TOE\Scene\Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\TOE\Core\Application.h">
@@ -53,22 +59,22 @@
     <ClInclude Include="include\TOE\Core\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\GL\eglew.h">
+    <ClInclude Include="include\vendor\GL\eglew.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\GL\glew.h">
+    <ClInclude Include="include\vendor\GL\glew.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\GL\glxew.h">
+    <ClInclude Include="include\vendor\GL\glxew.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\GL\wglew.h">
+    <ClInclude Include="include\vendor\GL\wglew.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\GLFW\glfw3.h">
+    <ClInclude Include="include\vendor\GLFW\glfw3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\GLFW\glfw3native.h">
+    <ClInclude Include="include\vendor\GLFW\glfw3native.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\TOE\Event\Event.h">
@@ -98,73 +104,73 @@
     <ClInclude Include="include\TOE\Graphics\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\common.hpp">
+    <ClInclude Include="include\vendor\glm\common.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\exponential.hpp">
+    <ClInclude Include="include\vendor\glm\exponential.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\ext.hpp">
+    <ClInclude Include="include\vendor\glm\ext.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\fwd.hpp">
+    <ClInclude Include="include\vendor\glm\fwd.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\geometric.hpp">
+    <ClInclude Include="include\vendor\glm\geometric.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\glm.hpp">
+    <ClInclude Include="include\vendor\glm\glm.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\integer.hpp">
+    <ClInclude Include="include\vendor\glm\integer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\mat2x2.hpp">
+    <ClInclude Include="include\vendor\glm\mat2x2.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\mat2x3.hpp">
+    <ClInclude Include="include\vendor\glm\mat2x3.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\mat2x4.hpp">
+    <ClInclude Include="include\vendor\glm\mat2x4.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\mat3x2.hpp">
+    <ClInclude Include="include\vendor\glm\mat3x2.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\mat3x3.hpp">
+    <ClInclude Include="include\vendor\glm\mat3x3.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\mat3x4.hpp">
+    <ClInclude Include="include\vendor\glm\mat3x4.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\mat4x2.hpp">
+    <ClInclude Include="include\vendor\glm\mat4x2.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\mat4x3.hpp">
+    <ClInclude Include="include\vendor\glm\mat4x3.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\mat4x4.hpp">
+    <ClInclude Include="include\vendor\glm\mat4x4.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\matrix.hpp">
+    <ClInclude Include="include\vendor\glm\matrix.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\packing.hpp">
+    <ClInclude Include="include\vendor\glm\packing.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\trigonometric.hpp">
+    <ClInclude Include="include\vendor\glm\trigonometric.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\vec2.hpp">
+    <ClInclude Include="include\vendor\glm\vec2.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\vec3.hpp">
+    <ClInclude Include="include\vendor\glm\vec3.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\vec4.hpp">
+    <ClInclude Include="include\vendor\glm\vec4.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\glm\vector_relational.hpp">
+    <ClInclude Include="include\vendor\glm\vector_relational.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\TOE\Core\Core.h">
@@ -173,13 +179,31 @@
     <ClInclude Include="include\TOE\Graphics\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\stb_image\stb_image.h">
+    <ClInclude Include="include\vendor\stb_image\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\TOE\Core\VertexObjects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\TOE\Core\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TOE\Graphics\Renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vendor\entt\entt.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vendor\entt\fwd.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TOE\Scene\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TOE\Scene\Components.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TOE\Scene\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -196,6 +220,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="include\vendor\spdlog\CMakeLists.txt" />
-    <Text Include="include\glm\CMakeLists.txt" />
+    <Text Include="include\vendor\glm\CMakeLists.txt" />
   </ItemGroup>
 </Project>

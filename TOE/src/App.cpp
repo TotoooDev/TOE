@@ -4,19 +4,13 @@ class CustomLayer : public TOE::Layer
 {
 	virtual void OnCreate() override
 	{
-		spdlog::info("Layer created");
-
 		// Sub to the keyboard events
 		TOE::Application::Get().EventBus.Subscribe(this, &CustomLayer::KeyPressedEvent);
 		TOE::Application::Get().EventBus.Subscribe(this, &CustomLayer::KeyUpEvent);
-
-		Shader.LoadFromFile("shader.vert", "shader.frag");
-		Shader.Use();
-		Shader.SetInt("uTexture", 0);
+		
 		Texture.CreateFromFile("image.png");
-		Camera.Pos.z = 2.0f;
 
-		// OpenGL setup
+		// OpenGL data setup
 		std::vector<float> vertices =
 		{
 			// positions          // colors           // texture coords
@@ -38,23 +32,20 @@ class CustomLayer : public TOE::Layer
 
 		VAO.SetData(vertices, layout);
 		EBO.SetData(indices);
+
+		Ent = Scene.CreateEntity();
+		Ent.AddComponent<TOE::RenderComponent>(VAO, EBO, Texture);
+
+		CamEnt = Scene.CreateEntity();
+		auto& camComponent = CamEnt.AddComponent<TOE::CameraComponent>(TOE::PerspectiveCamera());
+		camComponent.Primary = true;
+		auto& transform = CamEnt.GetComponent<TOE::TransformComponent>();
+		transform = glm::translate(transform.Transform, glm::vec3(0.0f, 0.0f, 2.0f));
 	}
 
 	virtual void OnUpdate(double timestep) override
 	{
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		Shader.Use();
-		Shader.SetMat4("uModel", glm::mat4(1.0f));
-		Shader.SetMat4("uView", Camera.GetViewMatrix());
-		Shader.SetMat4("uProjection", Camera.GetProjectionMatrix());
-
-		Texture.Use(0);
-
-		VAO.Use();
-		EBO.Use();
-
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		Scene.Update(timestep);
 	}
 
 private:
@@ -75,11 +66,12 @@ private:
 		}
 	}
 
-	TOE::Shader Shader;
 	TOE::Texture2D Texture;
 	TOE::VAO VAO;
 	TOE::EBO EBO;
-	TOE::Camera Camera;
+
+	TOE::Scene Scene;
+	TOE::Entity Ent, CamEnt;
 };
 
 TOE::Application* CreateApplication()

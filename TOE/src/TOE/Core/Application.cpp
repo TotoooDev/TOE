@@ -2,6 +2,7 @@
 #include <TOE/Core/Core.h>
 #include <TOE/Core/Window.h>
 #include <TOE/Event/WindowEvents.h>
+#include <TOE/Graphics/Renderer.h>
 
 #include <spdlog/spdlog.h>
 #include "spdlog/sinks/rotating_file_sink.h"
@@ -27,6 +28,9 @@ namespace TOE
 		// Create a window
 		m_Window.CreateNewWindow(data);
 		m_Window.SetEventBus(&EventBus);
+
+		// Initialize renderer
+		Renderer::Init();
 
 		// Sub to the window events
 		EventBus.Subscribe(this, &Application::OnWindowClosedEvent);

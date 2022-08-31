@@ -17,3 +17,7 @@ Still in developpement
   - [x] Camera class
   - [ ] ECS
 - [ ] Simple 3D scene
+
+- [ ] Convert most parameters to const references
+- [ ] Profiling
+- [ ] Multithreading????
