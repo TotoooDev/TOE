@@ -1,4 +1,5 @@
 #include <TOE/Graphics/Shader.h>
+#include <TOE/Debug/Instrumentor.h>
 
 #include <fstream>
 #include <sstream>
@@ -10,6 +11,8 @@ namespace TOE
 {
 	void Shader::LoadFromFile(const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath)
 	{
+		TOE_PROFILE_FUNCTION();
+
 		m_VertexPath = vertexPath;
 		m_FragmentPath = fragmentPath;
 		m_GeometryPath = geometryPath;
@@ -41,6 +44,8 @@ namespace TOE
 
 	void Shader::LoadFromFolder(const std::string& folderPath, const std::string& name)
 	{
+		TOE_PROFILE_FUNCTION();
+
 		m_VertexPath = folderPath + name + ".vert";
 		m_FragmentPath = folderPath + name + ".frag";
 		m_GeometryPath = folderPath + name + ".geom";
@@ -49,6 +54,8 @@ namespace TOE
 
 	void Shader::LoadFromString(const std::string& vertexSource, const std::string& fragmentSource, const std::string& geometrySource)
 	{
+		TOE_PROFILE_FUNCTION();
+
 		int success;
 
 		// Compile vertex shader
@@ -153,18 +160,22 @@ namespace TOE
 
 	void Shader::SetInt(const std::string& name, int value)
 	{
+		TOE_PROFILE_FUNCTION();
 		glUniform1i(glGetUniformLocation(m_ID, name.c_str()), value);
 	}
 	void Shader::SetFloat(const std::string& name, float value)
 	{
+		TOE_PROFILE_FUNCTION();
 		glUniform1f(glGetUniformLocation(m_ID, name.c_str()), value);
 	}
 	void Shader::SetVec3(const std::string& name, glm::vec3 value)
 	{
+		TOE_PROFILE_FUNCTION();
 		glUniform3f(glGetUniformLocation(m_ID, name.c_str()), value.x, value.y, value.z);
 	}
 	void Shader::SetMat4(const std::string& name, glm::mat4 value)
 	{
+		TOE_PROFILE_FUNCTION();
 		glUniformMatrix4fv(glGetUniformLocation(m_ID, name.c_str()), 1, GL_FALSE, &value[0][0]);
 	}
 }

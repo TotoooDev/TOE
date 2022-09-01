@@ -254,6 +254,9 @@
     <ClInclude Include="include\ImGui\imstb_truetype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\TOE\Debug\Instrumentor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\vendor\spdlog\.clang-format" />

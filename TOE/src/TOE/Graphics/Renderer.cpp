@@ -1,4 +1,5 @@
 #include <TOE/Graphics/Renderer.h>
+#include <TOE/Debug/Instrumentor.h>
 #include <GL/glew.h>
 
 namespace TOE
@@ -10,12 +11,16 @@ namespace TOE
 
 	void Renderer::Clear()
 	{
+		TOE_PROFILE_FUNCTION();
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		m_Stats = { 0, 0, 0 };
 	}
 
 	void Renderer::SetCurrentCamera(const Camera& camera)
 	{
+		TOE_PROFILE_FUNCTION();
+
 		m_Shader.Use();
 		m_Shader.SetMat4("uView", camera.GetView());
 		m_Shader.SetMat4("uProjection", camera.GetProjection());
@@ -23,6 +28,8 @@ namespace TOE
 
 	void Renderer::DrawVertexObject(const glm::mat4& transform, VAO vao, EBO ebo, Texture2D texture)
 	{
+		TOE_PROFILE_FUNCTION();
+
 		m_Shader.Use();
 		m_Shader.SetMat4("uModel", transform);
 

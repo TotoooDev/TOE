@@ -1,4 +1,5 @@
 #include <TOE/Graphics/Texture.h>
+#include <TOE/Debug/Instrumentor.h>
 #include <spdlog/spdlog.h>
 #include <stb_image/stb_image.h>
 
@@ -6,12 +7,16 @@ namespace TOE
 {
 	Texture2D::Texture2D()
 	{
+		TOE_PROFILE_FUNCTION();
+
 		stbi_set_flip_vertically_on_load(true);
 		glGenTextures(1, &m_ID);
 	}
 
 	void Texture2D::CreateFromFile(const std::string& path)
 	{
+		TOE_PROFILE_FUNCTION();
+
 		glBindTexture(GL_TEXTURE_2D, m_ID);
 
 		// Set the texture wrapping parameters
@@ -46,6 +51,8 @@ namespace TOE
 
 	void Texture2D::Use(unsigned int slot)
 	{
+		TOE_PROFILE_FUNCTION();
+
 		// Activate the texture unit first before binding texture
 		glActiveTexture(GL_TEXTURE0 + slot);
 		glBindTexture(GL_TEXTURE_2D, m_ID);

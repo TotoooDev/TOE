@@ -1,5 +1,6 @@
 #include <TOE/Core/Window.h>
 #include <TOE/Event/Events.h>
+#include <TOE/Debug/Instrumentor.h>
 
 #include <spdlog/spdlog.h>
 
@@ -11,6 +12,8 @@ namespace TOE
 {
 	void Window::CreateNewWindow(const WindowData& data)
 	{
+		TOE_PROFILE_FUNCTION();
+
 		// Initialize glfw
 		if (!WasGLFWInit)
 		{
@@ -39,34 +42,40 @@ namespace TOE
 		SetCallbacks();
 
 		// ImGui setup
-		IMGUI_CHECKVERSION();
-		ImGui::CreateContext();
-
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
-		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-		// io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-
-		// Setup Dear ImGui style
-		ImGui::StyleColorsDark();
-		// ImGui::StyleColorsLight();
-
-		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
-		ImGuiStyle& style = ImGui::GetStyle();
-		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
-			style.WindowRounding = 0.0f;
-			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-		}
+			TOE_PROFILE_SCOPE("Window::CreateNewWindow::ImGuiSetup");
 
-		// Setup Platform/Renderer backends
-		ImGui_ImplGlfw_InitForOpenGL(m_NativeWindow, true);
-		ImGui_ImplOpenGL3_Init("#version 330 core");
+			IMGUI_CHECKVERSION();
+			ImGui::CreateContext();
+
+			ImGuiIO& io = ImGui::GetIO(); (void)io;
+			io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+			io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+			//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+			// io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+
+			// Setup Dear ImGui style
+			ImGui::StyleColorsDark();
+			// ImGui::StyleColorsLight();
+
+			// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
+			ImGuiStyle& style = ImGui::GetStyle();
+			if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+			{
+				style.WindowRounding = 0.0f;
+				style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+			}
+
+			// Setup Platform/Renderer backends
+			ImGui_ImplGlfw_InitForOpenGL(m_NativeWindow, true);
+			ImGui_ImplOpenGL3_Init("#version 330 core");
+		}
 	}
 
 	void Window::Update()
 	{
+		TOE_PROFILE_FUNCTION();
+
 		// Poll all GLFW events and display the graphics on the window
 		glfwPollEvents();
 		glfwSwapBuffers(m_NativeWindow);
@@ -89,6 +98,8 @@ namespace TOE
 
 	void Window::SetCallbacks()
 	{
+		TOE_PROFILE_FUNCTION();
+
 		// Window callbacks
 		glfwSetWindowCloseCallback(m_NativeWindow, [](GLFWwindow* window)
 			{

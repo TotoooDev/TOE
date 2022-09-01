@@ -34,8 +34,5 @@ namespace TOE
 
 		glm::mat4 GetProjectionMatrix();
 		void UpdateCameraVectors();
-
-	private:
-		void OnWindowResizedEvent(WindowResizedEvent* event);
 	};
 }

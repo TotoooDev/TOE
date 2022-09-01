@@ -3,6 +3,7 @@
 #include <TOE/Core/Window.h>
 #include <TOE/Event/WindowEvents.h>
 #include <TOE/Graphics/Renderer.h>
+#include <TOE/Debug/Instrumentor.h>
 
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/rotating_file_sink.h>
@@ -17,6 +18,8 @@ namespace TOE
 
 	Application::Application(const WindowData& data)
 	{
+		TOE_PROFILE_FUNCTION();
+
 		if (m_Instance == nullptr)
 		{
 			m_Instance = this;
@@ -53,18 +56,25 @@ namespace TOE
 
 	void Application::AddLayer(Layer* layer)
 	{
+		TOE_PROFILE_FUNCTION();
+
 		m_Layers.push_back(layer);
 		layer->OnCreate();
 	}
 
 	void Application::Run()
 	{
+		TOE_PROFILE_FUNCTION();
+
 		while (m_IsRunning)
 		{
-			// Update all layers
-			for (auto& layer : m_Layers)
+			if (!m_Minimized)
 			{
-				layer->OnUpdate(m_Timestep);
+				// Update all layers
+				for (auto& layer : m_Layers)
+				{
+					layer->OnUpdate(m_Timestep);
+				}
 			}
 
 			// Check for OpenGL errors
@@ -89,6 +99,8 @@ namespace TOE
 
 	void Application::Stop()
 	{
+		TOE_PROFILE_FUNCTION();
+
 		m_IsRunning = false;
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
@@ -97,6 +109,8 @@ namespace TOE
 
 	void Application::ImGuiBegin()
 	{
+		TOE_PROFILE_FUNCTION();
+
 		// Start the Dear ImGui frame
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -105,6 +119,8 @@ namespace TOE
 
 	void Application::ImGuiEnd()
 	{
+		TOE_PROFILE_FUNCTION();
+
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		ImGui::UpdatePlatformWindows();
@@ -117,6 +133,10 @@ namespace TOE
 	}
 	void Application::OnWindowResizedEvent(WindowResizedEvent* event)
 	{
+		if (event->Width == 0 && event->Height == 0)
+			m_Minimized = true;
+		else
+			m_Minimized = false;
 		glViewport(0, 0, m_Window.GetData().Width, m_Window.GetData().Height);
 	}
 }

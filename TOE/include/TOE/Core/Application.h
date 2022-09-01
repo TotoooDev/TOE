@@ -39,6 +39,7 @@ namespace TOE
 		std::vector<Layer*> m_Layers;
 
 		bool m_IsRunning = true;
+		bool m_Minimized = false;
 		double m_Timestep = 0.0f;
 		double m_LastFrame = 0.0f;
 	};

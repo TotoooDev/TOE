@@ -1,9 +1,12 @@
 #include <TOE/Core/VertexObjects.h>
+#include <TOE/Debug/Instrumentor.h>
 
 namespace TOE
 {
 	void VertexLayout::AddAttribute(Type type, int count)
 	{
+		TOE_PROFILE_FUNCTION();
+
 		int offset = m_Stride;
 		m_TotalCount += count;
 		switch (type)
@@ -49,6 +52,8 @@ namespace TOE
 
 	VAO::VAO()
 	{
+		TOE_PROFILE_FUNCTION();
+
 		glGenVertexArrays(1, &m_ID);
 		glGenBuffers(1, &m_VBO);
 	}
@@ -58,6 +63,8 @@ namespace TOE
 	}
 	void VAO::SetData(void* data, int size, VertexLayout layout)
 	{
+		TOE_PROFILE_FUNCTION();
+
 		glBindVertexArray(m_ID);
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
@@ -93,6 +100,8 @@ namespace TOE
 	}
 	void EBO::SetData(std::vector<unsigned int> indices)
 	{
+		TOE_PROFILE_FUNCTION();
+
 		m_Count = indices.size();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Count * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);

@@ -1,5 +1,6 @@
 #include <TOE/Core/Camera.h>
 #include <TOE/Core/Application.h>
+#include <TOE/Debug/Instrumentor.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -9,7 +10,6 @@ namespace TOE
 	PerspectiveCamera::PerspectiveCamera(float yaw, float pitch, float roll, float fov, float viewportWidth, float viewportHeight, float near, float far)
 		: Yaw(yaw), Pitch(pitch), Roll(roll), FOV(fov), ViewportWidth(viewportWidth), ViewportHeight(viewportHeight), Near(near), Far(far)
 	{
-		Application::Get().EventBus.Subscribe(this, &PerspectiveCamera::OnWindowResizedEvent);
 		UpdateCameraVectors();
 	}
 
@@ -20,6 +20,8 @@ namespace TOE
 
 	void PerspectiveCamera::UpdateCameraVectors()
 	{
+		TOE_PROFILE_FUNCTION();
+
 		// From https://learnopengl.com/Getting-started/Camera
 		// calculate the new Front vector
 		glm::vec3 front;
@@ -33,11 +35,5 @@ namespace TOE
 
 		glm::mat4 rollMat = glm::rotate(glm::mat4(1.0f), glm::radians(Roll), Front);
 		Up = glm::mat3(rollMat) * Up;
-	}
-
-	void PerspectiveCamera::OnWindowResizedEvent(WindowResizedEvent* event)
-	{
-		ViewportWidth = (float)event->Width;
-		ViewportHeight = (float)event->Height;
 	}
 }

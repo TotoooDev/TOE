@@ -4,6 +4,8 @@ class CustomLayer : public TOE::Layer
 {
 	virtual void OnCreate() override
 	{
+		TOE_PROFILE_FUNCTION();
+
 		// Sub to the keyboard events
 		TOE::Application::Get().EventBus.Subscribe(this, &CustomLayer::KeyPressedEvent);
 		TOE::Application::Get().EventBus.Subscribe(this, &CustomLayer::KeyUpEvent);
@@ -50,8 +52,11 @@ class CustomLayer : public TOE::Layer
 
 	virtual void OnImGuiRender() override
 	{
-		ImGui::Begin("Renderer Stats");
+		TOE_PROFILE_FUNCTION();
+
+		ImGui::Begin("Settings");
 		auto stats = TOE::Renderer::GetStats();
+		ImGui::Text("Renderer stats:");
 		ImGui::Text("Draw calls: %d", stats.DrawCalls);
 		ImGui::Text("Vertex count: %d", stats.VertexCount);
 		ImGui::Text("Index count: %d", stats.IndexCount);
