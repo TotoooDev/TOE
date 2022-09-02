@@ -14,11 +14,14 @@ Still in developpement
 - [x] Camera class
 - [x] ECS
 - [x] Profiling
+
+- [x] ImGui docking with scene viewport
+- [ ] Scene camera
+
 - [ ] Better renderer
 - [ ] Built-in meshes and stuff
 - [ ] Simple 3D scene
 - [ ] Convert most parameters to const references
-- [ ] ImGui docking with scene viewport
 - [ ] Font rendering
 
 - [ ] Multithreading????

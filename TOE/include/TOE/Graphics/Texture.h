@@ -9,11 +9,12 @@ namespace TOE
 	{
 	public:
 		Texture2D();
+		~Texture2D();
 
 		void CreateFromFile(const std::string& path);
 
-		void Use(unsigned int slot = 0);
-		unsigned int GetID();
+		void Use(unsigned int slot = 0) const;
+		unsigned int GetID() const;
 
 	private:
 		unsigned int m_ID;

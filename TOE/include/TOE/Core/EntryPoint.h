@@ -10,7 +10,6 @@ extern TOE::Application* CreateApplication();
 int main(int argc, char* argv[])
 {
 	TOE_PROFILE_BEGIN_SESSION("Startup", "logs/TOE_Startup.json");
-	spdlog::info("TOE is launching!");
 	TOE::Application* app = CreateApplication();
 	TOE_PROFILE_END_SESSION();
 

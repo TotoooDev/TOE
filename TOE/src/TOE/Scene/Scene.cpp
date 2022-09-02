@@ -10,7 +10,7 @@
 
 namespace TOE
 {
-	Entity Scene::CreateEntity(std::string tag)
+	Entity Scene::CreateEntity(const std::string& tag)
 	{
 		TOE_PROFILE_FUNCTION();
 
@@ -42,6 +42,7 @@ namespace TOE
 	{
 		TOE_PROFILE_FUNCTION();
 
+		Renderer::SetClearColor(0.2f, 0.2f, 0.2f);
 		Renderer::Clear();
 
 		// Loop through all the camera components
@@ -52,11 +53,11 @@ namespace TOE
 			{
 				if (camera.Primary)
 				{
-					PerspectiveCamera cam = camera.Cam;
-					cam.UpdateCameraVectors();
+					const auto& cam = camera.Cam;
+					cam->UpdateCameraVectors();
 					glm::vec3 pos = transform.Transform[3]; // Get the position from the matrix
-					glm::mat4 view = glm::lookAt(pos, pos + cam.Front, cam.Up);
-					glm::mat4 projection = glm::perspective(cam.FOV, cam.ViewportWidth / cam.ViewportHeight, cam.Near, cam.Far);
+					glm::mat4 view = glm::lookAt(pos, pos + cam->Front, cam->Up);
+					glm::mat4 projection = glm::perspective(cam->FOV, cam->ViewportWidth / cam->ViewportHeight, cam->Near, cam->Far);
 
 					Renderer::SetCurrentCamera(Camera(projection, view));
 				}
@@ -82,8 +83,8 @@ namespace TOE
 		auto view = m_Registry.view<CameraComponent>();
 		for (auto&& [entity, camera] : view.each())
 		{
-			camera.Cam.ViewportWidth = event->Width;
-			camera.Cam.ViewportHeight = event->Height;
+			camera.Cam->ViewportWidth =(float) event->Width;
+			camera.Cam->ViewportHeight = (float)event->Height;
 		}
 	}
 }

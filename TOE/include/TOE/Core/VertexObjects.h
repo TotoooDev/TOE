@@ -28,31 +28,32 @@ namespace TOE
 		};
 
 		void AddAttribute(Type type, int count);
-		int GetTotalCount();
-		int GetStride();
-		std::vector<Attribute> GetAttributes();
+		unsigned int GetTotalCount() const;
+		unsigned int GetStride() const;
+		std::vector<Attribute> GetAttributes() const;
 
 	private:
 		std::vector<Attribute> m_Attributes;
-		int m_TotalCount = 0;
-		int m_Stride = 0;
+		unsigned int m_TotalCount = 0;
+		unsigned int m_Stride = 0;
 	};
 
 	class VAO
 	{
 	public:
 		VAO();
+		~VAO();
 
-		unsigned int GetID();
 		template <typename T>
-		void SetData(std::vector<T> data, VertexLayout layout)
+		void SetData(const std::vector<T>& data, const VertexLayout& layout)
 		{
-			SetData(data.data(), data.size() * sizeof(T), layout);
-			m_VertexCount += data.size() / layout.GetTotalCount();
+			SetData((void*)data.data(), (int)(data.size() * sizeof(T)), layout);
+			m_VertexCount += (unsigned int)data.size() / layout.GetTotalCount();
 		}
-		void SetData(void* data, int size, VertexLayout layout);
-		void Use();
-		unsigned int GetVertexCount();
+		void SetData(void* data, int size, const VertexLayout& layout);
+		unsigned int GetID() const;
+		void Use() const;
+		unsigned int GetVertexCount() const;
 
 	private:
 		unsigned int m_ID = 0;
@@ -64,14 +65,15 @@ namespace TOE
 	{
 	public:
 		EBO();
+		~EBO();
 
-		unsigned int GetID();
-		int GetCount();
-		void SetData(std::vector<unsigned int> indices);
-		void Use();
+		void SetData(const std::vector<unsigned int>& indices);
+		unsigned int GetID() const;
+		unsigned int GetCount() const;
+		void Use() const;
 
 	private:
 		unsigned int m_ID = 0;
-		int m_Count = 0;
+		unsigned int m_Count = 0;
 	};
 }

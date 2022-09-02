@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <TOE/Core/Camera.h>
 #include <TOE/Core/VertexObjects.h>
+#include <TOE/Core/Ref.h>
 #include <TOE/Graphics/Texture.h>
 
 namespace TOE
@@ -33,22 +34,21 @@ namespace TOE
 	struct RenderComponent
 	{
 		bool Render = true;
-		VAO VertexArray;
-		EBO ElementBuffer;
-		Texture2D Texture;
+		Ref<VAO> VertexArray;
+		Ref<EBO> ElementBuffer;
+		Ref<Texture2D> Texture;
 
-		RenderComponent(const VAO& vao, const EBO& ebo, const Texture2D& texture)
+		RenderComponent(const Ref<VAO>& vao, const Ref<EBO>& ebo, const Ref<Texture2D>& texture)
 			: VertexArray(vao), ElementBuffer(ebo), Texture(texture) {}
 		RenderComponent(const RenderComponent&) = default;
 	};
 
-	// TODO: The camera has its own transform but it should be defined using a TransformComponent
 	struct CameraComponent
 	{
 		bool Primary = false;
-		PerspectiveCamera Cam;
+		Ref<PerspectiveCamera> Cam;
 
-		CameraComponent(const PerspectiveCamera& cam)
+		CameraComponent(const Ref<PerspectiveCamera>& cam)
 			: Cam(cam) {}
 		CameraComponent(const CameraComponent&) = default;
 	};

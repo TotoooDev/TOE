@@ -24,6 +24,8 @@ namespace TOE
 		// Close and clean the application
 		void Stop();
 
+		WindowData GetWindowData();
+
 		EventBus EventBus;
 
 	private:

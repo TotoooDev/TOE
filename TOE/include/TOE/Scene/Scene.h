@@ -10,7 +10,7 @@ namespace TOE
 	class Scene
 	{
 	public:
-		Entity CreateEntity(std::string tag = "");
+		Entity CreateEntity(const std::string& tag = "");
 		void DeleteEntity(Entity entity);
 		void Update(double timestep);
 

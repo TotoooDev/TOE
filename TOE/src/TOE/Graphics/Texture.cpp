@@ -13,6 +13,11 @@ namespace TOE
 		glGenTextures(1, &m_ID);
 	}
 
+	Texture2D::~Texture2D()
+	{
+		glDeleteTextures(1, &m_ID);
+	}
+
 	void Texture2D::CreateFromFile(const std::string& path)
 	{
 		TOE_PROFILE_FUNCTION();
@@ -49,7 +54,7 @@ namespace TOE
 		stbi_image_free(data);
 	}
 
-	void Texture2D::Use(unsigned int slot)
+	void Texture2D::Use(unsigned int slot) const
 	{
 		TOE_PROFILE_FUNCTION();
 
@@ -58,7 +63,7 @@ namespace TOE
 		glBindTexture(GL_TEXTURE_2D, m_ID);
 	}
 
-	unsigned int Texture2D::GetID()
+	unsigned int Texture2D::GetID() const
 	{
 		return m_ID;
 	}

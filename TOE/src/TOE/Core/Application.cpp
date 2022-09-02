@@ -7,6 +7,7 @@
 
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/rotating_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <ImGui/imgui.h>
 #include <ImGui/imgui_impl_glfw.h>
@@ -28,9 +29,14 @@ namespace TOE
 		{
 			spdlog::error("An application already exists!");
 		}
-		// Create a file rotating logger with 5mb size max and 3 rotated files.
-		auto rotating_logger = spdlog::rotating_logger_mt("Default Logger", "logs/TOE_logs.txt", 1048576 * 5, 3);
-		spdlog::set_default_logger(rotating_logger);
+
+		// spdlog setup
+		auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+		consoleSink->set_pattern("[%D %T] [%^%l%$] %v");
+		auto fileSink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>("logs/TOE_Logs.log",1048576 * 5, 3);
+		fileSink->set_pattern("[%D %T] [%^%l%$] %v");
+		spdlog::logger logger("Default Logger", { consoleSink, fileSink });
+		spdlog::set_default_logger(std::make_shared<spdlog::logger>(logger));
 
 		// Create a window
 		m_Window.CreateNewWindow(data);
@@ -46,7 +52,9 @@ namespace TOE
 
 	Application::~Application()
 	{
-
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
 	}
 
 	Application& Application::Get()
@@ -77,9 +85,6 @@ namespace TOE
 				}
 			}
 
-			// Check for OpenGL errors
-			glCheckError();
-
 			// ImGui
 			ImGuiBegin();
 			for (auto& layer : m_Layers)
@@ -102,9 +107,11 @@ namespace TOE
 		TOE_PROFILE_FUNCTION();
 
 		m_IsRunning = false;
-		ImGui_ImplOpenGL3_Shutdown();
-		ImGui_ImplGlfw_Shutdown();
-		ImGui::DestroyContext();
+	}
+
+	WindowData Application::GetWindowData()
+	{
+		return m_Window.GetData();
 	}
 
 	void Application::ImGuiBegin()
@@ -123,8 +130,15 @@ namespace TOE
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		ImGui::UpdatePlatformWindows();
-		ImGui::RenderPlatformWindowsDefault();
+
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			GLFWwindow* backup_current_context = glfwGetCurrentContext();
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+			glfwMakeContextCurrent(backup_current_context);
+		}
 	}
 
 	void Application::OnWindowClosedEvent(WindowClosedEvent* event)

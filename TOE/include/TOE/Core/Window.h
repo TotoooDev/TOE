@@ -37,6 +37,8 @@ namespace TOE
 		void SetEventBus(EventBus* bus);
 
 	private:
+		void InitOpenGLDebugOutput();
+		void InitImGui();
 		void SetCallbacks();
 
 		GLFWwindow* m_NativeWindow = nullptr;

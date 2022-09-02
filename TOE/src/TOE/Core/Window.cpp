@@ -18,6 +18,10 @@ namespace TOE
 		if (!WasGLFWInit)
 		{
 			glfwInit();
+			#ifdef TOE_ENABLE_DEBUG_OPENGL
+				glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+				spdlog::warn("OpenGL debug context created! The application might be running slower.");
+			#endif
 			glfwSetErrorCallback([](int error_code, const char* description)
 				{
 					spdlog::error("GLFW error {0}: {1}", error_code, description);
@@ -40,36 +44,10 @@ namespace TOE
 
 		// Set glfw callbacks 
 		SetCallbacks();
-
+		// OpenGL debug context
+		InitOpenGLDebugOutput();
 		// ImGui setup
-		{
-			TOE_PROFILE_SCOPE("Window::CreateNewWindow::ImGuiSetup");
-
-			IMGUI_CHECKVERSION();
-			ImGui::CreateContext();
-
-			ImGuiIO& io = ImGui::GetIO(); (void)io;
-			io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
-			io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-			//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-			// io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
-
-			// Setup Dear ImGui style
-			ImGui::StyleColorsDark();
-			// ImGui::StyleColorsLight();
-
-			// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
-			ImGuiStyle& style = ImGui::GetStyle();
-			if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-			{
-				style.WindowRounding = 0.0f;
-				style.Colors[ImGuiCol_WindowBg].w = 1.0f;
-			}
-
-			// Setup Platform/Renderer backends
-			ImGui_ImplGlfw_InitForOpenGL(m_NativeWindow, true);
-			ImGui_ImplOpenGL3_Init("#version 330 core");
-		}
+		InitImGui();
 	}
 
 	void Window::Update()
@@ -94,6 +72,74 @@ namespace TOE
 	void Window::SetEventBus(EventBus* bus)
 	{
 		m_Data.EventBus = bus;
+	}
+
+	void Window::InitOpenGLDebugOutput()
+	{
+		int flags;
+		glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+		if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
+		{
+			glEnable(GL_DEBUG_OUTPUT);
+			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+
+			// Set the callback as a lambda
+			// Shamelessly stolen from https://learnopengl.com/In-Practice/Debugging
+			glDebugMessageCallback(
+				[](GLenum source, GLenum type, unsigned int id, GLenum severity, GLsizei length, const char* message, const void* userParam)
+				{
+					// Ignore non-significant error/warning codes
+					if (id == 131169 || id == 131185 || id == 131218 || id == 131204)
+						return;
+
+					std::stringstream sstream;
+					sstream << message << " ";
+
+					switch (severity)
+					{
+					case GL_DEBUG_SEVERITY_HIGH:         spdlog::error(sstream.str()); break;
+					case GL_DEBUG_SEVERITY_MEDIUM:       spdlog::warn(sstream.str()); break;
+					case GL_DEBUG_SEVERITY_LOW:          spdlog::warn(sstream.str()); break;
+					case GL_DEBUG_SEVERITY_NOTIFICATION: spdlog::info(sstream.str()); break;
+					}
+				}, nullptr);
+
+			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+		}
+		else
+		{
+			spdlog::warn("Unable to create a debug context!");
+		}
+	}
+
+	void Window::InitImGui()
+	{
+		TOE_PROFILE_FUNCTION();
+
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+		// io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+
+		// Setup Dear ImGui style
+		ImGui::StyleColorsDark();
+		// ImGui::StyleColorsLight();
+
+		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
+		ImGuiStyle& style = ImGui::GetStyle();
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+		{
+			style.WindowRounding = 0.0f;
+			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+		}
+
+		// Setup Platform/Renderer backends
+		ImGui_ImplGlfw_InitForOpenGL(m_NativeWindow, true);
+		ImGui_ImplOpenGL3_Init("#version 330 core");
 	}
 
 	void Window::SetCallbacks()

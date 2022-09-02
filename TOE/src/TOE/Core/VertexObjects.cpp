@@ -37,15 +37,15 @@ namespace TOE
 		}
 		m_Attributes.push_back({ type, count, offset });
 	}
-	int VertexLayout::GetTotalCount()
+	unsigned int VertexLayout::GetTotalCount() const
 	{
 		return m_TotalCount;
 	}
-	int VertexLayout::GetStride()
+	unsigned int VertexLayout::GetStride() const
 	{
 		return m_Stride;
 	}
-	std::vector<VertexLayout::Attribute> TOE::VertexLayout::GetAttributes()
+	std::vector<VertexLayout::Attribute> TOE::VertexLayout::GetAttributes() const
 	{
 		return m_Attributes;
 	}
@@ -57,11 +57,16 @@ namespace TOE
 		glGenVertexArrays(1, &m_ID);
 		glGenBuffers(1, &m_VBO);
 	}
-	unsigned int VAO::GetID()
+	VAO::~VAO()
+	{
+		glDeleteVertexArrays(1, &m_ID);
+		glDeleteBuffers(1, &m_VBO);
+	}
+	unsigned int VAO::GetID() const
 	{
 		return m_ID;
 	}
-	void VAO::SetData(void* data, int size, VertexLayout layout)
+	void VAO::SetData(void* data, int size, const VertexLayout& layout)
 	{
 		TOE_PROFILE_FUNCTION();
 
@@ -77,11 +82,11 @@ namespace TOE
 			glEnableVertexAttribArray(i);
 		}
 	}
-	void VAO::Use()
+	void VAO::Use() const
 	{
 		glBindVertexArray(m_ID);
 	}
-	unsigned int VAO::GetVertexCount()
+	unsigned int VAO::GetVertexCount() const
 	{
 		return m_VertexCount;
 	}
@@ -90,23 +95,27 @@ namespace TOE
 	{
 		glGenBuffers(1, &m_ID);
 	}
-	unsigned int EBO::GetID()
+	EBO::~EBO()
+	{
+		glDeleteBuffers(1, &m_ID);
+	}
+	unsigned int EBO::GetID() const
 	{
 		return m_ID;
 	}
-	int EBO::GetCount()
+	unsigned int EBO::GetCount() const
 	{
 		return m_Count;
 	}
-	void EBO::SetData(std::vector<unsigned int> indices)
+	void EBO::SetData(const std::vector<unsigned int>& indices)
 	{
 		TOE_PROFILE_FUNCTION();
 
-		m_Count = indices.size();
+		m_Count = (unsigned int)indices.size();
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Count * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 	}
-	void EBO::Use()
+	void EBO::Use() const
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID);
 	}

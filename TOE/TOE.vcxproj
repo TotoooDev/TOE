@@ -126,7 +126,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TOE_ENABLE_PROFILING;TOE_ENABLE_DEBUG_OPENGL;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -167,6 +167,7 @@
     <ClCompile Include="src\App.cpp" />
     <ClCompile Include="src\TOE\Core\Camera.cpp" />
     <ClCompile Include="src\TOE\Core\VertexObjects.cpp" />
+    <ClCompile Include="src\TOE\Graphics\Framebuffer.cpp" />
     <ClCompile Include="src\TOE\Graphics\Renderer.cpp" />
     <ClCompile Include="src\TOE\Graphics\Shader.cpp" />
     <ClCompile Include="src\TOE\Core\Window.cpp" />
@@ -183,7 +184,9 @@
     <ClInclude Include="include\ImGui\imstb_rectpack.h" />
     <ClInclude Include="include\ImGui\imstb_textedit.h" />
     <ClInclude Include="include\ImGui\imstb_truetype.h" />
+    <ClInclude Include="include\TOE\Core\Ref.h" />
     <ClInclude Include="include\TOE\Debug\Instrumentor.h" />
+    <ClInclude Include="include\TOE\Graphics\Framebuffer.h" />
     <ClInclude Include="include\vendor\entt\entt.hpp" />
     <ClInclude Include="include\vendor\entt\fwd.hpp" />
     <ClInclude Include="include\vendor\GLFW\glfw3.h" />

@@ -9,6 +9,11 @@
 
 namespace TOE
 {
+	Shader::~Shader()
+	{
+		glDeleteProgram(m_ID);
+	}
+
 	void Shader::LoadFromFile(const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath)
 	{
 		TOE_PROFILE_FUNCTION();
@@ -158,22 +163,22 @@ namespace TOE
 		return m_ID;
 	}
 
-	void Shader::SetInt(const std::string& name, int value)
+	void Shader::SetInt(const std::string& name, int value) const
 	{
 		TOE_PROFILE_FUNCTION();
 		glUniform1i(glGetUniformLocation(m_ID, name.c_str()), value);
 	}
-	void Shader::SetFloat(const std::string& name, float value)
+	void Shader::SetFloat(const std::string& name, float value) const
 	{
 		TOE_PROFILE_FUNCTION();
 		glUniform1f(glGetUniformLocation(m_ID, name.c_str()), value);
 	}
-	void Shader::SetVec3(const std::string& name, glm::vec3 value)
+	void Shader::SetVec3(const std::string& name, const glm::vec3& value) const
 	{
 		TOE_PROFILE_FUNCTION();
 		glUniform3f(glGetUniformLocation(m_ID, name.c_str()), value.x, value.y, value.z);
 	}
-	void Shader::SetMat4(const std::string& name, glm::mat4 value)
+	void Shader::SetMat4(const std::string& name, const glm::mat4& value) const
 	{
 		TOE_PROFILE_FUNCTION();
 		glUniformMatrix4fv(glGetUniformLocation(m_ID, name.c_str()), 1, GL_FALSE, &value[0][0]);
