@@ -1,4 +1,4 @@
-#include <TOE/Core/VertexObjects.h>
+#include <TOE/Graphics/VertexObjects.h>
 #include <TOE/Debug/Instrumentor.h>
 
 namespace TOE

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <TOE/Core/VertexObjects.h>
-#include <TOE/Core/Camera.h>
 #include <TOE/Core/Ref.h>
+#include <TOE/Graphics/PerspectiveCamera.h>
 #include <TOE/Graphics/Shader.h>
 #include <TOE/Graphics/Texture.h>
+#include <TOE/Graphics/VertexObjects.h>
 #include <TOE/Event/WindowEvents.h>
 #include <TOE/Scene/Scene.h>
 

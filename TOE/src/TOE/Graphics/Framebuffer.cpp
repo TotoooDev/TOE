@@ -68,7 +68,7 @@ namespace TOE
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	FramebufferData& Framebuffer::GetFramebufferData()
+	const FramebufferData& Framebuffer::GetFramebufferData()
 	{
 		return m_Data;
 	}

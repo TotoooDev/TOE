@@ -69,6 +69,9 @@
     <ClCompile Include="src\TOE\Graphics\Framebuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\TOE\Core\GlobalConfig.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\TOE\Core\Application.h">
@@ -206,10 +209,10 @@
     <ClInclude Include="include\vendor\stb_image\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\TOE\Core\VertexObjects.h">
+    <ClInclude Include="include\TOE\Graphics\VertexObjects.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\TOE\Core\Camera.h">
+    <ClInclude Include="include\TOE\Graphics\PerspectiveCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\TOE\Graphics\Renderer.h">
@@ -264,6 +267,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\TOE\Core\Ref.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TOE\Editor\EditorLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TOE\Editor\EditorLog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TOE\Editor\EditorSink.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TOE\Core\GlobalConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vendor\nlohmann\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\vendor\nlohmann\json_fwd.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

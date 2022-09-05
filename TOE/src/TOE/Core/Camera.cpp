@@ -1,4 +1,4 @@
-#include <TOE/Core/Camera.h>
+#include <TOE/Graphics/PerspectiveCamera.h>
 #include <TOE/Core/Application.h>
 #include <TOE/Debug/Instrumentor.h>
 

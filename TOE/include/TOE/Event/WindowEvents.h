@@ -12,6 +12,22 @@ namespace TOE
 		}
 	};
 
+	struct WindowRestoredEvent : public Event
+	{
+		WindowRestoredEvent()
+		{
+			m_Name = "Window Restored Event";
+		}
+	};
+
+	struct WindowMaximizedEvent : public Event
+	{
+		WindowMaximizedEvent()
+		{
+			m_Name = "Window Maximized Event";
+		}
+	};
+
 	struct WindowMovedEvent : public Event
 	{
 		WindowMovedEvent(int xPos, int yPos)

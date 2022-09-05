@@ -18,6 +18,8 @@ Still in developpement
 - [x] ImGui docking with scene viewport
 - [ ] Scene camera
 
+- [ ] Global config: Load nested JSON rules
+
 - [ ] Better renderer
 - [ ] Built-in meshes and stuff
 - [ ] Simple 3D scene

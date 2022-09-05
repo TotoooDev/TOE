@@ -21,7 +21,7 @@ namespace TOE
 		void Use();
 		void Unbind();
 
-		FramebufferData& GetFramebufferData();
+		const FramebufferData& GetFramebufferData();
 		unsigned int GetID();
 		unsigned int GetColorAttachmentID();
 

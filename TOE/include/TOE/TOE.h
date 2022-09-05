@@ -3,16 +3,18 @@
 #include <TOE/Core/Core.h>
 #include <TOE/Core/Application.h>
 #include <TOE/Core/EntryPoint.h>
-#include <TOE/Core/VertexObjects.h>
-#include <TOE/Core/Camera.h>
 #include <TOE/Core/Ref.h>
+
+#include <TOE/Editor/EditorLayer.h>
 
 #include <TOE/Event/Events.h>
 
+#include <TOE/Graphics/PerspectiveCamera.h>
 #include <TOE/Graphics/Shader.h>
 #include <TOE/Graphics/Texture.h>
 #include <TOE/Graphics/Renderer.h>
 #include <TOE/Graphics/Framebuffer.h>
+#include <TOE/Graphics/VertexObjects.h>
 
 #include <TOE/Scene/Scene.h>
 #include <TOE/Scene/Entity.h>

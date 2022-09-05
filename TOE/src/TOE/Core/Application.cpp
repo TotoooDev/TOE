@@ -1,6 +1,7 @@
 #include <TOE/Core/Application.h>
 #include <TOE/Core/Core.h>
 #include <TOE/Core/Window.h>
+#include <TOE/Core/GlobalConfig.h>
 #include <TOE/Event/WindowEvents.h>
 #include <TOE/Graphics/Renderer.h>
 #include <TOE/Debug/Instrumentor.h>
@@ -29,6 +30,9 @@ namespace TOE
 		{
 			spdlog::error("An application already exists!");
 		}
+
+		// Initialize the config
+		GlobalConfig::Init();
 
 		// spdlog setup
 		auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
@@ -100,6 +104,8 @@ namespace TOE
 			m_Timestep = currentFrame - m_LastFrame;
 			m_LastFrame = currentFrame;
 		}
+
+		GlobalConfig::Write();
 	}
 
 	void Application::Stop()

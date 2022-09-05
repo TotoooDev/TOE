@@ -1,4 +1,5 @@
 #include <TOE/Core/Window.h>
+#include <TOE/Core/GlobalConfig.h>
 #include <TOE/Event/Events.h>
 #include <TOE/Debug/Instrumentor.h>
 
@@ -30,6 +31,8 @@ namespace TOE
 		}
 
 		// Create the glfw window and set it as the current OpenGL context
+		if (GlobalConfig::GetValue<bool>("window_start_maximized"))
+			glfwWindowHint(GLFW_MAXIMIZED, true);
 		m_Data = data;
 		m_NativeWindow = glfwCreateWindow(m_Data.Width, m_Data.Height, m_Data.Title.c_str(), nullptr, nullptr);
 		glfwMakeContextCurrent(m_NativeWindow);
@@ -125,6 +128,8 @@ namespace TOE
 		// io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 
+		io.FontDefault = io.Fonts->AddFontFromFileTTF("fonts/opensans/OpenSans-Regular.ttf", 18.0f);
+
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();
 		// ImGui::StyleColorsLight();
@@ -151,6 +156,19 @@ namespace TOE
 			{
 				WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
 				data->EventBus->Publish(new WindowClosedEvent());
+			});
+		glfwSetWindowCloseCallback(m_NativeWindow, [](GLFWwindow* window)
+			{
+				WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+				data->EventBus->Publish(new WindowClosedEvent());
+			});
+		glfwSetWindowMaximizeCallback(m_NativeWindow, [](GLFWwindow* window, int maximized)
+			{
+				WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+				if (maximized)
+					data->EventBus->Publish(new WindowMaximizedEvent());
+				else
+					data->EventBus->Publish(new WindowRestoredEvent());
 			});
 		glfwSetWindowPosCallback(m_NativeWindow, [](GLFWwindow* window, int x, int y)
 			{
