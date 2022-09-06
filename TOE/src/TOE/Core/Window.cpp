@@ -31,7 +31,7 @@ namespace TOE
 		}
 
 		// Create the glfw window and set it as the current OpenGL context
-		if (GlobalConfig::GetValue<bool>("window_start_maximized"))
+		if (GlobalConfig::Get()["window"]["start_maximized"])
 			glfwWindowHint(GLFW_MAXIMIZED, true);
 		m_Data = data;
 		m_NativeWindow = glfwCreateWindow(m_Data.Width, m_Data.Height, m_Data.Title.c_str(), nullptr, nullptr);

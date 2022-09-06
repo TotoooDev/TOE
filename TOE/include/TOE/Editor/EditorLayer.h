@@ -49,8 +49,8 @@ namespace TOE
 			Application::Get().EventBus.Subscribe(this, &EditorLayer::OnWindowRestored);
 
 			// Load editor config
-			m_ShowSettings = GlobalConfig::GetValue<bool>("editor_show_settings");
-			m_ShowLogs = GlobalConfig::GetValue<bool>("editor_show_logs");
+			m_ShowSettings = GlobalConfig::Get()["editor"]["show_settings"];
+			m_ShowLogs = GlobalConfig::Get()["editor"]["show_logs"];
 
 			Ref<Texture2D> texture = CreateRef<Texture2D>();
 			Ref<VAO> vao = CreateRef<VAO>();
@@ -129,9 +129,9 @@ namespace TOE
 				if (ImGui::BeginMenu("View"))
 				{
 					if (ImGui::MenuItem("Settings", nullptr, &m_ShowSettings))
-						GlobalConfig::AddRule("editor_show_settings", m_ShowSettings);
+						GlobalConfig::Get()["editor"]["show_settings"] = m_ShowSettings;
 					if (ImGui::MenuItem("Logs", nullptr, &m_ShowLogs))
-						GlobalConfig::AddRule("editor_show_logs", m_ShowLogs);
+						GlobalConfig::Get()["editor"]["show_logs"] = m_ShowLogs;
 					ImGui::EndMenu();
 				}
 				ImGui::EndMainMenuBar();
@@ -185,11 +185,11 @@ namespace TOE
 		}
 		void OnWindowMaximized(WindowMaximizedEvent* event)
 		{
-			GlobalConfig::AddRule("window_start_maximized", true);
+			GlobalConfig::Get()["window"]["start_maximized"] = true;
 		}
 		void OnWindowRestored(WindowRestoredEvent* event)
 		{
-			GlobalConfig::AddRule("window_start_maximized", false);
+			GlobalConfig::Get()["window"]["start_maximized"] = false;
 		}
 
 		Ref<Framebuffer> m_Framebuffer;

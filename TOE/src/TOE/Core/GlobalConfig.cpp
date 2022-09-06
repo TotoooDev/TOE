@@ -17,9 +17,14 @@ namespace TOE
 		Init();
 	}
 
+	nlohmann::json& GlobalConfig::Get()
+	{
+		return m_JSON;
+	}
+
 	void GlobalConfig::Write()
 	{
 		std::ofstream file(m_FilePath);
-		file << m_JSON;
+		file << std::setw(4) << m_JSON;
 	}
 }
