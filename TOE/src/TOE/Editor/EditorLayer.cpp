@@ -32,6 +32,7 @@ namespace TOE
 		m_ShowLogsPanel = GlobalConfig::Get()["editor"]["show_logs"];
 		m_ShowScenePanel = GlobalConfig::Get()["editor"]["show_scene_hierarchy"];
 		m_ShowViewportPanel = GlobalConfig::Get()["editor"]["show_viewport"];
+		m_ShowPropertiesPanel = GlobalConfig::Get()["editor"]["show_properties"];
 
 		Ref<Texture2D> texture = CreateRef<Texture2D>();
 		Ref<VAO> vao = CreateRef<VAO>();
@@ -41,6 +42,7 @@ namespace TOE
 		m_Scene = CreateRef<Scene>();
 		m_ScenePanel.SetCurrentScene(m_Scene);
 		m_ViewportPanel.Init(m_Scene, m_Framebuffer);
+		m_PropertiesPanel.SetScenePanel(&m_ScenePanel);
 
 		texture->CreateFromFile("textures/image.png");
 
@@ -52,11 +54,11 @@ namespace TOE
 		// OpenGL data setup
 		std::vector<float> vertices =
 		{
-			// positions          // colors           // texture coords
-			 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-			 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-			-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-			-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
+			// positions        // texture coords
+			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f  // top left 
 		};
 		std::vector<unsigned int> indices =
 		{
@@ -66,7 +68,6 @@ namespace TOE
 
 		VertexLayout layout;
 		layout.AddAttribute(Type::Float, 3); // Pos
-		layout.AddAttribute(Type::Float, 3); // Color
 		layout.AddAttribute(Type::Float, 2); // Tex Coords
 
 		vao->SetData(vertices, layout);
@@ -90,6 +91,9 @@ namespace TOE
 		{
 			m_Framebuffer->Resize((unsigned int)m_ViewportSize.x, (unsigned int)m_ViewportSize.y);
 		}
+
+		auto& comp = m_Ent.GetComponent<TransformComponent>();
+		comp = glm::rotate(comp.Transform, (float)timestep, glm::vec3(std::sin(glfwGetTime()), std::cos(glfwGetTime()), std::sin(glfwGetTime()) + 2.0f));
 
 		m_Framebuffer->Use();
 		m_Scene->Update(timestep);
@@ -120,6 +124,8 @@ namespace TOE
 					GlobalConfig::Get()["editor"]["show_scene_hierarchy"] = m_ShowScenePanel;
 				if (ImGui::MenuItem("Viewport", nullptr, &m_ShowViewportPanel))
 					GlobalConfig::Get()["editor"]["show_viewport"] = m_ShowViewportPanel;
+				if (ImGui::MenuItem("Properties", nullptr, &m_ShowPropertiesPanel))
+					GlobalConfig::Get()["editor"]["show_properties"] = m_ShowPropertiesPanel;
 				ImGui::EndMenu();
 			}
 			ImGui::EndMainMenuBar();
@@ -140,6 +146,10 @@ namespace TOE
 		// Scene panel
 		if (m_ShowScenePanel)
 			m_ScenePanel.Draw(&m_ShowScenePanel);
+
+		// Properties panel
+		if (m_ShowPropertiesPanel)
+			m_PropertiesPanel.Draw(&m_ShowPropertiesPanel);
 	}
 
 	void EditorLayer::OnKeyPressed(KeyDownEvent* event)

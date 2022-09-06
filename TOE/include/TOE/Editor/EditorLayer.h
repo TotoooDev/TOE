@@ -11,6 +11,7 @@
 #include <TOE/Editor/Panels/ScenePanel.h>
 #include <TOE/Editor/Panels/RenderStatsPanel.h>
 #include <TOE/Editor/Panels/ViewportPanel.h>
+#include <TOE/Editor/Panels/PropertiesPanel.h>
 
 #include <ImGui/imgui.h>
 
@@ -39,9 +40,11 @@ namespace TOE
 		bool m_ShowScenePanel;
 		bool m_ShowRenderStatsPanel;
 		bool m_ShowViewportPanel;
+		bool m_ShowPropertiesPanel;
 		LogPanel m_ConsolePanel;
 		ScenePanel m_ScenePanel;
 		RenderStatsPanel m_StatsPanel;
 		ViewportPanel m_ViewportPanel;
+		PropertiesPanel m_PropertiesPanel;
 	};
 }

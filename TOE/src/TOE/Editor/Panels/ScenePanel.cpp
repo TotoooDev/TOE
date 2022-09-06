@@ -16,8 +16,10 @@ namespace TOE
 		auto view = m_CurrentScene->m_Registry.view<TagComponent>();
 		for (auto&& [entity, tagComponent] : view.each())
 		{
+			Entity ent(entity, m_CurrentScene.get());
+
 			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
-			if (m_SelectedEntity == entity)
+			if (m_SelectedEntity == ent)
 			{
 				flags |= ImGuiTreeNodeFlags_Selected;
 			}
@@ -25,7 +27,7 @@ namespace TOE
 			
 			if (ImGui::IsItemClicked())
 			{
-				m_SelectedEntity = entity;
+				m_SelectedEntity = ent;
 			}
 
 			if (opened)

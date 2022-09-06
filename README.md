@@ -24,6 +24,7 @@ Still in developpement
 - [ ] Convert most parameters to const references
 - [ ] Font rendering
 
+- [ ] Toast notifications
 - [ ] Light theme
 
 - [ ] Multithreading????

@@ -170,6 +170,7 @@
     <ClCompile Include="src\TOE\Core\VertexObjects.cpp" />
     <ClCompile Include="src\TOE\Editor\EditorLayer.cpp" />
     <ClCompile Include="src\TOE\Editor\Panels\LogPanel.cpp" />
+    <ClCompile Include="src\TOE\Editor\Panels\PropertiesPanel.cpp" />
     <ClCompile Include="src\TOE\Editor\Panels\RenderStatsPanel.cpp" />
     <ClCompile Include="src\TOE\Editor\Panels\ScenePanel.cpp" />
     <ClCompile Include="src\TOE\Editor\Panels\ViewportPanel.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="include\TOE\Editor\EditorLayer.h" />
     <ClInclude Include="include\TOE\Editor\Panels\LogPanel.h" />
     <ClInclude Include="include\TOE\Editor\EditorSink.h" />
+    <ClInclude Include="include\TOE\Editor\Panels\PropertiesPanel.h" />
     <ClInclude Include="include\TOE\Editor\Panels\RenderStatsPanel.h" />
     <ClInclude Include="include\TOE\Editor\Panels\ScenePanel.h" />
     <ClInclude Include="include\TOE\Editor\Panels\ViewportPanel.h" />

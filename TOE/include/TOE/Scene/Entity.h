@@ -43,7 +43,7 @@ namespace TOE
 
 		bool IsValid()
 		{
-			return m_Scene->m_Registry.valid(m_Identifier);
+			return m_Identifier != entt::null && m_Scene != nullptr;
 		}
 
 		bool operator==(const Entity& ent) const
