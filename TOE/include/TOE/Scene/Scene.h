@@ -14,6 +14,8 @@ namespace TOE
 		void DeleteEntity(Entity entity);
 		void Update(double timestep);
 
+		void OnViewportResize(unsigned int width, unsigned int height);
+
 	private:
 		void OnWindowResizedEvent(WindowResizedEvent* event);
 

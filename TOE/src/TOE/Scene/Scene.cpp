@@ -42,7 +42,7 @@ namespace TOE
 	{
 		TOE_PROFILE_FUNCTION();
 
-		Renderer::SetClearColor(0.2f, 0.2f, 0.2f);
+		Renderer::SetClearColor(0.1f, 0.1f, 0.1f);
 		Renderer::Clear();
 
 		// Loop through all the camera components
@@ -74,6 +74,20 @@ namespace TOE
 					continue;
 
 				Renderer::DrawVertexObject(transform, render.VertexArray, render.ElementBuffer, render.Texture);
+			}
+		}
+	}
+
+	void Scene::OnViewportResize(unsigned int width, unsigned int height)
+	{
+		auto view = m_Registry.view<CameraComponent>();
+		for (auto&& [entity, camComponent] : view.each())
+		{
+			if (!camComponent.FixedAspectRatio)
+			{
+				camComponent.Cam->ViewportWidth = width;
+				camComponent.Cam->ViewportHeight = height;
+				camComponent.Cam->UpdateCameraVectors();
 			}
 		}
 	}

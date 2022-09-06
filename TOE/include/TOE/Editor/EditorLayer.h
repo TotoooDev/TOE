@@ -144,6 +144,7 @@ namespace TOE
 			if (currentViewportSize.x != m_ViewportSize.x || currentViewportSize.y != m_ViewportSize.y)
 			{
 				m_ViewportSize = currentViewportSize;
+				m_Scene.OnViewportResize(m_ViewportSize.x, m_ViewportSize.y);
 			}
 			ImGui::Image((void*)m_Framebuffer->GetColorAttachmentID(), ImGui::GetContentRegionAvail(), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 			ImGui::End();
