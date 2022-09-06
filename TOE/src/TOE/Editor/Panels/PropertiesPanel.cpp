@@ -25,7 +25,7 @@ namespace TOE
 					char input[256];
 					memset(input, 0, sizeof(input));
 					memcpy(input, tagComponent.Tag.c_str(), tagComponent.Tag.size());
-					if (ImGui::InputText("", input, sizeof(input)))
+					if (ImGui::InputText(" ", input, sizeof(input)))
 						tagComponent.Tag = input;
 					ImGui::TreePop();
 				}
