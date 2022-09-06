@@ -85,7 +85,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\intermediate\$(Platform)\$(Configuration)\</IntDir>
-    <LibraryPath>D:\Dev\Libs;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Dev\Libs;$(LibraryPath)</LibraryPath>
     <IncludePath>include;include\vendor;include\ImGui;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

@@ -46,6 +46,7 @@ namespace TOE
 	struct CameraComponent
 	{
 		bool Primary = false;
+		bool FixedAspectRatio = false;
 		Ref<PerspectiveCamera> Cam;
 
 		CameraComponent(const Ref<PerspectiveCamera>& cam)
