@@ -168,6 +168,8 @@
     <ClCompile Include="src\TOE\Core\Camera.cpp" />
     <ClCompile Include="src\TOE\Core\GlobalConfig.cpp" />
     <ClCompile Include="src\TOE\Core\VertexObjects.cpp" />
+    <ClCompile Include="src\TOE\Editor\EditorLayer.cpp" />
+    <ClCompile Include="src\TOE\Editor\Panels\LogPanel.cpp" />
     <ClCompile Include="src\TOE\Graphics\Framebuffer.cpp" />
     <ClCompile Include="src\TOE\Graphics\Renderer.cpp" />
     <ClCompile Include="src\TOE\Graphics\Shader.cpp" />
@@ -189,7 +191,7 @@
     <ClInclude Include="include\TOE\Core\Ref.h" />
     <ClInclude Include="include\TOE\Debug\Instrumentor.h" />
     <ClInclude Include="include\TOE\Editor\EditorLayer.h" />
-    <ClInclude Include="include\TOE\Editor\EditorLog.h" />
+    <ClInclude Include="include\TOE\Editor\Panels\LogPanel.h" />
     <ClInclude Include="include\TOE\Editor\EditorSink.h" />
     <ClInclude Include="include\TOE\Graphics\Framebuffer.h" />
     <ClInclude Include="include\vendor\entt\entt.hpp" />

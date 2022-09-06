@@ -72,6 +72,12 @@
     <ClCompile Include="src\TOE\Core\GlobalConfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\TOE\Editor\Panels\LogPanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TOE\Editor\EditorLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\TOE\Core\Application.h">
@@ -272,7 +278,7 @@
     <ClInclude Include="include\TOE\Editor\EditorLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\TOE\Editor\EditorLog.h">
+    <ClInclude Include="include\TOE\Editor\Panels\LogPanel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\TOE\Editor\EditorSink.h">

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <TOE/Editor/EditorLog.h>
+#include <TOE/Editor/Panels/LogPanel.h>
 #include <spdlog/sinks/base_sink.h>
 
 namespace TOE
@@ -9,7 +9,7 @@ namespace TOE
 	class EditorSink_ final : public spdlog::sinks::base_sink<Mutex>
 	{
 	public:
-		explicit EditorSink_(EditorLogConsole* console)
+		explicit EditorSink_(LogPanel* console)
 			: m_Console(console)
 		{
 
@@ -32,7 +32,7 @@ namespace TOE
 		}
 
 	private:
-		EditorLogConsole* m_Console;
+		LogPanel* m_Console;
 	};
 
 	using EditorSink = EditorSink_<std::mutex>;
