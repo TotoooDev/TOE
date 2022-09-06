@@ -1,4 +1,14 @@
 #include <TOE/Editor/EditorLayer.h>
+#include <TOE/Core/Application.h>
+#include <TOE/Core/GlobalConfig.h>
+#include <TOE/Editor/EditorSink.h>
+#include <TOE/Debug/Instrumentor.h>
+#include <TOE/Graphics/Renderer.h>
+#include <TOE/Scene/Components.h>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace TOE
 {
@@ -7,7 +17,7 @@ namespace TOE
 		TOE_PROFILE_FUNCTION();
 
 		// Add the editor sink to spdlog
-		auto sink = std::make_shared<EditorSink>(&m_Console);
+		auto sink = std::make_shared<EditorSink>(&m_ConsolePanel);
 		sink->set_pattern("[%D %T] [%^%l%$] %v");
 		spdlog::get("Default Logger")->sinks().push_back(sink);
 
@@ -18,14 +28,19 @@ namespace TOE
 		Application::Get().EventBus.Subscribe(this, &EditorLayer::OnWindowRestored);
 
 		// Load editor config
-		m_ShowSettings = GlobalConfig::Get()["editor"]["show_settings"];
-		m_ShowLogs = GlobalConfig::Get()["editor"]["show_logs"];
+		m_ShowRenderStatsPanel = GlobalConfig::Get()["editor"]["show_renderer_stats"];
+		m_ShowLogsPanel = GlobalConfig::Get()["editor"]["show_logs"];
+		m_ShowScenePanel = GlobalConfig::Get()["editor"]["show_scene_hierarchy"];
+		m_ShowViewportPanel = GlobalConfig::Get()["editor"]["show_viewport"];
 
 		Ref<Texture2D> texture = CreateRef<Texture2D>();
 		Ref<VAO> vao = CreateRef<VAO>();
 		Ref<EBO> ebo = CreateRef<EBO>();
 
 		m_Framebuffer = CreateRef<Framebuffer>();
+		m_Scene = CreateRef<Scene>();
+		m_ScenePanel.SetCurrentScene(m_Scene);
+		m_ViewportPanel.Init(m_Scene, m_Framebuffer);
 
 		texture->CreateFromFile("textures/image.png");
 
@@ -57,10 +72,10 @@ namespace TOE
 		vao->SetData(vertices, layout);
 		ebo->SetData(indices);
 
-		m_Ent = m_Scene.CreateEntity();
+		m_Ent = m_Scene->CreateEntity("Toto Entity");
 		m_Ent.AddComponent<RenderComponent>(vao, ebo, texture);
 
-		m_CamEnt = m_Scene.CreateEntity();
+		m_CamEnt = m_Scene->CreateEntity("Camera");
 		auto& camComponent = m_CamEnt.AddComponent<CameraComponent>(CreateRef<PerspectiveCamera>(PerspectiveCamera()));
 		camComponent.Primary = true;
 		auto& transform = m_CamEnt.GetComponent<TransformComponent>();
@@ -77,7 +92,7 @@ namespace TOE
 		}
 
 		m_Framebuffer->Use();
-		m_Scene.Update(timestep);
+		m_Scene->Update(timestep);
 		m_Framebuffer->Unbind();
 	}
 
@@ -97,43 +112,34 @@ namespace TOE
 			}
 			if (ImGui::BeginMenu("View"))
 			{
-				if (ImGui::MenuItem("Settings", nullptr, &m_ShowSettings))
-					GlobalConfig::Get()["editor"]["show_settings"] = m_ShowSettings;
-				if (ImGui::MenuItem("Logs", nullptr, &m_ShowLogs))
-					GlobalConfig::Get()["editor"]["show_logs"] = m_ShowLogs;
+				if (ImGui::MenuItem("Renderer Stats", nullptr, &m_ShowRenderStatsPanel))
+					GlobalConfig::Get()["editor"]["show_renderer_stats"] = m_ShowRenderStatsPanel;
+				if (ImGui::MenuItem("Logs", nullptr, &m_ShowLogsPanel))
+					GlobalConfig::Get()["editor"]["show_logs"] = m_ShowLogsPanel;
+				if (ImGui::MenuItem("Scene Hierarchy", nullptr, &m_ShowRenderStatsPanel))
+					GlobalConfig::Get()["editor"]["show_scene_hierarchy"] = m_ShowScenePanel;
+				if (ImGui::MenuItem("Viewport", nullptr, &m_ShowViewportPanel))
+					GlobalConfig::Get()["editor"]["show_viewport"] = m_ShowViewportPanel;
 				ImGui::EndMenu();
 			}
 			ImGui::EndMainMenuBar();
 		}
 
 		// Viewport
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0.0f, 0.0f });
-		ImGui::Begin("Scene viewport");
-		ImVec2 currentViewportSize = ImGui::GetContentRegionAvail();
-		if (currentViewportSize.x != m_ViewportSize.x || currentViewportSize.y != m_ViewportSize.y)
-		{
-			m_ViewportSize = currentViewportSize;
-			m_Scene.OnViewportResize((unsigned int)m_ViewportSize.x, (unsigned int)m_ViewportSize.y);
-		}
-		ImGui::Image((void*)m_Framebuffer->GetColorAttachmentID(), ImGui::GetContentRegionAvail(), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-		ImGui::End();
-		ImGui::PopStyleVar();
+		if (m_ShowViewportPanel)
+			m_ViewportPanel.Draw(&m_ShowViewportPanel);
 
 		// Settings window
-		if (m_ShowSettings)
-		{
-			ImGui::Begin("Settings", &m_ShowSettings);
-			auto stats = Renderer::GetStats();
-			ImGui::Text("Renderer stats:");
-			ImGui::Text("Draw calls: %d", stats.DrawCalls);
-			ImGui::Text("Vertex count: %d", stats.VertexCount);
-			ImGui::Text("Index count: %d", stats.IndexCount);
-			ImGui::End();
-		}
+		if (m_ShowRenderStatsPanel)
+			m_StatsPanel.Draw(&m_ShowRenderStatsPanel);
 
 		// Log console
-		if (m_ShowLogs)
-			m_Console.Draw("Logs", &m_ShowLogs);
+		if (m_ShowLogsPanel)
+			m_ConsolePanel.Draw(&m_ShowLogsPanel);
+
+		// Scene panel
+		if (m_ShowScenePanel)
+			m_ScenePanel.Draw(&m_ShowScenePanel);
 	}
 
 	void EditorLayer::OnKeyPressed(KeyDownEvent* event)

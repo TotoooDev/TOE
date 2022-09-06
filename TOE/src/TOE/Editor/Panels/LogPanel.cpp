@@ -27,9 +27,9 @@ namespace TOE
                 LineOffsets.push_back(old_size + 1);
     }
 
-    void LogPanel::Draw(const char* title, bool* p_open)
+    void LogPanel::Draw(bool* p_open)
     {
-        if (!ImGui::Begin(title, p_open))
+        if (!ImGui::Begin("Logs", p_open))
         {
             ImGui::End();
             return;

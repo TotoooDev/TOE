@@ -39,6 +39,8 @@ namespace TOE
 	private:
 		void InitOpenGLDebugOutput();
 		void InitImGui();
+		void SetImGuiDarkColors();
+		void SetImGuiLightColors();
 		void SetCallbacks();
 
 		GLFWwindow* m_NativeWindow = nullptr;

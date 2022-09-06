@@ -85,8 +85,8 @@ namespace TOE
 		{
 			if (!camComponent.FixedAspectRatio)
 			{
-				camComponent.Cam->ViewportWidth = width;
-				camComponent.Cam->ViewportHeight = height;
+				camComponent.Cam->ViewportWidth = (float)width;
+				camComponent.Cam->ViewportHeight = (float)height;
 				camComponent.Cam->UpdateCameraVectors();
 			}
 		}

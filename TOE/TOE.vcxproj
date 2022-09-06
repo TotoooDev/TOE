@@ -170,6 +170,9 @@
     <ClCompile Include="src\TOE\Core\VertexObjects.cpp" />
     <ClCompile Include="src\TOE\Editor\EditorLayer.cpp" />
     <ClCompile Include="src\TOE\Editor\Panels\LogPanel.cpp" />
+    <ClCompile Include="src\TOE\Editor\Panels\RenderStatsPanel.cpp" />
+    <ClCompile Include="src\TOE\Editor\Panels\ScenePanel.cpp" />
+    <ClCompile Include="src\TOE\Editor\Panels\ViewportPanel.cpp" />
     <ClCompile Include="src\TOE\Graphics\Framebuffer.cpp" />
     <ClCompile Include="src\TOE\Graphics\Renderer.cpp" />
     <ClCompile Include="src\TOE\Graphics\Shader.cpp" />
@@ -193,6 +196,9 @@
     <ClInclude Include="include\TOE\Editor\EditorLayer.h" />
     <ClInclude Include="include\TOE\Editor\Panels\LogPanel.h" />
     <ClInclude Include="include\TOE\Editor\EditorSink.h" />
+    <ClInclude Include="include\TOE\Editor\Panels\RenderStatsPanel.h" />
+    <ClInclude Include="include\TOE\Editor\Panels\ScenePanel.h" />
+    <ClInclude Include="include\TOE\Editor\Panels\ViewportPanel.h" />
     <ClInclude Include="include\TOE\Graphics\Framebuffer.h" />
     <ClInclude Include="include\vendor\entt\entt.hpp" />
     <ClInclude Include="include\vendor\entt\fwd.hpp" />

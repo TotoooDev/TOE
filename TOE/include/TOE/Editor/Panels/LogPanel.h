@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ImGui/imgui.h>
+#include <string>
 
 namespace TOE
 {
@@ -18,6 +19,6 @@ namespace TOE
 
         void AddLog(const char* fmt, ...) IM_FMTARGS(2);
 
-        void Draw(const char* title, bool* p_open = NULL);
+        void Draw(bool* isOpen = NULL);
 	};
 }

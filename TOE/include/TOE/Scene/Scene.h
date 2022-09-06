@@ -10,6 +10,9 @@ namespace TOE
 	class Scene
 	{
 	public:
+		Scene() = default;
+		Scene(const Scene&) = default;
+
 		Entity CreateEntity(const std::string& tag = "");
 		void DeleteEntity(Entity entity);
 		void Update(double timestep);
@@ -22,5 +25,6 @@ namespace TOE
 		entt::registry m_Registry;
 
 		friend class Entity;
+		friend class ScenePanel;
 	};
 }

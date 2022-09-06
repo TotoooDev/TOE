@@ -46,6 +46,15 @@ namespace TOE
 			return m_Scene->m_Registry.valid(m_Identifier);
 		}
 
+		bool operator==(const Entity& ent) const
+		{
+			return this->m_Identifier == ent.m_Identifier && this->m_Scene == ent.m_Scene;
+		}
+		bool operator!=(const Entity& ent) const
+		{
+			return this->m_Identifier != ent.m_Identifier || this->m_Scene != ent.m_Scene;
+		}
+
 	private:
 		entt::entity m_Identifier = entt::null;
 		Scene* m_Scene = nullptr;
