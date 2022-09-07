@@ -20,9 +20,16 @@ namespace TOE
 		void OnViewportResize(unsigned int width, unsigned int height);
 
 	private:
-		void OnWindowResizedEvent(WindowResizedEvent* event);
+		void OnWindowResized(WindowResizedEvent* event);
+		void OnMouseButtonDown(MouseButtonDownEvent* event);
+		void OnMouseButtonUp(MouseButtonUpEvent* event);
+		void OnMouseMoved(MouseMovedEvent* event);
 
 		entt::registry m_Registry;
+		bool m_MouseButtonDown = false;
+		double m_Timestep;
+		double m_LastMouseX, m_LastMouseY;
+		double m_CamSensibility = 5.0f;
 
 		friend class Entity;
 		friend class ScenePanel;

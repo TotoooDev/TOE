@@ -47,6 +47,7 @@ namespace TOE
 	{
 		bool Primary = false;
 		bool FixedAspectRatio = false;
+		bool OrbitingCamera = false;
 		Ref<PerspectiveCamera> Cam;
 
 		CameraComponent(const Ref<PerspectiveCamera>& cam)

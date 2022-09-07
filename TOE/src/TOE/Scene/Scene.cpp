@@ -14,7 +14,10 @@ namespace TOE
 	{
 		TOE_PROFILE_FUNCTION();
 
-		Application::Get().EventBus.Subscribe(this, &Scene::OnWindowResizedEvent);
+		Application::Get().EventBus.Subscribe(this, &Scene::OnWindowResized);
+		Application::Get().EventBus.Subscribe(this, &Scene::OnMouseButtonDown);
+		Application::Get().EventBus.Subscribe(this, &Scene::OnMouseButtonUp);
+		Application::Get().EventBus.Subscribe(this, &Scene::OnMouseMoved);
 
 		auto ent = m_Registry.create();
 		Entity entity(ent, this);
@@ -42,6 +45,7 @@ namespace TOE
 	{
 		TOE_PROFILE_FUNCTION();
 
+		m_Timestep = timestep;
 		Renderer::SetClearColor(0.1f, 0.1f, 0.1f);
 		Renderer::Clear();
 
@@ -92,13 +96,44 @@ namespace TOE
 		}
 	}
 
-	void Scene::OnWindowResizedEvent(WindowResizedEvent* event)
+	void Scene::OnWindowResized(WindowResizedEvent* event)
 	{
 		auto view = m_Registry.view<CameraComponent>();
 		for (auto&& [entity, camera] : view.each())
 		{
 			camera.Cam->ViewportWidth =(float) event->Width;
 			camera.Cam->ViewportHeight = (float)event->Height;
+		}
+	}
+
+	void Scene::OnMouseButtonDown(MouseButtonDownEvent* event)
+	{
+		m_MouseButtonDown = true;
+	}
+
+	void Scene::OnMouseButtonUp(MouseButtonUpEvent* event)
+	{
+		m_MouseButtonDown = false;
+	}
+
+	void Scene::OnMouseMoved(MouseMovedEvent* event)
+	{
+		if (m_MouseButtonDown)
+		{
+			auto view = m_Registry.view<CameraComponent>();
+			for (auto&& [entity, cameraComponent] : view.each())
+			{
+				if (cameraComponent.OrbitingCamera)
+				{
+					Ref<PerspectiveCamera> cam = cameraComponent.Cam;
+
+					// Rotation
+					cam->Yaw -= (m_LastMouseX - event->x) * m_Timestep * m_CamSensibility;
+					cam->Pitch -= (m_LastMouseY - event->y) * m_Timestep * m_CamSensibility;
+					m_LastMouseX = event->x;
+					m_LastMouseY = event->y;
+				}
+			}
 		}
 	}
 }

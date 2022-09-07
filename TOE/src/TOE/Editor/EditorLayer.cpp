@@ -79,6 +79,7 @@ namespace TOE
 		m_CamEnt = m_Scene->CreateEntity("Camera");
 		auto& camComponent = m_CamEnt.AddComponent<CameraComponent>(CreateRef<PerspectiveCamera>(PerspectiveCamera()));
 		camComponent.Primary = true;
+		camComponent.OrbitingCamera = true;
 		auto& transform = m_CamEnt.GetComponent<TransformComponent>();
 		transform = glm::translate(transform.Transform, glm::vec3(0.0f, 0.0f, 2.0f));
 	}
@@ -93,7 +94,7 @@ namespace TOE
 		}
 
 		auto& comp = m_Ent.GetComponent<TransformComponent>();
-		comp = glm::rotate(comp.Transform, (float)timestep, glm::vec3(std::sin(glfwGetTime()), std::cos(glfwGetTime()), std::sin(glfwGetTime()) + 2.0f));
+		// comp = glm::rotate(comp.Transform, (float)timestep, glm::vec3(std::sin(glfwGetTime()), std::cos(glfwGetTime()), std::sin(glfwGetTime()) + 2.0f));
 
 		m_Framebuffer->Use();
 		m_Scene->Update(timestep);
