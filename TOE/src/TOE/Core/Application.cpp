@@ -52,6 +52,9 @@ namespace TOE
 		// Sub to the window events
 		EventBus.Subscribe(this, &Application::OnWindowClosedEvent);
 		EventBus.Subscribe(this, &Application::OnWindowResizedEvent);
+
+		m_ImGuiLayer = new ImGuiLayer;
+		m_ImGuiLayer->OnCreate();
 	}
 
 	Application::~Application()
@@ -90,12 +93,12 @@ namespace TOE
 			}
 
 			// ImGui
-			ImGuiBegin();
+			m_ImGuiLayer->Begin();
 			for (auto& layer : m_Layers)
 			{
 				layer->OnImGuiRender();
 			}
-			ImGuiEnd();
+			m_ImGuiLayer->End();
 
 			m_Window.Update();
 
@@ -115,36 +118,19 @@ namespace TOE
 		m_IsRunning = false;
 	}
 
+	void Application::LockMouse(bool lock)
+	{
+		m_Window.LockMouse(lock);
+	}
+
 	WindowData Application::GetWindowData()
 	{
 		return m_Window.GetData();
 	}
 
-	void Application::ImGuiBegin()
+	Window Application::GetWindow()
 	{
-		TOE_PROFILE_FUNCTION();
-
-		// Start the Dear ImGui frame
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
-	}
-
-	void Application::ImGuiEnd()
-	{
-		TOE_PROFILE_FUNCTION();
-
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-		{
-			GLFWwindow* backup_current_context = glfwGetCurrentContext();
-			ImGui::UpdatePlatformWindows();
-			ImGui::RenderPlatformWindowsDefault();
-			glfwMakeContextCurrent(backup_current_context);
-		}
+		return m_Window;
 	}
 
 	void Application::OnWindowClosedEvent(WindowClosedEvent* event)

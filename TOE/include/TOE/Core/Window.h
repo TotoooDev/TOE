@@ -17,6 +17,7 @@ namespace TOE
 		unsigned int Width;
 		unsigned int Height;
 		std::string Title;
+		bool MouseLocked = false;
 		EventBus* EventBus = nullptr;
 
 		WindowData()
@@ -31,16 +32,16 @@ namespace TOE
 	public:
 		void CreateNewWindow(const WindowData& data);
 		void Update();
+
+		void LockMouse(bool lock);
 		
+		GLFWwindow* GetNativeWindow();
 		WindowData GetData();
 		void SetData(const WindowData& data);
 		void SetEventBus(EventBus* bus);
 
 	private:
 		void InitOpenGLDebugOutput();
-		void InitImGui();
-		void SetImGuiDarkColors();
-		void SetImGuiLightColors();
 		void SetCallbacks();
 
 		GLFWwindow* m_NativeWindow = nullptr;

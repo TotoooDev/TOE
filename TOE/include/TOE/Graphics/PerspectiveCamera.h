@@ -25,10 +25,6 @@ namespace TOE
 		float Pitch;
 		float Roll;
 
-		// Orbiting camera settings
-		float Radius = 2.0f;
-		glm::vec3 Target = glm::vec3(0.0f, 0.0f, 0.0f);
-
 		float FOV;
 		float Near;
 		float Far;

@@ -36,7 +36,7 @@
     <ClCompile Include="src\TOE\Core\VertexObjects.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TOE\Core\Camera.cpp">
+    <ClCompile Include="src\TOE\Graphics\PerspectiveCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\TOE\Graphics\Renderer.cpp">
@@ -88,6 +88,10 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\TOE\Editor\Panels\PropertiesPanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TOE\Editor\ImGuiLayer.cpp" />
+    <ClCompile Include="src\TOE\Editor\EditorCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -315,6 +319,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\TOE\Editor\Panels\PropertiesPanel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TOE\Editor\ImGuiLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TOE\Editor\EditorCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

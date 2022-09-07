@@ -81,7 +81,7 @@ namespace TOE
 		camComponent.Primary = true;
 		camComponent.OrbitingCamera = true;
 		auto& transform = m_CamEnt.GetComponent<TransformComponent>();
-		transform = glm::translate(transform.Transform, glm::vec3(0.0f, 0.0f, 2.0f));
+		transform.Translation.z = 2.0f;
 	}
 
 	void EditorLayer::OnUpdate(double timestep)

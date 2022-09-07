@@ -28,7 +28,7 @@ namespace TOE
 		else
 			tagComp.Tag = tag;
 		
-		entity.AddComponent<TransformComponent>();
+		entity.AddComponent<TransformComponent>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 
 		return entity;
 	}
@@ -59,7 +59,7 @@ namespace TOE
 				{
 					const auto& cam = camera.Cam;
 					cam->UpdateCameraVectors();
-					glm::vec3 pos = transform.Transform[3]; // Get the position from the matrix
+					glm::vec3 pos = transform.Translation;
 					glm::mat4 view = glm::lookAt(pos, pos + cam->Front, cam->Up);
 					glm::mat4 projection = glm::perspective(cam->FOV, cam->ViewportWidth / cam->ViewportHeight, cam->Near, cam->Far);
 
@@ -77,7 +77,7 @@ namespace TOE
 				if (!render.Render)
 					continue;
 
-				Renderer::DrawVertexObject(transform, render.VertexArray, render.ElementBuffer, render.Texture);
+				Renderer::DrawVertexObject(transform.GetTransfrom(), render.VertexArray, render.ElementBuffer, render.Texture);
 			}
 		}
 	}
@@ -109,11 +109,13 @@ namespace TOE
 	void Scene::OnMouseButtonDown(MouseButtonDownEvent* event)
 	{
 		m_MouseButtonDown = true;
+		// Application::Get().LockMouse(true);
 	}
 
 	void Scene::OnMouseButtonUp(MouseButtonUpEvent* event)
 	{
 		m_MouseButtonDown = false;
+		// Application::Get().LockMouse(false);
 	}
 
 	void Scene::OnMouseMoved(MouseMovedEvent* event)
@@ -128,8 +130,8 @@ namespace TOE
 					Ref<PerspectiveCamera> cam = cameraComponent.Cam;
 
 					// Rotation
-					cam->Yaw -= (m_LastMouseX - event->x) * m_Timestep * m_CamSensibility;
-					cam->Pitch -= (m_LastMouseY - event->y) * m_Timestep * m_CamSensibility;
+					// cam->Yaw -= (m_LastMouseX - event->x) * m_Timestep * m_CamSensibility;
+					// cam->Pitch += (m_LastMouseY - event->y) * m_Timestep * m_CamSensibility;
 					m_LastMouseX = event->x;
 					m_LastMouseY = event->y;
 				}

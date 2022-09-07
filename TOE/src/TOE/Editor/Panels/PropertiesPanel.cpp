@@ -39,7 +39,9 @@ namespace TOE
 				if (ImGui::TreeNodeEx("Transform", flags))
 				{
 					ImGui::Text("Doesn't work lol");
-					ImGui::DragFloat3("Pos", glm::value_ptr(transformComponent.Transform[3]), 0.1f);
+					ImGui::DragFloat3("Position", glm::value_ptr(transformComponent.Translation), 0.1f);
+					ImGui::DragFloat3("Rotation", glm::value_ptr(transformComponent.Rotation), 0.1f);
+					ImGui::DragFloat3("Scale", glm::value_ptr(transformComponent.Scale), 0.1f);
 					ImGui::TreePop();
 				}
 			}
@@ -49,7 +51,7 @@ namespace TOE
 				auto& renderComponent = ent.GetComponent<RenderComponent>();
 				if (ImGui::TreeNodeEx("Render", flags))
 				{
-					ImGui::Image((void*)renderComponent.Texture->GetID(), ImVec2{ 256.0f, 256.0f }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+					ImGui::Image((void*)renderComponent.Texture->GetID(), ImVec2{ 128.0f, 128.0f }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 					ImGui::Checkbox("Render", &renderComponent.Render);
 					ImGui::TreePop();
 				}

@@ -4,6 +4,7 @@
 #include <TOE/Core/Layer.h>
 #include <TOE/Event/EventBus.h>
 #include <TOE/Event/WindowEvents.h>
+#include <TOE/Editor/ImGuiLayer.h>
 
 #include <vector>
 
@@ -24,14 +25,14 @@ namespace TOE
 		// Close and clean the application
 		void Stop();
 
+		void LockMouse(bool lock);
+
 		WindowData GetWindowData();
+		Window GetWindow();
 
 		EventBus EventBus;
 
 	private:
-		void ImGuiBegin();
-		void ImGuiEnd();
-
 		void OnWindowClosedEvent(WindowClosedEvent* event);
 		void OnWindowResizedEvent(WindowResizedEvent* event);
 		
@@ -39,6 +40,7 @@ namespace TOE
 
 		Window m_Window;
 		std::vector<Layer*> m_Layers;
+		ImGuiLayer* m_ImGuiLayer;
 
 		bool m_IsRunning = true;
 		bool m_Minimized = false;

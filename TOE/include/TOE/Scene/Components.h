@@ -1,11 +1,12 @@
 #pragma once
 
-#include <string>
-#include <glm/glm.hpp>
 #include <TOE/Graphics/PerspectiveCamera.h>
 #include <TOE/Core/Ref.h>
 #include <TOE/Graphics/Texture.h>
 #include <TOE/Graphics/VertexObjects.h>
+#include <string>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace TOE
 {
@@ -20,14 +21,24 @@ namespace TOE
 
 	struct TransformComponent
 	{
-		glm::mat4 Transform;
+		glm::vec3 Translation;
+		glm::vec3 Rotation;
+		glm::vec3 Scale;
 
-		TransformComponent(const glm::mat4& transform = glm::mat4(1.0f))
-			: Transform(transform) {}
+		TransformComponent(const glm::vec3& translation, const glm::vec3& rotation, const glm::vec3& scale)
+			: Translation(translation), Rotation(rotation), Scale(scale) {}
 		TransformComponent(const TransformComponent&) = default;
 
-		operator glm::mat4& () { return Transform; }
-		operator const glm::mat4& () const { return Transform; }
+		glm::mat4 GetTransfrom()
+		{
+			glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f)) *
+								 glm::rotate(glm::mat4(1.0f), Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f)) *
+								 glm::rotate(glm::mat4(1.0f), Rotation.z, glm::vec3(1.0f, 0.0f, 1.0f));
+
+			return glm::translate(glm::mat4(1.0f), Translation) *
+				   rotation *
+				   glm::scale(glm::mat4(1.0f), Scale);
+		}
 	};
 
 	// To modify maybe
