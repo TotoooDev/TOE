@@ -15,9 +15,6 @@ namespace TOE
 		TOE_PROFILE_FUNCTION();
 
 		Application::Get().EventBus.Subscribe(this, &Scene::OnWindowResized);
-		Application::Get().EventBus.Subscribe(this, &Scene::OnMouseButtonDown);
-		Application::Get().EventBus.Subscribe(this, &Scene::OnMouseButtonUp);
-		Application::Get().EventBus.Subscribe(this, &Scene::OnMouseMoved);
 
 		auto ent = m_Registry.create();
 		Entity entity(ent, this);
@@ -41,11 +38,30 @@ namespace TOE
 		m_Registry.destroy(entity.m_Identifier);
 	}
 
-	void Scene::Update(double timestep)
+	void Scene::UpdateEditor(double timestep, Ref<EditorCamera> camera)
+	{
+		Renderer::SetClearColor(0.1f, 0.1f, 0.1f);
+		Renderer::Clear();
+		Renderer::SetCurrentCamera(Camera(camera->GetProjection(), camera->GetView()));
+
+		// Loop through all renderable entities
+		{
+			TOE_PROFILE_SCOPE("Scene::Update::RenderEntities");
+			auto view = m_Registry.view<TransformComponent, RenderComponent>();
+			for (auto&& [entity, transform, render] : view.each())
+			{
+				if (!render.Render)
+					continue;
+
+				Renderer::DrawVertexObject(transform.GetTransfrom(), render.VertexArray, render.ElementBuffer, render.Texture);
+			}
+		}
+	}
+
+	void Scene::UpdateRuntime(double timestep)
 	{
 		TOE_PROFILE_FUNCTION();
 
-		m_Timestep = timestep;
 		Renderer::SetClearColor(0.1f, 0.1f, 0.1f);
 		Renderer::Clear();
 
@@ -103,39 +119,6 @@ namespace TOE
 		{
 			camera.Cam->ViewportWidth =(float) event->Width;
 			camera.Cam->ViewportHeight = (float)event->Height;
-		}
-	}
-
-	void Scene::OnMouseButtonDown(MouseButtonDownEvent* event)
-	{
-		m_MouseButtonDown = true;
-		// Application::Get().LockMouse(true);
-	}
-
-	void Scene::OnMouseButtonUp(MouseButtonUpEvent* event)
-	{
-		m_MouseButtonDown = false;
-		// Application::Get().LockMouse(false);
-	}
-
-	void Scene::OnMouseMoved(MouseMovedEvent* event)
-	{
-		if (m_MouseButtonDown)
-		{
-			auto view = m_Registry.view<CameraComponent>();
-			for (auto&& [entity, cameraComponent] : view.each())
-			{
-				if (cameraComponent.OrbitingCamera)
-				{
-					Ref<PerspectiveCamera> cam = cameraComponent.Cam;
-
-					// Rotation
-					// cam->Yaw -= (m_LastMouseX - event->x) * m_Timestep * m_CamSensibility;
-					// cam->Pitch += (m_LastMouseY - event->y) * m_Timestep * m_CamSensibility;
-					m_LastMouseX = event->x;
-					m_LastMouseY = event->y;
-				}
-			}
 		}
 	}
 }

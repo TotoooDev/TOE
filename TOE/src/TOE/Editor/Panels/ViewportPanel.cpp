@@ -2,16 +2,18 @@
 
 namespace TOE
 {
-	void ViewportPanel::Init(Ref<Scene> scene, Ref<Framebuffer> framebuffer)
+	void ViewportPanel::Init(Ref<Scene> scene, Ref<Framebuffer> framebuffer, bool* hovered)
 	{
 		m_CurrentScene = scene;
 		m_Source = framebuffer;
+		m_Hovered = hovered;
 	}
 
 	void ViewportPanel::Draw(bool* isOpen)
 	{
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0.0f, 0.0f });
 		ImGui::Begin("Scene viewport", isOpen);
+		*m_Hovered = ImGui::IsWindowHovered();
 		ImVec2 currentViewportSize = ImGui::GetContentRegionAvail();
 		if (currentViewportSize.x != m_ViewportSize.x || currentViewportSize.y != m_ViewportSize.y)
 		{

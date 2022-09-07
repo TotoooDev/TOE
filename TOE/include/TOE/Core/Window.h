@@ -35,6 +35,9 @@ namespace TOE
 
 		void LockMouse(bool lock);
 		
+		int GetKey(int key);
+		int GetMouseButton(int mouseButton);
+
 		GLFWwindow* GetNativeWindow();
 		WindowData GetData();
 		void SetData(const WindowData& data);

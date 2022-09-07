@@ -94,6 +94,9 @@
     <ClCompile Include="src\TOE\Editor\EditorCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\TOE\Editor\Panels\SettingsPanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\TOE\Core\Application.h">
@@ -325,6 +328,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\TOE\Editor\EditorCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TOE\Event\Input.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TOE\Editor\Panels\SettingsPanel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

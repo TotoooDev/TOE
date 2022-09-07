@@ -79,6 +79,16 @@ namespace TOE
 		return m_Data;
 	}
 
+	int Window::GetKey(int key)
+	{
+		return glfwGetKey(m_NativeWindow, key);
+	}
+
+	int Window::GetMouseButton(int mouseButton)
+	{
+		return glfwGetMouseButton(m_NativeWindow, mouseButton);
+	}
+
 	void Window::SetData(const WindowData& data)
 	{
 		m_Data = data;
@@ -194,6 +204,11 @@ namespace TOE
 				{
 					data->EventBus->Publish(new MouseButtonUpEvent(button));
 				}
+			});
+		glfwSetScrollCallback(m_NativeWindow, [](GLFWwindow* window, double xoffset, double yoffset)
+			{
+				WindowData* data = (WindowData*)glfwGetWindowUserPointer(window);
+				data->EventBus->Publish(new MouseScrolledEvent(xoffset, yoffset));
 			});
 	}
 }

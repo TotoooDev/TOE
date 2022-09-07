@@ -12,6 +12,7 @@
 #include <TOE/Editor/Panels/RenderStatsPanel.h>
 #include <TOE/Editor/Panels/ViewportPanel.h>
 #include <TOE/Editor/Panels/PropertiesPanel.h>
+#include <TOE/Editor/Panels/SettingsPanel.h>
 
 #include <ImGui/imgui.h>
 
@@ -34,17 +35,24 @@ namespace TOE
 		ImVec2 m_ViewportSize;
 
 		Ref<Scene> m_Scene;
-		Entity m_Ent, m_CamEnt;
+		Entity m_Ent;
+
+		Ref<EditorCamera> m_Camera;
+		bool m_ViewportFocused = false;
+
+		bool m_FirstUpdate = true;
 
 		bool m_ShowLogsPanel;
 		bool m_ShowScenePanel;
 		bool m_ShowRenderStatsPanel;
 		bool m_ShowViewportPanel;
 		bool m_ShowPropertiesPanel;
+		bool m_ShowSettingsPanel;
 		LogPanel m_ConsolePanel;
 		ScenePanel m_ScenePanel;
 		RenderStatsPanel m_StatsPanel;
 		ViewportPanel m_ViewportPanel;
 		PropertiesPanel m_PropertiesPanel;
+		SettingsPanel m_SettingsPanel;
 	};
 }

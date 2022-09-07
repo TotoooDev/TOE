@@ -36,4 +36,15 @@ namespace TOE
 
 		int Button;
 	};
+
+	struct MouseScrolledEvent : public Event
+	{
+		MouseScrolledEvent(double x, double y)
+			: xOffset(x), yOffset(y)
+		{
+			m_Name = "Mouse Scrolled Event";
+		}
+
+		double xOffset, yOffset;
+	};
 }

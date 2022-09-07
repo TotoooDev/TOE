@@ -34,17 +34,15 @@ namespace TOE
 		m_ShowViewportPanel = GlobalConfig::Get()["editor"]["show_viewport"];
 		m_ShowPropertiesPanel = GlobalConfig::Get()["editor"]["show_properties"];
 
-		Ref<Texture2D> texture = CreateRef<Texture2D>();
-		Ref<VAO> vao = CreateRef<VAO>();
-		Ref<EBO> ebo = CreateRef<EBO>();
-
 		m_Framebuffer = CreateRef<Framebuffer>();
 		m_Scene = CreateRef<Scene>();
-		m_ScenePanel.SetCurrentScene(m_Scene);
-		m_ViewportPanel.Init(m_Scene, m_Framebuffer);
-		m_PropertiesPanel.SetScenePanel(&m_ScenePanel);
+		m_Camera = CreateRef<EditorCamera>();
+		m_Camera->Sensibility = GlobalConfig::Get()["editor"]["camera"]["sensibility"];
 
-		texture->CreateFromFile("textures/image.png");
+		m_ScenePanel.SetCurrentScene(m_Scene);
+		m_ViewportPanel.Init(m_Scene, m_Framebuffer, &m_ViewportFocused);
+		m_PropertiesPanel.SetScenePanel(&m_ScenePanel);
+		m_SettingsPanel.Init(m_Camera);
 
 		FramebufferData data;
 		data.Width = Application::Get().GetWindowData().Width;
@@ -52,6 +50,10 @@ namespace TOE
 		m_Framebuffer->Create(data);
 
 		// OpenGL data setup
+		Ref<Texture2D> texture = CreateRef<Texture2D>();
+		texture->CreateFromFile("textures/image.png");
+		Ref<VAO> vao = CreateRef<VAO>();
+		Ref<EBO> ebo = CreateRef<EBO>();
 		std::vector<float> vertices =
 		{
 			// positions        // texture coords
@@ -75,29 +77,22 @@ namespace TOE
 
 		m_Ent = m_Scene->CreateEntity("Toto Entity");
 		m_Ent.AddComponent<RenderComponent>(vao, ebo, texture);
-
-		m_CamEnt = m_Scene->CreateEntity("Camera");
-		auto& camComponent = m_CamEnt.AddComponent<CameraComponent>(CreateRef<PerspectiveCamera>(PerspectiveCamera()));
-		camComponent.Primary = true;
-		camComponent.OrbitingCamera = true;
-		auto& transform = m_CamEnt.GetComponent<TransformComponent>();
-		transform.Translation.z = 2.0f;
 	}
 
 	void EditorLayer::OnUpdate(double timestep)
 	{
+		m_Camera->OnUpdate(timestep, m_ViewportFocused);
+
 		auto& data = m_Framebuffer->GetFramebufferData();
 		if ((data.Width != m_ViewportSize.x || data.Height != m_ViewportSize.y) &&
 			(m_ViewportSize.x != 0 || m_ViewportSize.y != 0))
 		{
 			m_Framebuffer->Resize((unsigned int)m_ViewportSize.x, (unsigned int)m_ViewportSize.y);
+			m_Camera->OnViewportResize((unsigned int)m_ViewportSize.x, (unsigned int)m_ViewportSize.y);
 		}
 
-		auto& comp = m_Ent.GetComponent<TransformComponent>();
-		// comp = glm::rotate(comp.Transform, (float)timestep, glm::vec3(std::sin(glfwGetTime()), std::cos(glfwGetTime()), std::sin(glfwGetTime()) + 2.0f));
-
 		m_Framebuffer->Use();
-		m_Scene->Update(timestep);
+		m_Scene->UpdateEditor(timestep, m_Camera);
 		m_Framebuffer->Unbind();
 	}
 
@@ -129,6 +124,14 @@ namespace TOE
 					GlobalConfig::Get()["editor"]["show_properties"] = m_ShowPropertiesPanel;
 				ImGui::EndMenu();
 			}
+			if (ImGui::BeginMenu("Preferences"))
+			{
+				if (ImGui::Button("Settings"))
+				{
+					m_ShowSettingsPanel = true;
+				}
+				ImGui::EndMenu();
+			}
 			ImGui::EndMainMenuBar();
 		}
 
@@ -151,6 +154,10 @@ namespace TOE
 		// Properties panel
 		if (m_ShowPropertiesPanel)
 			m_PropertiesPanel.Draw(&m_ShowPropertiesPanel);
+
+		// Settings panel
+		if (m_ShowSettingsPanel)
+			m_SettingsPanel.Draw(&m_ShowSettingsPanel);
 	}
 
 	void EditorLayer::OnKeyPressed(KeyDownEvent* event)
