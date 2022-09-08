@@ -79,34 +79,34 @@ class process {
         rejected
     };
 
-    template<typename Target = Derived>
+    template<typename m_Target = Derived>
     auto next(std::integral_constant<state, state::uninitialized>)
-        -> decltype(std::declval<Target>().init(), void()) {
-        static_cast<Target *>(this)->init();
+        -> decltype(std::declval<m_Target>().init(), void()) {
+        static_cast<m_Target *>(this)->init();
     }
 
-    template<typename Target = Derived>
+    template<typename m_Target = Derived>
     auto next(std::integral_constant<state, state::running>, Delta delta, void *data)
-        -> decltype(std::declval<Target>().update(delta, data), void()) {
-        static_cast<Target *>(this)->update(delta, data);
+        -> decltype(std::declval<m_Target>().update(delta, data), void()) {
+        static_cast<m_Target *>(this)->update(delta, data);
     }
 
-    template<typename Target = Derived>
+    template<typename m_Target = Derived>
     auto next(std::integral_constant<state, state::succeeded>)
-        -> decltype(std::declval<Target>().succeeded(), void()) {
-        static_cast<Target *>(this)->succeeded();
+        -> decltype(std::declval<m_Target>().succeeded(), void()) {
+        static_cast<m_Target *>(this)->succeeded();
     }
 
-    template<typename Target = Derived>
+    template<typename m_Target = Derived>
     auto next(std::integral_constant<state, state::failed>)
-        -> decltype(std::declval<Target>().failed(), void()) {
-        static_cast<Target *>(this)->failed();
+        -> decltype(std::declval<m_Target>().failed(), void()) {
+        static_cast<m_Target *>(this)->failed();
     }
 
-    template<typename Target = Derived>
+    template<typename m_Target = Derived>
     auto next(std::integral_constant<state, state::aborted>)
-        -> decltype(std::declval<Target>().aborted(), void()) {
-        static_cast<Target *>(this)->aborted();
+        -> decltype(std::declval<m_Target>().aborted(), void()) {
+        static_cast<m_Target *>(this)->aborted();
     }
 
     void next(...) const noexcept {}

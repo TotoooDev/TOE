@@ -7998,13 +7998,13 @@ void ShowExampleAppDocuments(bool* p_open)
     static ExampleAppDocuments app;
 
     // Options
-    enum Target
+    enum m_Target
     {
         Target_None,
         Target_Tab,                 // Create documents as local tab into a local tab bar
         Target_DockSpaceAndWindow   // Create documents as regular windows, and create an embedded dockspace
     };
-    static Target opt_target = Target_Tab;
+    static m_Target opt_target = Target_Tab;
     static bool opt_reorderable = true;
     static ImGuiTabBarFlags opt_fitting_flags = ImGuiTabBarFlags_FittingPolicyDefault_;
 

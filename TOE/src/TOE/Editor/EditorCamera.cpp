@@ -2,112 +2,143 @@
 #include <TOE/Event/Input.h>
 #include <TOE/Core/Application.h>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <spdlog/spdlog.h>
 
 namespace TOE
 {
 	EditorCamera::EditorCamera()
 	{
-		TOE::Application::Get().EventBus.Subscribe(this, &EditorCamera::OnMouseMoved);
-		TOE::Application::Get().EventBus.Subscribe(this, &EditorCamera::OnMouseScroll);
-		Rotate(0.0f, glm::pi<float>() / 2.0f);
+		Application::Get().EventBus.Subscribe(this, &EditorCamera::OnMouseMoved);
+		Application::Get().EventBus.Subscribe(this, &EditorCamera::OnMouseScrolled);
 	}
 
-	void EditorCamera::OnUpdate(double timestep, bool viewportFocused)
+	void EditorCamera::OnUpdate(double timestep)
 	{
-		m_ViewportHover = viewportFocused;
-		if (m_ViewportHover)
-		{
-			m_Timestep = timestep;
-			// From https://learnopengl.com/Getting-started/Camera
-			// calculate the new Front vector
-			glm::vec3 front;
-			front.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
-			front.y = sin(glm::radians(m_Pitch));
-			front.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
-			Target = glm::normalize(front);
-			// also re-calculate the Right and Up vector
-			m_Right = glm::normalize(glm::cross(Target, glm::vec3(0.0f, 1.0f, 0.0f)));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-			m_Up = glm::normalize(glm::cross(m_Right, Target));
-		}
+		UpdateView();
 	}
 
 	void EditorCamera::OnViewportResize(unsigned int width, unsigned int height)
 	{
 		m_ViewportWidth = width;
 		m_ViewportHeight = height;
+		UpdateProjection();
 	}
 
-	glm::mat4 EditorCamera::GetProjection()
+	void EditorCamera::UpdateView()
 	{
-		return glm::perspective(m_FOV, (float)m_ViewportWidth / (float)m_ViewportHeight, m_Near, m_Far);
+		m_Position = CalculatePosition();
+
+		glm::quat orientation = GetOrientation();
+		m_View = glm::translate(glm::mat4(1.0f), m_Position) * glm::toMat4(orientation);
+		m_View = glm::inverse(m_View);
 	}
 
-	glm::mat4 EditorCamera::GetView()
+	void EditorCamera::UpdateProjection()
 	{
-		return glm::lookAt(Target + ToCartesian(), Target, m_Up);
+		m_AspectRatio = m_ViewportWidth / m_ViewportHeight;
+		m_Projection = glm::perspective(glm::radians(m_FOV), m_AspectRatio, m_NearClip, m_FarClip);
 	}
 
-	void EditorCamera::Rotate(float deltaX, float deltaY)
+	void EditorCamera::Pan(const glm::vec2& delta)
 	{
-		m_Yaw += deltaX;
-		m_Pitch += deltaY;
-		if (m_Pitch > glm::pi<float>())
-			m_Pitch = glm::pi<float>();
-		if (m_Pitch < 0)
-			m_Pitch = 0;
+		glm::vec2 speed = GetPanSpeed();
+		m_FocalPoint += -GetRightDirection() * delta.x * speed.x * m_Distance;
+		m_FocalPoint += GetUpDirection() * delta.y * speed.y * m_Distance;
 	}
 
-	void EditorCamera::Zoom(float distance)
+	void EditorCamera::Rotate(const glm::vec2& delta)
 	{
-		Distance += distance;
+		float yawSign = GetUpDirection().y < 0.0f ? -1.0f : 1.0f;
+		m_Yaw += yawSign * delta.x * GetRotationSpeed();
+		m_Pitch += delta.y * GetRotationSpeed();
 	}
 
-	void EditorCamera::Translate(float deltaX, float deltaY)
+	void EditorCamera::Zoom(float delta)
 	{
-		glm::vec3 look = glm::normalize(Target - ToCartesian());
-		glm::vec3 worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-		glm::vec3 right = glm::cross(look, worldUp);
-		glm::vec3 up = glm::cross(look, right);
-
-		Target = Target + (right * deltaX) + (up * deltaY);
+		m_Distance -= delta * GetZoomSpeed();
+		if (m_Distance < 1.0f)
+		{
+			m_FocalPoint += GetForwardDirection();
+			m_Distance = 1.0f;
+		}
 	}
 
-	glm::vec3 EditorCamera::ToCartesian()
+	glm::vec2 EditorCamera::GetPanSpeed()
 	{
-		float x = Distance * sinf(m_Pitch) * sinf(m_Yaw);
-		float y = Distance * cosf(m_Pitch);
-		float z = Distance * sinf(m_Pitch) * cosf(m_Yaw);
+		float x = std::min(m_ViewportWidth / 1000.0f, m_MaxPanSpeed);
+		float xFactor = 0.0366f * (x * x) - 0.1778f * x + 0.3021f;
 
-		return glm::vec3(x, y, z);
+		float y = std::min(m_ViewportHeight / 1000.0f, m_MaxPanSpeed);
+		float yFactor = 0.0366f * (y * y) - 0.1778f * y + 0.3021f;
+
+		return { xFactor, yFactor };
+	}
+
+	float EditorCamera::GetRotationSpeed()
+	{
+		return 0.8f;
+	}
+
+	float EditorCamera::GetZoomSpeed()
+	{
+		float distance = m_Distance * 0.2f;
+		distance = std::max(distance, 0.0f);
+		float speed = distance * distance;
+		speed = std::min(speed, m_MaxZoomSpeed);
+		return speed;
+	}
+
+	glm::vec3 EditorCamera::CalculatePosition()
+	{
+		return m_FocalPoint - GetForwardDirection() * m_Distance;
+	}
+	glm::vec3 EditorCamera::GetForwardDirection()
+	{
+		return glm::rotate(GetOrientation(), glm::vec3(0.0f, 0.0f, -1.0f));
+	}
+	glm::vec3 EditorCamera::GetRightDirection()
+	{
+		return glm::rotate(GetOrientation(), glm::vec3(1.0f, 0.0f, 0.0f));
+	}
+	glm::vec3 EditorCamera::GetUpDirection()
+	{
+		return glm::rotate(GetOrientation(), glm::vec3(0.0f, 1.0f, 0.0f));
+	}
+	glm::quat EditorCamera::GetOrientation()
+	{
+		return glm::quat(glm::vec3(-m_Pitch, -m_Yaw, 0.0f));
 	}
 
 	void EditorCamera::OnMouseMoved(MouseMovedEvent* event)
 	{
-		if (!m_ViewportHover)
-			return;
-		if (Input::Mouse(TOE_MOUSE_BUTTON_3))
+		if (m_ViewportFocus)
 		{
-			if (Input::Key(TOE_KEY_LEFT_SHIFT))
+			if (Input::Mouse(TOE_MOUSE_BUTTON_3))
 			{
-				float deltaX = m_LastMouse.x - event->x;
-				float deltaY = m_LastMouse.y - event->y;
-				Translate(deltaX, deltaY);
+				glm::vec2 mouse = glm::vec2(event->x, event->y);
+				glm::vec2 delta = (mouse - m_InitialMousePosition) * (Sensibility * 0.0005f);
+				m_InitialMousePosition = mouse;
+
+				if (Input::Key(TOE_KEY_LEFT_SHIFT))
+				{
+					Pan(delta);
+				}
+				else
+				{
+					Rotate(delta);
+				}
 			}
-			else
-			{
-				float deltaX = m_LastMouse.x - event->x;
-				float deltaY = m_LastMouse.y - event->y;
-				Rotate(deltaX * (float)m_Timestep * (Sensibility * 0.01f), deltaY * (float)m_Timestep * (Sensibility * 0.01f));
-			}
-			m_LastMouse = glm::vec2((float)event->x, (float)event->y);
+			m_InitialMousePosition = glm::vec2(event->x, event->y);
 		}
-		else
-			m_LastMouse = glm::vec2((float)event->x, (float)event->y);
 	}
-	void EditorCamera::OnMouseScroll(MouseScrolledEvent* event)
+	void EditorCamera::OnMouseScrolled(MouseScrolledEvent* event)
 	{
-		if (m_ViewportHover)
-			Zoom(-event->yOffset);
+		if (m_ViewportFocus)
+		{
+			float delta = event->yOffset * 0.1f;
+			Zoom(delta);
+			UpdateView();
+		}
 	}
 }

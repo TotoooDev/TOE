@@ -40,7 +40,7 @@ namespace TOE
 		m_Camera->Sensibility = GlobalConfig::Get()["editor"]["camera"]["sensibility"];
 
 		m_ScenePanel.SetCurrentScene(m_Scene);
-		m_ViewportPanel.Init(m_Scene, m_Framebuffer, &m_ViewportFocused);
+		m_ViewportPanel.Init(m_Scene, m_Framebuffer, m_Camera);
 		m_PropertiesPanel.SetScenePanel(&m_ScenePanel);
 		m_SettingsPanel.Init(m_Camera);
 
@@ -81,14 +81,13 @@ namespace TOE
 
 	void EditorLayer::OnUpdate(double timestep)
 	{
-		m_Camera->OnUpdate(timestep, m_ViewportFocused);
+		m_Camera->OnUpdate(timestep);
 
 		auto& data = m_Framebuffer->GetFramebufferData();
 		if ((data.Width != m_ViewportSize.x || data.Height != m_ViewportSize.y) &&
 			(m_ViewportSize.x != 0 || m_ViewportSize.y != 0))
 		{
 			m_Framebuffer->Resize((unsigned int)m_ViewportSize.x, (unsigned int)m_ViewportSize.y);
-			m_Camera->OnViewportResize((unsigned int)m_ViewportSize.x, (unsigned int)m_ViewportSize.y);
 		}
 
 		m_Framebuffer->Use();

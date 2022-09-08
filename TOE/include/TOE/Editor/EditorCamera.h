@@ -5,44 +5,59 @@
 
 namespace TOE
 {
+	// Stolen from Hazel
 	class EditorCamera
 	{
 	public:
 		EditorCamera();
 
-		glm::vec3 Target = glm::vec3(0.0f, 0.0f, 0.0f);
-		float Distance = 10.0f;
-		float Sensibility = 15.0f;
-
-		void OnUpdate(double timestep, bool viewportFocused);
+		void OnUpdate(double timestep);
 		void OnViewportResize(unsigned int width, unsigned int height);
 
-		glm::mat4 GetProjection();
-		glm::mat4 GetView();
+		void SetViewportFocus(bool focus) { m_ViewportFocus = focus; }
+
+		glm::mat4 GetProjection() const { return m_Projection; }
+		glm::mat4 GetView() const { return m_View; }
+
+		float Sensibility;
 
 	private:
-		void Rotate(float deltaX, float deltaY);
-		void Zoom(float distance);
-		void Translate(float deltaX, float deltaY);
-		glm::vec3 ToCartesian();
+		void UpdateView();
+		void UpdateProjection();
+
+		void Pan(const glm::vec2& delta);
+		void Rotate(const glm::vec2& delta);
+		void Zoom(float delta);
+
+		glm::vec2 GetPanSpeed();
+		float GetRotationSpeed();
+		float GetZoomSpeed();
+
+		glm::vec3 CalculatePosition();
+		glm::vec3 GetForwardDirection();
+		glm::vec3 GetRightDirection();
+		glm::vec3 GetUpDirection();
+		glm::quat GetOrientation();
 
 		void OnMouseMoved(MouseMovedEvent* event);
-		void OnMouseScroll(MouseScrolledEvent* event);
+		void OnMouseScrolled(MouseScrolledEvent* event);
 
+	private:
+		bool m_ViewportFocus = true;
+
+		float m_MaxPanSpeed = 2.4f;
+		float m_MaxZoomSpeed = 100.0f;
+		float m_FOV = 45.0f, m_AspectRatio = 16.0f / 9.0f, m_NearClip = 0.1f, m_FarClip = 1000.0f;
+
+		glm::mat4 m_View, m_Projection;
+		glm::vec3 m_Position = { 0.0f, 0.0f, 0.0f };
+		glm::vec3 m_FocalPoint = { 0.0f, 0.0f, 0.0f };
+
+		glm::vec2 m_InitialMousePosition = { 0.0f, 0.0f };
+
+		float m_Distance = 10.0f;
 		float m_Pitch = 0.0f, m_Yaw = 0.0f;
 
-		glm::vec3 m_Up = glm::vec3(0.0f, 1.0f, 0.0f);
-		glm::vec3 m_Right = glm::vec3(1.0f, 0.0f, 0.0f);
-
-		float m_FOV = 45.0f;
-		float m_Near = 0.1f;
-		float m_Far = 100.0f;
-		unsigned int m_ViewportWidth = 1280;
-		unsigned int m_ViewportHeight = 720;
-
-		bool m_ViewportHover = true;
-		double m_Timestep = 0.0f;
-
-		glm::vec2 m_LastMouse = glm::vec2(0.0f, 0.0f);
+		float m_ViewportWidth = 1280, m_ViewportHeight = 720;
 	};
 }
