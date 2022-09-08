@@ -6,7 +6,14 @@ namespace TOE
 {
 	void Renderer::Init()
 	{
-		m_Shader.LoadFromFolder("shaders/shader/", "shader");
+		m_ShaderTexture.LoadFromFolder("shaders/texture/", "texture");
+		m_ShaderColor.LoadFromFolder("shaders/color/", "color");
+	}
+
+	void Renderer::Recompile()
+	{
+		m_ShaderTexture.Reload();
+		m_ShaderColor.Reload();
 	}
 
 	void Renderer::SetClearColor(float r, float g, float b)
@@ -26,17 +33,20 @@ namespace TOE
 	{
 		TOE_PROFILE_FUNCTION();
 
-		m_Shader.Use();
-		m_Shader.SetMat4("uView", camera.GetView());
-		m_Shader.SetMat4("uProjection", camera.GetProjection());
+		m_ShaderTexture.Use();
+		m_ShaderTexture.SetMat4("uView", camera.GetView());
+		m_ShaderTexture.SetMat4("uProjection", camera.GetProjection());
+		m_ShaderColor.Use();
+		m_ShaderColor.SetMat4("uView", camera.GetView());
+		m_ShaderColor.SetMat4("uProjection", camera.GetProjection());
 	}
 
 	void Renderer::DrawVertexObject(const glm::mat4& transform, const Ref<VAO>& vao, const Ref<EBO>& ebo, const Ref<Texture2D>& texture)
 	{
 		TOE_PROFILE_FUNCTION();
 
-		m_Shader.Use();
-		m_Shader.SetMat4("uModel", transform);
+		m_ShaderTexture.Use();
+		m_ShaderTexture.SetMat4("uModel", transform);
 
 		texture->Use(0);
 
@@ -45,6 +55,24 @@ namespace TOE
 
 		glDrawElements(GL_TRIANGLES, ebo->GetCount(), GL_UNSIGNED_INT, 0);
 		
+		m_Stats.DrawCalls++;
+		m_Stats.VertexCount += vao->GetVertexCount();
+		m_Stats.IndexCount += ebo->GetCount();
+	}
+
+	void Renderer::DrawVertexObject(const glm::mat4& transform, const Ref<VAO>& vao, const Ref<EBO>& ebo, const glm::vec3& color)
+	{
+		TOE_PROFILE_FUNCTION();
+
+		m_ShaderColor.Use();
+		m_ShaderColor.SetMat4("uModel", transform);
+		m_ShaderColor.SetVec3("uColor", color);
+
+		vao->Use();
+		ebo->Use();
+
+		glDrawElements(GL_TRIANGLES, ebo->GetCount(), GL_UNSIGNED_INT, 0);
+
 		m_Stats.DrawCalls++;
 		m_Stats.VertexCount += vao->GetVertexCount();
 		m_Stats.IndexCount += ebo->GetCount();

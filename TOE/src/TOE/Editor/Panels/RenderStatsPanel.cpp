@@ -12,6 +12,9 @@ namespace TOE
 		ImGui::Text("Draw calls: %d", stats.DrawCalls);
 		ImGui::Text("Vertex count: %d", stats.VertexCount);
 		ImGui::Text("Index count: %d", stats.IndexCount);
+		ImGui::Separator();
+		if (ImGui::Button("Recompile shaders"))
+			Renderer::Recompile();
 		ImGui::End();
 	}
 }

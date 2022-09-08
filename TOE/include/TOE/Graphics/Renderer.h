@@ -37,6 +37,7 @@ namespace TOE
 		};
 
 		static void Init();
+		static void Recompile();
 
 		static void SetClearColor(float r, float g, float b);
 		static void Clear();
@@ -44,11 +45,13 @@ namespace TOE
 
 		// TODO: implement BeginScene method or something
 		static void DrawVertexObject(const glm::mat4& transform, const Ref<VAO>& vao, const Ref<EBO>& ebo, const Ref<Texture2D>& texture);
+		static void DrawVertexObject(const glm::mat4& transform, const Ref<VAO>& vao, const Ref<EBO>& ebo, const glm::vec3& color);
 
 		static Stats GetStats();
 
 	private:
-		inline static Shader m_Shader;
+		inline static Shader m_ShaderTexture;
+		inline static Shader m_ShaderColor;
 
 		inline static Stats m_Stats;
 	};

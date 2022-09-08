@@ -14,11 +14,9 @@ Still in developpement
 - [x] Camera class
 - [x] ECS
 - [x] Profiling
-
 - [x] ImGui docking with scene viewport
-- [x?] Scene camera
-
-- [ ] Input class
+- [x] Scene camera
+- [x] Input class
 
 - [ ] Redo camera class
 - [ ] Better renderer

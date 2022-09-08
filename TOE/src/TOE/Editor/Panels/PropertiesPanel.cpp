@@ -51,8 +51,12 @@ namespace TOE
 				auto& renderComponent = ent.GetComponent<RenderComponent>();
 				if (ImGui::TreeNodeEx("Render", flags))
 				{
-					ImGui::Image((void*)renderComponent.Texture->GetID(), ImVec2{ 128.0f, 128.0f }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 					ImGui::Checkbox("Render", &renderComponent.Render);
+					ImGui::Checkbox("Use Color", &renderComponent.RenderColor);
+					if (renderComponent.RenderColor)
+						ImGui::ColorEdit3("Color", glm::value_ptr(renderComponent.Color));
+					else
+						ImGui::Image((void*)renderComponent.Texture->GetID(), ImVec2{ 128.0f, 128.0f }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 					ImGui::TreePop();
 				}
 			}

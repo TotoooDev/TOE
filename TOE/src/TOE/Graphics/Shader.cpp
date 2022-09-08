@@ -145,7 +145,7 @@ namespace TOE
 
 	void Shader::Reload()
 	{
-		LoadFromString(m_VertexSource, m_FragmentSource, m_GeometrySource);
+		LoadFromFile(m_VertexPath, m_FragmentPath, m_GeometryPath);
 	}
 
 	void Shader::Delete()

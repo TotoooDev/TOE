@@ -20,8 +20,8 @@ namespace TOE
 
 	void EditorCamera::OnViewportResize(unsigned int width, unsigned int height)
 	{
-		m_ViewportWidth = width;
-		m_ViewportHeight = height;
+		m_ViewportWidth = (float)width;
+		m_ViewportHeight = (float)height;
 		UpdateProjection();
 	}
 
@@ -136,7 +136,7 @@ namespace TOE
 	{
 		if (m_ViewportFocus)
 		{
-			float delta = event->yOffset * 0.1f;
+			float delta = (float)event->yOffset * 0.1f;
 			Zoom(delta);
 			UpdateView();
 		}

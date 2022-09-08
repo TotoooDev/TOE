@@ -53,7 +53,10 @@ namespace TOE
 				if (!render.Render)
 					continue;
 
-				Renderer::DrawVertexObject(transform.GetTransfrom(), render.VertexArray, render.ElementBuffer, render.Texture);
+				if (render.RenderColor)
+					Renderer::DrawVertexObject(transform.GetTransfrom(), render.VertexArray, render.ElementBuffer, render.Color);
+				else
+					Renderer::DrawVertexObject(transform.GetTransfrom(), render.VertexArray, render.ElementBuffer, render.Texture);
 			}
 		}
 	}
