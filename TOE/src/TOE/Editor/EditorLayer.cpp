@@ -48,35 +48,6 @@ namespace TOE
 		data.Width = Application::Get().GetWindowData().Width;
 		data.Height = Application::Get().GetWindowData().Height;
 		m_Framebuffer->Create(data);
-
-		// OpenGL data setup
-		Ref<Texture2D> texture = CreateRef<Texture2D>();
-		texture->CreateFromFile("textures/image.png");
-		Ref<VAO> vao = CreateRef<VAO>();
-		Ref<EBO> ebo = CreateRef<EBO>();
-		std::vector<float> vertices =
-		{
-			// positions        // texture coords
-			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
-			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
-			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
-			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f  // top left 
-		};
-		std::vector<unsigned int> indices =
-		{
-			0, 1, 3, // first triangle
-			1, 2, 3  // second triangle
-		};
-
-		VertexLayout layout;
-		layout.AddAttribute(Type::Float, 3); // Pos
-		layout.AddAttribute(Type::Float, 2); // Tex Coords
-
-		vao->SetData(vertices, layout);
-		ebo->SetData(indices);
-
-		m_Ent = m_Scene->CreateEntity("Toto Entity");
-		m_Ent.AddComponent<RenderComponent>(vao, ebo, texture);
 	}
 
 	void EditorLayer::OnUpdate(double timestep)
@@ -125,7 +96,7 @@ namespace TOE
 			}
 			if (ImGui::BeginMenu("Preferences"))
 			{
-				if (ImGui::Button("Settings"))
+				if (ImGui::MenuItem("Settings"))
 				{
 					m_ShowSettingsPanel = true;
 				}

@@ -36,6 +36,14 @@ namespace TOE
 			}
 		}
 
+		ImGuiPopupFlags flags = ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight;
+		if (ImGui::BeginPopupContextWindow("Create Entity", flags))
+		{
+			if (ImGui::MenuItem("Create New Entity"))
+				m_CurrentScene->CreateEntity();
+			ImGui::EndPopup();
+		}
+		
 		ImGui::End();
 	}
 }

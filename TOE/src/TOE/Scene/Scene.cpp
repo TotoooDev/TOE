@@ -53,10 +53,7 @@ namespace TOE
 				if (!render.Render)
 					continue;
 
-				if (render.RenderColor)
-					Renderer::DrawVertexObject(transform.GetTransfrom(), render.VertexArray, render.ElementBuffer, render.Color);
-				else
-					Renderer::DrawVertexObject(transform.GetTransfrom(), render.VertexArray, render.ElementBuffer, render.Texture);
+				Renderer::DrawVertexObject(transform.GetTransfrom(), render.VertexArray, render.ElementBuffer, render.Color);
 			}
 		}
 	}
@@ -96,7 +93,7 @@ namespace TOE
 				if (!render.Render)
 					continue;
 
-				Renderer::DrawVertexObject(transform.GetTransfrom(), render.VertexArray, render.ElementBuffer, render.Texture);
+				Renderer::DrawVertexObject(transform.GetTransfrom(), render.VertexArray, render.ElementBuffer, render.Color);
 			}
 		}
 	}

@@ -41,25 +41,6 @@ namespace TOE
 		m_ShaderColor.SetMat4("uProjection", camera.GetProjection());
 	}
 
-	void Renderer::DrawVertexObject(const glm::mat4& transform, const Ref<VAO>& vao, const Ref<EBO>& ebo, const Ref<Texture2D>& texture)
-	{
-		TOE_PROFILE_FUNCTION();
-
-		m_ShaderTexture.Use();
-		m_ShaderTexture.SetMat4("uModel", transform);
-
-		texture->Use(0);
-
-		vao->Use();
-		ebo->Use();
-
-		glDrawElements(GL_TRIANGLES, ebo->GetCount(), GL_UNSIGNED_INT, 0);
-		
-		m_Stats.DrawCalls++;
-		m_Stats.VertexCount += vao->GetVertexCount();
-		m_Stats.IndexCount += ebo->GetCount();
-	}
-
 	void Renderer::DrawVertexObject(const glm::mat4& transform, const Ref<VAO>& vao, const Ref<EBO>& ebo, const glm::vec3& color)
 	{
 		TOE_PROFILE_FUNCTION();

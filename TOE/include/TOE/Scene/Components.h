@@ -45,15 +45,13 @@ namespace TOE
 	struct RenderComponent
 	{
 		bool Render = true;
-		bool RenderColor = false;
 
 		Ref<VAO> VertexArray;
 		Ref<EBO> ElementBuffer;
-		Ref<Texture2D> Texture;
 		glm::vec3 Color = glm::vec3(1.0f, 0.0f, 0.0f);
 
-		RenderComponent(const Ref<VAO>& vao, const Ref<EBO>& ebo, const Ref<Texture2D>& texture)
-			: VertexArray(vao), ElementBuffer(ebo), Texture(texture) {}
+		RenderComponent(const Ref<VAO>& vao, const Ref<EBO>& ebo)
+			: VertexArray(vao), ElementBuffer(ebo) {}
 		RenderComponent(const RenderComponent&) = default;
 	};
 

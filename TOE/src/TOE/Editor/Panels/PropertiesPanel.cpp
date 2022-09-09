@@ -1,5 +1,6 @@
 #include <TOE/Editor/Panels/PropertiesPanel.h>
 #include <TOE/Scene/Components.h>
+#include <TOE/Graphics/Primitives.h>
 #include <ImGui/imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
@@ -52,11 +53,7 @@ namespace TOE
 				if (ImGui::TreeNodeEx("Render", flags))
 				{
 					ImGui::Checkbox("Render", &renderComponent.Render);
-					ImGui::Checkbox("Use Color", &renderComponent.RenderColor);
-					if (renderComponent.RenderColor)
-						ImGui::ColorEdit3("Color", glm::value_ptr(renderComponent.Color));
-					else
-						ImGui::Image((void*)renderComponent.Texture->GetID(), ImVec2{ 128.0f, 128.0f }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+					ImGui::ColorEdit3("Color", glm::value_ptr(renderComponent.Color));
 					ImGui::TreePop();
 				}
 			}
@@ -71,6 +68,14 @@ namespace TOE
 					ImGui::Checkbox("Orbiting Camera", &cameraComponent.OrbitingCamera);
 					ImGui::TreePop();
 				}
+			}
+
+			flags = ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight;
+			if (ImGui::BeginPopupContextWindow("Add Component", flags))
+			{
+				if (ImGui::MenuItem("Render"))
+					m_ScenePanel->m_SelectedEntity.AddComponent<RenderComponent>(Primitives::GetQuadVAO(), Primitives::GetQuadEBO());
+				ImGui::EndPopup();
 			}
 		}
 		ImGui::End();

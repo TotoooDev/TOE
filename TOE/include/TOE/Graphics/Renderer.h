@@ -44,7 +44,6 @@ namespace TOE
 		static void SetCurrentCamera(const Camera& camera);
 
 		// TODO: implement BeginScene method or something
-		static void DrawVertexObject(const glm::mat4& transform, const Ref<VAO>& vao, const Ref<EBO>& ebo, const Ref<Texture2D>& texture);
 		static void DrawVertexObject(const glm::mat4& transform, const Ref<VAO>& vao, const Ref<EBO>& ebo, const glm::vec3& color);
 
 		static Stats GetStats();

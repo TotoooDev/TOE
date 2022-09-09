@@ -15,6 +15,31 @@ namespace TOE
 
 	void EditorCamera::OnUpdate(double timestep)
 	{
+		if (m_ViewportFocus)
+		{
+			if (Input::Key(TOE_KEY_LEFT_SHIFT))
+			{
+				if (Input::Key(TOE_KEY_UP))
+					Pan(glm::vec2(0.0f, 0.02f));
+				if (Input::Key(TOE_KEY_DOWN))
+					Pan(glm::vec2(0.0f, -0.02f));
+				if (Input::Key(TOE_KEY_RIGHT))
+					Pan(glm::vec2(0.02f, 0.0f));
+				if (Input::Key(TOE_KEY_LEFT))
+					Pan(glm::vec2(-0.02f, 0.0f));
+			}
+			else
+			{
+				if (Input::Key(TOE_KEY_UP))
+					Rotate(glm::vec2(0.0f, 0.02f));
+				if (Input::Key(TOE_KEY_DOWN))
+					Rotate(glm::vec2(0.0f, -0.02f));
+				if (Input::Key(TOE_KEY_RIGHT))
+					Rotate(glm::vec2(0.02f, 0.0f));
+				if (Input::Key(TOE_KEY_LEFT))
+					Rotate(glm::vec2(-0.02f, 0.0f));
+			}
+		}
 		UpdateView();
 	}
 
