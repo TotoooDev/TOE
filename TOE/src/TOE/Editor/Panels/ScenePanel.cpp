@@ -52,7 +52,7 @@ namespace TOE
 		if (ImGui::BeginPopupContextWindow("Create Entity", flags))
 		{
 			if (ImGui::MenuItem("Create New Entity"))
-				m_CurrentScene->CreateEntity();
+				m_SelectedEntity = m_CurrentScene->CreateEntity();
 			ImGui::EndPopup();
 		}
 		
