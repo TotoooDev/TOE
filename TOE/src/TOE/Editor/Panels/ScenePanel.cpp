@@ -25,9 +25,22 @@ namespace TOE
 			}
 			bool opened = ImGui::TreeNodeEx((void*)(uint64_t)entity, flags, tagComponent.Tag.c_str());
 			
-			if (ImGui::IsItemClicked())
+			if (ImGui::IsItemClicked() || ImGui::IsItemClicked(ImGuiMouseButton_Right))
 			{
 				m_SelectedEntity = ent;
+			}
+			if (m_SelectedEntity == ent)
+			{
+				flags = ImGuiPopupFlags_MouseButtonRight;
+				if (ImGui::BeginPopupContextWindow())
+				{
+					if (ImGui::MenuItem("Remove Entity"))
+					{
+						m_CurrentScene->DeleteEntity(m_SelectedEntity);
+						m_SelectedEntity = { };
+					}
+					ImGui::EndPopup();
+				}
 			}
 
 			if (opened)

@@ -1,7 +1,6 @@
 #include <TOE/Editor/Panels/PropertiesPanel.h>
 #include <TOE/Scene/Components.h>
 #include <TOE/Graphics/Primitives.h>
-#include <ImGui/imgui.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 
@@ -18,7 +17,7 @@ namespace TOE
 		if (m_ScenePanel->m_SelectedEntity.IsValid())
 		{
 			Entity ent = m_ScenePanel->m_SelectedEntity;
-			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed;
+			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick;
 
 			if (ent.HasComponent<TagComponent>())
 			{
@@ -43,6 +42,14 @@ namespace TOE
 					ImGui::DragFloat3("Position", glm::value_ptr(transformComponent.Translation), 0.1f);
 					ImGui::DragFloat3("Rotation", glm::value_ptr(transformComponent.Rotation), 0.1f);
 					ImGui::DragFloat3("Scale", glm::value_ptr(transformComponent.Scale), 0.1f);
+					if (ImGui::BeginPopupContextWindow())
+					{
+						if (ImGui::MenuItem("Remove Component"))
+						{
+							m_ScenePanel->m_SelectedEntity.RemoveComponent<TransformComponent>();
+						}
+						ImGui::EndPopup();
+					}
 					ImGui::TreePop();
 				}
 			}
@@ -54,6 +61,7 @@ namespace TOE
 				{
 					ImGui::Checkbox("Render", &renderComponent.Render);
 					ImGui::ColorEdit3("Color", glm::value_ptr(renderComponent.Color));
+					DrawRemove<RenderComponent>();
 					ImGui::TreePop();
 				}
 			}
@@ -66,6 +74,7 @@ namespace TOE
 					ImGui::Checkbox("Primary", &cameraComponent.Primary);
 					ImGui::Checkbox("Fixed Aspect Ratio", &cameraComponent.FixedAspectRatio);
 					ImGui::Checkbox("Orbiting Camera", &cameraComponent.OrbitingCamera);
+					DrawRemove<CameraComponent>();
 					ImGui::TreePop();
 				}
 			}
@@ -73,8 +82,15 @@ namespace TOE
 			flags = ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight;
 			if (ImGui::BeginPopupContextWindow("Add Component", flags))
 			{
-				if (ImGui::MenuItem("Render"))
+				if (ImGui::MenuItem("Transform") && !m_ScenePanel->m_SelectedEntity.HasComponent<TransformComponent>())
+					m_ScenePanel->m_SelectedEntity.AddComponent<TransformComponent>();
+				if (ImGui::MenuItem("Render") && !m_ScenePanel->m_SelectedEntity.HasComponent<RenderComponent>())
 					m_ScenePanel->m_SelectedEntity.AddComponent<RenderComponent>(Primitives::GetQuadVAO(), Primitives::GetQuadEBO());
+				if (ImGui::MenuItem("Camera") && !m_ScenePanel->m_SelectedEntity.HasComponent<CameraComponent>())
+				{
+					Ref<PerspectiveCamera> cam = CreateRef<PerspectiveCamera>();
+					m_ScenePanel->m_SelectedEntity.AddComponent<CameraComponent>(cam);
+				}
 				ImGui::EndPopup();
 			}
 		}

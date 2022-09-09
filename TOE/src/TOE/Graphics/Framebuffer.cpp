@@ -8,6 +8,7 @@ namespace TOE
 	{
 		glDeleteFramebuffers(1, &m_ID);
 		glDeleteTextures(1, &m_ColorAttachmentID);
+		glDeleteRenderbuffers(1, &m_RenderBufferID);
 	}
 
 	void Framebuffer::Create(const FramebufferData& data)
@@ -23,6 +24,11 @@ namespace TOE
 		{
 			glDeleteFramebuffers(1, &m_ID);
 			m_ID = 0;
+		}
+		if (m_RenderBufferID != 0)
+		{
+			glDeleteRenderbuffers(1, &m_RenderBufferID);
+			m_RenderBufferID = 0;
 		}
 		// Same for the texture
 		if (m_ColorAttachmentID != 0)
@@ -41,6 +47,12 @@ namespace TOE
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Data.Width, m_Data.Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glGenRenderbuffers(1, &m_RenderBufferID);
+		glBindRenderbuffer(GL_RENDERBUFFER, m_RenderBufferID);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_Data.Width, m_Data.Height);
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_RenderBufferID);
 
 		// Bind the texture to the framebuffer
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColorAttachmentID, 0);

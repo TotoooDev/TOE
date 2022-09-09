@@ -18,11 +18,10 @@ Still in developpement
 - [x] Scene camera
 - [x] Input class
 
+- [ ] Scene serializer
 - [ ] Redo camera class
 - [ ] Better renderer
 - [ ] Built-in meshes and stuff
-- [ ] Simple 3D scene
-- [ ] Convert most parameters to const references
 - [ ] Font rendering
 - [ ] Precompiled headers
 

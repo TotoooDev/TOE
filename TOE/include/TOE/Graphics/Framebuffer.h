@@ -29,6 +29,7 @@ namespace TOE
 		FramebufferData m_Data;
 
 		unsigned int m_ID = 0;
+		unsigned int m_RenderBufferID = 0;
 		unsigned int m_ColorAttachmentID = 0;
 	};
 }

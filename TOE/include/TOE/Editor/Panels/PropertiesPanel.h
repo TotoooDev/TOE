@@ -2,6 +2,7 @@
 
 #include <TOE/Core/Ref.h>
 #include <TOE/Editor/Panels/ScenePanel.h>
+#include <ImGui/imgui.h>
 
 namespace TOE
 {
@@ -12,6 +13,19 @@ namespace TOE
 		void Draw(bool* isOpen);
 
 	private:
+		template <typename T>
+		void DrawRemove()
+		{
+			if (ImGui::BeginPopupContextWindow())
+			{
+				if (ImGui::MenuItem("Remove Component"))
+				{
+					m_ScenePanel->m_SelectedEntity.RemoveComponent<T>();
+				}
+				ImGui::EndPopup();
+			}
+		}
+
 		ScenePanel* m_ScenePanel;
 	};
 }

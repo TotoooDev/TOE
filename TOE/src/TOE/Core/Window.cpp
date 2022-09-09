@@ -44,6 +44,7 @@ namespace TOE
 			glewInit();
 			WasGLEWInit = true;
 		}
+		glEnable(GL_DEPTH_TEST);
 
 		// Set glfw callbacks 
 		SetCallbacks();

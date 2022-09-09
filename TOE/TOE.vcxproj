@@ -209,6 +209,7 @@
     <ClInclude Include="include\TOE\Event\Input.h" />
     <ClInclude Include="include\TOE\Graphics\Framebuffer.h" />
     <ClInclude Include="include\TOE\Graphics\Primitives.h" />
+    <ClInclude Include="include\TOE\Scene\Serializer.h" />
     <ClInclude Include="include\vendor\entt\entt.hpp" />
     <ClInclude Include="include\vendor\entt\fwd.hpp" />
     <ClInclude Include="include\vendor\GLFW\glfw3.h" />
