@@ -24,9 +24,9 @@ namespace TOE
 				if (Input::Key(TOE_KEY_DOWN))
 					Pan(glm::vec2(0.0f, -0.02f));
 				if (Input::Key(TOE_KEY_RIGHT))
-					Pan(glm::vec2(0.02f, 0.0f));
-				if (Input::Key(TOE_KEY_LEFT))
 					Pan(glm::vec2(-0.02f, 0.0f));
+				if (Input::Key(TOE_KEY_LEFT))
+					Pan(glm::vec2(0.02f, 0.0f));
 			}
 			else
 			{

@@ -31,7 +31,6 @@ namespace TOE
 			}
 			if (m_SelectedEntity == ent)
 			{
-				flags = ImGuiPopupFlags_MouseButtonRight;
 				if (ImGui::BeginPopupContextWindow())
 				{
 					if (ImGui::MenuItem("Remove Entity"))

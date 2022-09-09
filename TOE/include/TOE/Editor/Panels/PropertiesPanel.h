@@ -16,7 +16,7 @@ namespace TOE
 		template <typename T>
 		void DrawRemove()
 		{
-			if (ImGui::BeginPopupContextWindow())
+			if (ImGui::BeginPopupContextItem())
 			{
 				if (ImGui::MenuItem("Remove Component"))
 				{
