@@ -2,6 +2,7 @@
 #include <TOE/Core/Application.h>
 #include <TOE/Core/GlobalConfig.h>
 #include <TOE/Editor/EditorSink.h>
+#include <TOE/Event/Input.h>
 #include <TOE/Debug/Instrumentor.h>
 #include <TOE/Graphics/Renderer.h>
 #include <TOE/Scene/Components.h>
@@ -78,28 +79,45 @@ namespace TOE
 		{
 			if (ImGui::BeginMenu("File"))
 			{
-				if (ImGui::MenuItem("New Scene"))
+				if (ImGui::MenuItem("New Scene", "Ctrl+N"))
 				{
-					m_Scene = CreateRef<Scene>();
-					m_ScenePanel.SetCurrentScene(m_Scene);
-					m_ViewportPanel.Init(m_Scene, m_Framebuffer, m_Camera);
-					m_PropertiesPanel.SetScenePanel(&m_ScenePanel);
+					// ImGui::OpenPopup("New");
+					// Always center this window when appearing
+					ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+					ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+					if (ImGui::BeginPopupModal("New", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+					{
+						ImGui::Text("All those beautiful files will be deleted.\nThis operation cannot be undone!\n\n");
+						ImGui::Separator();
+
+						//static int unused_i = 0;
+						//ImGui::Combo("Combo", &unused_i, "Delete\0Delete harder\0");
+
+						static bool dont_ask_me_next_time = false;
+						ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+						ImGui::Checkbox("Don't ask me next time", &dont_ask_me_next_time);
+						ImGui::PopStyleVar();
+
+						if (ImGui::Button("OK", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
+						ImGui::SetItemDefaultFocus();
+						ImGui::SameLine();
+						if (ImGui::Button("Cancel", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
+						ImGui::EndPopup();
+					}
+					New();
 				}
-				if (ImGui::MenuItem("Save as..."))
+				if (ImGui::MenuItem("Save", "Ctrl+S"))
 				{
-					auto path = Utils::SaveFileDialog("TOE Scene file (*.toe)\0*.toe\0");
-					SceneSerializer serializer(m_Scene);
-					serializer.Serialize(path);
+					Save();
 				}
-				if (ImGui::MenuItem("Open..."))
+				if (ImGui::MenuItem("Save as...", "Ctrl+Shift+S"))
 				{
-					m_Scene = CreateRef<Scene>();
-					auto path = Utils::OpenFileDialog("TOE Scene file (*.toe)\0*.toe\0");
-					SceneSerializer serializer(m_Scene);
-					serializer.Deserialize(path);
-					m_ScenePanel.SetCurrentScene(m_Scene);
-					m_ViewportPanel.Init(m_Scene, m_Framebuffer, m_Camera);
-					m_PropertiesPanel.SetScenePanel(&m_ScenePanel);
+					SaveAs();
+				}
+				if (ImGui::MenuItem("Open...", "Ctrl+O"))
+				{
+					Open();
 				}
 				ImGui::Separator();
 				if (ImGui::MenuItem("Close"))
@@ -154,15 +172,77 @@ namespace TOE
 		// Settings panel
 		if (m_ShowSettingsPanel)
 			m_SettingsPanel.Draw(&m_ShowSettingsPanel);
+	
+		// ImGui::ShowDemoWindow(nullptr);
+	}
+
+	void EditorLayer::New()
+	{
+		m_Scene = CreateRef<Scene>();
+		m_ScenePanel.SetCurrentScene(m_Scene);
+		m_ViewportPanel.Init(m_Scene, m_Framebuffer, m_Camera);
+		m_PropertiesPanel.SetScenePanel(&m_ScenePanel);
+		m_ScenePath = "";
+	}
+	void EditorLayer::Save()
+	{
+		if (m_ScenePath == "")
+		{
+			SaveAs();
+		}
+		else
+		{
+			SceneSerializer serializer(m_Scene);
+			serializer.Serialize(m_ScenePath);
+		}
+	}
+	void EditorLayer::SaveAs()
+	{
+		m_ScenePath = Utils::SaveFileDialog("TOE Scene file (*.toe)\0*.toe\0");
+		SceneSerializer serializer(m_Scene);
+		serializer.Serialize(m_ScenePath);
+	}
+	void EditorLayer::Open()
+	{
+		m_Scene = CreateRef<Scene>();
+		m_ScenePath = Utils::OpenFileDialog("TOE Scene file (*.toe)\0*.toe\0");
+		SceneSerializer serializer(m_Scene);
+		serializer.Deserialize(m_ScenePath);
+		m_ScenePanel.SetCurrentScene(m_Scene);
+		m_ViewportPanel.Init(m_Scene, m_Framebuffer, m_Camera);
+		m_PropertiesPanel.SetScenePanel(&m_ScenePanel);
 	}
 
 	void EditorLayer::OnKeyPressed(KeyDownEvent* event)
 	{
-		// switch (event->Keycode)
-		// {
-		// default:
-		// 	break;
-		// }
+		switch (event->Keycode)
+		{
+		case TOE_KEY_S:
+			if (Input::Key(TOE_KEY_LEFT_CONTROL) || Input::Key(TOE_KEY_RIGHT_CONTROL))
+			{
+				if (Input::Key(TOE_KEY_LEFT_SHIFT) || Input::Key(TOE_KEY_RIGHT_SHIFT))
+					SaveAs();
+				else
+					Save();
+			}
+			break;
+
+		case TOE_KEY_O:
+			if (Input::Key(TOE_KEY_LEFT_CONTROL) || Input::Key(TOE_KEY_RIGHT_CONTROL))
+			{
+				Open();
+			}
+			break;
+		case TOE_KEY_N:
+			if (Input::Key(TOE_KEY_LEFT_CONTROL) || Input::Key(TOE_KEY_RIGHT_CONTROL))
+			{
+				New();
+			}
+			break;
+
+		default:
+			break;
+		}
 	}
 	void EditorLayer::OnKeyUp(KeyUpEvent* event)
 	{

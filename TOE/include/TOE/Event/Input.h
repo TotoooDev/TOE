@@ -7,12 +7,12 @@ namespace TOE
 {
 	namespace Input
 	{
-		bool Key(int key)
+		inline bool Key(int key)
 		{
 			return Application::Get().GetWindow().GetKey(key) == TOE_PRESS;
 		}
 
-		bool Mouse(int button)
+		inline bool Mouse(int button)
 		{
 			return Application::Get().GetWindow().GetMouseButton(button) == TOE_PRESS;
 		}

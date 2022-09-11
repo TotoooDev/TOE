@@ -26,6 +26,11 @@ namespace TOE
 		virtual void OnImGuiRender() override;
 
 	private:
+		void New();
+		void Save();
+		void SaveAs();
+		void Open();
+
 		void OnKeyPressed(KeyDownEvent* event);
 		void OnKeyUp(KeyUpEvent* event);
 		void OnWindowMaximized(WindowMaximizedEvent* event);
@@ -40,7 +45,7 @@ namespace TOE
 		Ref<EditorCamera> m_Camera;
 		bool m_ViewportFocused = false;
 
-		bool m_FirstUpdate = true;
+		std::string m_ScenePath = "";
 
 		bool m_ShowLogsPanel;
 		bool m_ShowScenePanel;
