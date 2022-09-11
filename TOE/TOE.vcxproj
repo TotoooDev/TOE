@@ -129,6 +129,7 @@
       <PreprocessorDefinitions>TOE_ENABLE_PROFILING;TOE_ENABLE_DEBUG_OPENGL;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,6 +146,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -182,6 +184,8 @@
     <ClCompile Include="src\TOE\Core\Window.cpp" />
     <ClCompile Include="src\TOE\Graphics\Texture.cpp" />
     <ClCompile Include="src\TOE\Scene\Scene.cpp" />
+    <ClCompile Include="src\TOE\Scene\Serializer.cpp" />
+    <ClCompile Include="src\TOE\Utils\WindowsUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ImGui\imconfig.h" />
@@ -210,6 +214,7 @@
     <ClInclude Include="include\TOE\Graphics\Framebuffer.h" />
     <ClInclude Include="include\TOE\Graphics\Primitives.h" />
     <ClInclude Include="include\TOE\Scene\Serializer.h" />
+    <ClInclude Include="include\TOE\Utils\WindowsUtils.h" />
     <ClInclude Include="include\vendor\entt\entt.hpp" />
     <ClInclude Include="include\vendor\entt\fwd.hpp" />
     <ClInclude Include="include\vendor\GLFW\glfw3.h" />

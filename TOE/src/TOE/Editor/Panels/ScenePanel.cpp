@@ -7,6 +7,7 @@ namespace TOE
 	void ScenePanel::SetCurrentScene(Ref<Scene> scene)
 	{
 		m_CurrentScene = scene;
+		m_SelectedEntity = { };
 	}
 	
 	void ScenePanel::Draw(bool* isOpen)

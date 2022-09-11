@@ -39,7 +39,6 @@ namespace TOE
 				if (ImGui::TreeNodeEx("Transform", flags))
 				{
 					DrawRemove<TransformComponent>();
-					ImGui::Text("Doesn't work lol");
 					ImGui::DragFloat3("Position", glm::value_ptr(transformComponent.Translation), 0.1f);
 					ImGui::DragFloat3("Rotation", glm::value_ptr(transformComponent.Rotation), 0.1f);
 					ImGui::DragFloat3("Scale", glm::value_ptr(transformComponent.Scale), 0.1f);
@@ -55,6 +54,17 @@ namespace TOE
 					DrawRemove<RenderComponent>();
 					ImGui::Checkbox("Render", &renderComponent.Render);
 					ImGui::ColorEdit3("Color", glm::value_ptr(renderComponent.Color));
+					ImGui::TreePop();
+				}
+			}
+
+			if (ent.HasComponent<MeshComponent>())
+			{
+				auto& meshComponent = ent.GetComponent<MeshComponent>();
+				if (ImGui::TreeNodeEx("Mesh", flags))
+				{
+					DrawRemove<MeshComponent>();
+					ImGui::Text("Don't know what to put here :(");
 					ImGui::TreePop();
 				}
 			}
@@ -80,7 +90,13 @@ namespace TOE
 					if (ImGui::MenuItem("Transform") && !m_ScenePanel->m_SelectedEntity.HasComponent<TransformComponent>())
 						m_ScenePanel->m_SelectedEntity.AddComponent<TransformComponent>();
 					if (ImGui::MenuItem("Render") && !m_ScenePanel->m_SelectedEntity.HasComponent<RenderComponent>())
-						m_ScenePanel->m_SelectedEntity.AddComponent<RenderComponent>(Primitives::GetQuadVAO(), Primitives::GetQuadEBO());
+						m_ScenePanel->m_SelectedEntity.AddComponent<RenderComponent>();
+					if (ImGui::BeginMenu("Mesh"))
+					{
+						if (ImGui::MenuItem("Quad") && !m_ScenePanel->m_SelectedEntity.HasComponent<MeshComponent>())
+							m_ScenePanel->m_SelectedEntity.AddComponent<MeshComponent>(Primitives::GetQuadVAO(), Primitives::GetQuadEBO(), PrimitiveType::Quad);
+						ImGui::EndMenu();
+					}
 					if (ImGui::MenuItem("Camera") && !m_ScenePanel->m_SelectedEntity.HasComponent<CameraComponent>())
 						m_ScenePanel->m_SelectedEntity.AddComponent<CameraComponent>(CreateRef<PerspectiveCamera>());
 					ImGui::EndMenu();

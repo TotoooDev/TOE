@@ -5,6 +5,8 @@
 #include <TOE/Debug/Instrumentor.h>
 #include <TOE/Graphics/Renderer.h>
 #include <TOE/Scene/Components.h>
+#include <TOE/Scene/Serializer.h>
+#include <TOE/Utils/WindowsUtils.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -76,6 +78,30 @@ namespace TOE
 		{
 			if (ImGui::BeginMenu("File"))
 			{
+				if (ImGui::MenuItem("New Scene"))
+				{
+					m_Scene = CreateRef<Scene>();
+					m_ScenePanel.SetCurrentScene(m_Scene);
+					m_ViewportPanel.Init(m_Scene, m_Framebuffer, m_Camera);
+					m_PropertiesPanel.SetScenePanel(&m_ScenePanel);
+				}
+				if (ImGui::MenuItem("Save as..."))
+				{
+					auto path = Utils::SaveFileDialog("TOE Scene file (*.toe)\0*.toe\0");
+					SceneSerializer serializer(m_Scene);
+					serializer.Serialize(path);
+				}
+				if (ImGui::MenuItem("Open..."))
+				{
+					m_Scene = CreateRef<Scene>();
+					auto path = Utils::OpenFileDialog("TOE Scene file (*.toe)\0*.toe\0");
+					SceneSerializer serializer(m_Scene);
+					serializer.Deserialize(path);
+					m_ScenePanel.SetCurrentScene(m_Scene);
+					m_ViewportPanel.Init(m_Scene, m_Framebuffer, m_Camera);
+					m_PropertiesPanel.SetScenePanel(&m_ScenePanel);
+				}
+				ImGui::Separator();
 				if (ImGui::MenuItem("Close"))
 					Application::Get().Stop();
 				ImGui::EndMenu();

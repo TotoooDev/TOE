@@ -17,8 +17,8 @@ Still in developpement
 - [x] ImGui docking with scene viewport
 - [x] Scene camera
 - [x] Input class
+- [x] Scene serializer
 
-- [ ] Scene serializer
 - [ ] Redo camera class
 - [ ] Better renderer
 - [ ] Built-in meshes and stuff

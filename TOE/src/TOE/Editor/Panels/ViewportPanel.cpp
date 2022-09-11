@@ -12,7 +12,7 @@ namespace TOE
 	void ViewportPanel::Draw(bool* isOpen)
 	{
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0.0f, 0.0f });
-		ImGui::Begin("Scene viewport", isOpen);
+		ImGui::Begin(m_CurrentScene->Name.c_str(), isOpen);
 		m_Camera->SetViewportFocus(ImGui::IsWindowHovered());
 		ImVec2 currentViewportSize = ImGui::GetContentRegionAvail();
 		if (currentViewportSize.x != m_ViewportSize.x || currentViewportSize.y != m_ViewportSize.y)

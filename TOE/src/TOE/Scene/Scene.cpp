@@ -47,13 +47,13 @@ namespace TOE
 		// Loop through all renderable entities
 		{
 			TOE_PROFILE_SCOPE("Scene::Update::RenderEntities");
-			auto view = m_Registry.view<TransformComponent, RenderComponent>();
-			for (auto&& [entity, transform, render] : view.each())
+			auto view = m_Registry.view<TransformComponent, RenderComponent, MeshComponent>();
+			for (auto&& [entity, transform, render, mesh] : view.each())
 			{
 				if (!render.Render)
 					continue;
 
-				Renderer::DrawVertexObject(transform.GetTransfrom(), render.VertexArray, render.ElementBuffer, render.Color);
+				Renderer::DrawVertexObject(transform.GetTransfrom(), mesh.VertexArray, mesh.ElementBuffer, render.Color);
 			}
 		}
 	}
@@ -87,13 +87,13 @@ namespace TOE
 		// Loop through all renderable entities
 		{
 			TOE_PROFILE_SCOPE("Scene::Update::RenderEntities");
-			auto view = m_Registry.view<TransformComponent, RenderComponent>();
-			for (auto&& [entity, transform, render] : view.each())
+			auto view = m_Registry.view<TransformComponent, RenderComponent, MeshComponent>();
+			for (auto&& [entity, transform, render, mesh] : view.each())
 			{
 				if (!render.Render)
 					continue;
 
-				Renderer::DrawVertexObject(transform.GetTransfrom(), render.VertexArray, render.ElementBuffer, render.Color);
+				Renderer::DrawVertexObject(transform.GetTransfrom(), mesh.VertexArray, mesh.ElementBuffer, render.Color);
 			}
 		}
 	}

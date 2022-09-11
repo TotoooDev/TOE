@@ -97,6 +97,12 @@
     <ClCompile Include="src\TOE\Editor\Panels\SettingsPanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\TOE\Scene\Serializer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TOE\Utils\WindowsUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\TOE\Core\Application.h">
@@ -340,6 +346,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\TOE\Scene\Serializer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TOE\Utils\WindowsUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,6 +4,7 @@
 #include <TOE/Core/Ref.h>
 #include <TOE/Graphics/Texture.h>
 #include <TOE/Graphics/VertexObjects.h>
+#include <TOE/Graphics/Primitives.h>
 #include <string>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -41,18 +42,26 @@ namespace TOE
 		}
 	};
 
-	// To modify maybe
+	// TODO: Move VAO and EBO in a mesh component
 	struct RenderComponent
 	{
 		bool Render = true;
+		glm::vec3 Color;
 
+		RenderComponent(const glm::vec3& color = glm::vec3(1.0f, 0.0f, 0.0f))
+			: Color(color) {}
+		RenderComponent(const RenderComponent&) = default;
+	};
+
+	struct MeshComponent
+	{
 		Ref<VAO> VertexArray;
 		Ref<EBO> ElementBuffer;
-		glm::vec3 Color = glm::vec3(1.0f, 0.0f, 0.0f);
+		PrimitiveType Type;
 
-		RenderComponent(const Ref<VAO>& vao, const Ref<EBO>& ebo)
-			: VertexArray(vao), ElementBuffer(ebo) {}
-		RenderComponent(const RenderComponent&) = default;
+		MeshComponent(const Ref<VAO>& vao, const Ref<EBO>& ebo, PrimitiveType type)
+			: VertexArray(vao), ElementBuffer(ebo), Type(type) {}
+		MeshComponent(const MeshComponent&) = default;
 	};
 
 	struct CameraComponent

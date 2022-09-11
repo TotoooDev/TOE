@@ -22,6 +22,8 @@ namespace TOE
 
 		void OnViewportResize(unsigned int width, unsigned int height);
 
+		std::string Name = "New Scene";
+
 	private:
 		void OnWindowResized(WindowResizedEvent* event);
 
@@ -29,5 +31,6 @@ namespace TOE
 
 		friend class Entity;
 		friend class ScenePanel;
+		friend class SceneSerializer;
 	};
 }

@@ -5,6 +5,12 @@
 
 namespace TOE
 {
+	enum class PrimitiveType
+	{
+		Model,
+		Quad
+	};
+
 	class Primitives
 	{
 	public:
