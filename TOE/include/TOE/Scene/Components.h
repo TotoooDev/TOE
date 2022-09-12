@@ -42,15 +42,24 @@ namespace TOE
 		}
 	};
 
-	// TODO: Move VAO and EBO in a mesh component
-	struct RenderComponent
-	{
-		bool Render = true;
-		glm::vec3 Color;
+	//
+	// TODO:
+	// Move bool Render into MeshComponent
+	// Complete MaterialComponent with everything we need
+	// Update the renderer to work accordingly
+	//
 
-		RenderComponent(const glm::vec3& color = glm::vec3(1.0f, 0.0f, 0.0f))
-			: Color(color) {}
-		RenderComponent(const RenderComponent&) = default;
+	struct MaterialComponent
+	{
+		bool UseColor = false;
+		glm::vec3 AlbedoColor = glm::vec3(1.0f, 0.0f, 1.0f);
+
+		Ref<Texture2D> Albedo;
+		Ref<Texture2D> Specular;
+		float Shininess = 32.0f;
+
+		MaterialComponent() {}
+		MaterialComponent(const MaterialComponent&) = default;
 	};
 
 	struct MeshComponent
@@ -58,6 +67,7 @@ namespace TOE
 		Ref<VAO> VertexArray;
 		Ref<EBO> ElementBuffer;
 		PrimitiveType Type;
+		bool Render = true;
 
 		MeshComponent(const Ref<VAO>& vao, const Ref<EBO>& ebo, PrimitiveType type)
 			: VertexArray(vao), ElementBuffer(ebo), Type(type) {}

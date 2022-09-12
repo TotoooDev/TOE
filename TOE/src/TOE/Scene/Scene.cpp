@@ -1,10 +1,10 @@
+#include "pch.h"
 #include <TOE/Scene/Scene.h>
 #include <TOE/Scene/Entity.h>
 #include <TOE/Scene/Components.h>
 #include <TOE/Core/Core.h>
 #include <TOE/Core/Application.h>
 #include <TOE/Graphics/Renderer.h>
-#include <TOE/Debug/Instrumentor.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -47,13 +47,29 @@ namespace TOE
 		// Loop through all renderable entities
 		{
 			TOE_PROFILE_SCOPE("Scene::Update::RenderEntities");
-			auto view = m_Registry.view<TransformComponent, RenderComponent, MeshComponent>();
-			for (auto&& [entity, transform, render, mesh] : view.each())
+			auto view = m_Registry.view<TransformComponent, MeshComponent>();
+			for (auto&& [entity, transform, mesh] : view.each())
 			{
-				if (!render.Render)
+				auto ent = Entity(entity, this);
+
+				if (!mesh.Render)
 					continue;
 
-				Renderer::DrawVertexObject(transform.GetTransfrom(), mesh.VertexArray, mesh.ElementBuffer, render.Color);
+				if (ent.HasComponent<MaterialComponent>())
+				{
+					auto& material = ent.GetComponent<MaterialComponent>();
+					if (material.Albedo && !material.UseColor)
+						Renderer::DrawVertexObject(transform.GetTransfrom(), mesh.VertexArray, mesh.ElementBuffer, material.Albedo);
+					else
+					{
+						Renderer::DrawVertexObject(transform.GetTransfrom(), mesh.VertexArray, mesh.ElementBuffer, material.AlbedoColor);
+					}
+				}
+				else
+				{
+					Renderer::DrawVertexObject(transform.GetTransfrom(), mesh.VertexArray, mesh.ElementBuffer, glm::vec3(1.0f));
+				}
+
 			}
 		}
 	}
@@ -87,13 +103,29 @@ namespace TOE
 		// Loop through all renderable entities
 		{
 			TOE_PROFILE_SCOPE("Scene::Update::RenderEntities");
-			auto view = m_Registry.view<TransformComponent, RenderComponent, MeshComponent>();
-			for (auto&& [entity, transform, render, mesh] : view.each())
+			auto view = m_Registry.view<TransformComponent, MeshComponent>();
+			for (auto&& [entity, transform, mesh] : view.each())
 			{
-				if (!render.Render)
+				auto ent = Entity(entity, this);
+
+				if (!mesh.Render)
 					continue;
 
-				Renderer::DrawVertexObject(transform.GetTransfrom(), mesh.VertexArray, mesh.ElementBuffer, render.Color);
+				if (ent.HasComponent<MaterialComponent>())
+				{
+					auto& material = ent.GetComponent<MaterialComponent>();
+					if (material.Albedo)
+						Renderer::DrawVertexObject(transform.GetTransfrom(), mesh.VertexArray, mesh.ElementBuffer, material.Albedo);
+					else
+					{
+						Renderer::DrawVertexObject(transform.GetTransfrom(), mesh.VertexArray, mesh.ElementBuffer, material.AlbedoColor);
+					}
+				}
+				else
+				{
+					Renderer::DrawVertexObject(transform.GetTransfrom(), mesh.VertexArray, mesh.ElementBuffer, glm::vec3(1.0f));
+				}
+
 			}
 		}
 	}

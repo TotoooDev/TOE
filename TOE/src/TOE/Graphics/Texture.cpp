@@ -1,6 +1,5 @@
+#include "pch.h"
 #include <TOE/Graphics/Texture.h>
-#include <TOE/Debug/Instrumentor.h>
-#include <spdlog/spdlog.h>
 #include <stb_image/stb_image.h>
 
 namespace TOE
@@ -38,6 +37,7 @@ namespace TOE
 			spdlog::error("Failed to load image {}!", path);
 			return;
 		}
+		m_Path = path;
 
 		GLenum glFormat = GL_RGB;
 		if (numChannels == 3)
@@ -52,6 +52,11 @@ namespace TOE
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		stbi_image_free(data);
+	}
+
+	std::string Texture2D::GetPath()
+	{
+		return m_Path;
 	}
 
 	void Texture2D::Use(unsigned int slot) const

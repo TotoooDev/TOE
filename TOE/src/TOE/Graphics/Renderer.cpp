@@ -1,5 +1,5 @@
+#include "pch.h"
 #include <TOE/Graphics/Renderer.h>
-#include <TOE/Debug/Instrumentor.h>
 #include <GL/glew.h>
 
 namespace TOE
@@ -48,6 +48,26 @@ namespace TOE
 		m_ShaderColor.Use();
 		m_ShaderColor.SetMat4("uModel", transform);
 		m_ShaderColor.SetVec3("uColor", color);
+
+		vao->Use();
+		ebo->Use();
+
+		glDrawElements(GL_TRIANGLES, ebo->GetCount(), GL_UNSIGNED_INT, 0);
+
+		m_Stats.DrawCalls++;
+		m_Stats.VertexCount += vao->GetVertexCount();
+		m_Stats.IndexCount += ebo->GetCount();
+	}
+
+	void Renderer::DrawVertexObject(const glm::mat4& transform, const Ref<VAO>& vao, const Ref<EBO>& ebo, const Ref<Texture2D>& texture)
+	{
+		TOE_PROFILE_FUNCTION();
+
+		m_ShaderTexture.Use();
+		m_ShaderTexture.SetMat4("uModel", transform);
+		m_ShaderTexture.SetInt("uTexture", 0);
+
+		texture->Use();
 
 		vao->Use();
 		ebo->Use();

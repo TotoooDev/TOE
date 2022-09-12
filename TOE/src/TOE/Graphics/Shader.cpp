@@ -1,11 +1,7 @@
+#include "pch.h"
 #include <TOE/Graphics/Shader.h>
-#include <TOE/Debug/Instrumentor.h>
 
-#include <fstream>
-#include <sstream>
-#include <vector>
 #include <GL/glew.h>
-#include <spdlog/spdlog.h>
 
 namespace TOE
 {

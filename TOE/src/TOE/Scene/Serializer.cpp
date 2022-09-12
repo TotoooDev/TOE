@@ -1,3 +1,4 @@
+#include "pch.h"
 #include <TOE/Scene/Serializer.h>
 #include <TOE/Scene/Entity.h>
 #include <TOE/Scene/Components.h>
@@ -74,11 +75,15 @@ namespace TOE
 			SerializeVec3(transformComp.Scale, entityJson["transform"]["scale"]);
 		}
 
-		if (entity.HasComponent<RenderComponent>())
+		if (entity.HasComponent<MaterialComponent>())
 		{
-			auto& renderComp = entity.GetComponent<RenderComponent>();
-			SerializeVec3(renderComp.Color, entityJson["render"]["color"]);
-			entityJson["render"]["render"] = renderComp.Render;
+			auto& materialComp = entity.GetComponent<MaterialComponent>();
+			SerializeVec3(materialComp.AlbedoColor, entityJson["material"]["albedo_color"]);
+			if (materialComp.Albedo)
+				entityJson["material"]["albedo"] = materialComp.Albedo->GetPath();
+			else
+				entityJson["material"]["albedo"] = "";
+			entityJson["material"]["use_color"] = materialComp.UseColor;
 		}
 
 		if (entity.HasComponent<MeshComponent>())
@@ -109,11 +114,17 @@ namespace TOE
 			transformComp.Scale = DeserializeVec3(entityJson["transform"]["scale"]);
 		}
 
-		if (entityJson.contains("render"))
+		if (entityJson.contains("material"))
 		{
-			auto& renderComp = entity.AddComponent<RenderComponent>();
-			renderComp.Color = DeserializeVec3(entityJson["render"]["color"]);
-			renderComp.Render = entityJson["render"]["render"];
+			auto& materialComp = entity.AddComponent<MaterialComponent>();
+			materialComp.AlbedoColor = DeserializeVec3(entityJson["material"]["albedo_color"]);
+			if (entityJson["material"]["albedo"] != "")
+			{
+				auto texture = CreateRef<Texture2D>();
+				texture->CreateFromFile(entityJson["material"]["albedo"]);
+				materialComp.Albedo = texture;
+			}
+			materialComp.UseColor = entityJson["material"]["use_color"];
 		}
 
 		if (entityJson.contains("mesh"))
@@ -125,8 +136,15 @@ namespace TOE
 			{
 				auto& meshComp = entity.AddComponent<MeshComponent>(Primitives::GetQuadVAO(), Primitives::GetQuadEBO(), PrimitiveType::Quad);
 				meshComp.Type = type;
-			}
 				break;
+			}
+
+			case PrimitiveType::Cube:
+			{
+				auto& meshComp = entity.AddComponent<MeshComponent>(Primitives::GetCubeVAO(), Primitives::GetCubeEBO(), PrimitiveType::Cube);
+				meshComp.Type = type;
+				break;
+			}
 
 			case PrimitiveType::Model:
 			default:

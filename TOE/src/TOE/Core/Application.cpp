@@ -1,14 +1,10 @@
+#include "pch.h"
 #include <TOE/Core/Application.h>
 #include <TOE/Core/Core.h>
 #include <TOE/Core/Window.h>
 #include <TOE/Core/GlobalConfig.h>
 #include <TOE/Event/WindowEvents.h>
 #include <TOE/Graphics/Renderer.h>
-#include <TOE/Debug/Instrumentor.h>
-
-#include <spdlog/spdlog.h>
-#include <spdlog/sinks/rotating_file_sink.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 
 #include <ImGui/imgui.h>
 #include <ImGui/imgui_impl_glfw.h>

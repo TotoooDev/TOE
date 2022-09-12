@@ -46,6 +46,7 @@ namespace TOE
 		bool m_ViewportFocused = false;
 
 		std::string m_ScenePath = "";
+		bool m_OpenScene = false, m_NewScene = false;
 
 		bool m_ShowLogsPanel;
 		bool m_ShowScenePanel;

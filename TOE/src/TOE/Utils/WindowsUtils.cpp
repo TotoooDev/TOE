@@ -1,11 +1,8 @@
+#include "pch.h"
 #include <TOE/Utils/WindowsUtils.h>
 #include <TOE/Core/Application.h>
 
-#include <windows.h>
 #include <commdlg.h>
-#include <GLFW/glfw3.h>
-#define GLFW_EXPOSE_NATIVE_WIN32
-#include <GLFW/glfw3native.h>
 
 namespace TOE
 {

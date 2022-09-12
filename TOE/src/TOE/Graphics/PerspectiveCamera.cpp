@@ -1,6 +1,6 @@
+#include "pch.h"
 #include <TOE/Graphics/PerspectiveCamera.h>
 #include <TOE/Core/Application.h>
-#include <TOE/Debug/Instrumentor.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>

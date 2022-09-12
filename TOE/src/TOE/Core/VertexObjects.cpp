@@ -1,5 +1,5 @@
+#include "pch.h"
 #include <TOE/Graphics/VertexObjects.h>
-#include <TOE/Debug/Instrumentor.h>
 
 namespace TOE
 {

@@ -1,6 +1,9 @@
+#include "pch.h"
 #include <TOE/Editor/Panels/PropertiesPanel.h>
 #include <TOE/Scene/Components.h>
 #include <TOE/Graphics/Primitives.h>
+#include <TOE/Utils/WindowsUtils.h>
+
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 
@@ -46,14 +49,35 @@ namespace TOE
 				}
 			}
 
-			if (ent.HasComponent<RenderComponent>())
+			if (ent.HasComponent<MaterialComponent>())
 			{
-				auto& renderComponent = ent.GetComponent<RenderComponent>();
+				auto& materialComponent = ent.GetComponent<MaterialComponent>();
 				if (ImGui::TreeNodeEx("Render", flags))
 				{
-					DrawRemove<RenderComponent>();
-					ImGui::Checkbox("Render", &renderComponent.Render);
-					ImGui::ColorEdit3("Color", glm::value_ptr(renderComponent.Color));
+					DrawRemove<MaterialComponent>();
+					
+					ImGui::ColorEdit3("Color", glm::value_ptr(materialComponent.AlbedoColor));
+					ImGui::Separator();
+					ImGui::Text("Albedo texture");
+					if (materialComponent.Albedo)
+					{
+						ImGui::Image((void*)materialComponent.Albedo->GetID(), ImVec2{ 128, 128 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+						if (ImGui::Button("Delete texture"))
+						{
+							materialComponent.Albedo = { };
+						}
+					}
+					if (ImGui::Button("Browse..."))
+					{
+						auto path = Utils::OpenFileDialog("Image files\0*.png;*.jpg;*.jpeg;*.bmp;*.gif");
+						if (!materialComponent.Albedo)
+						{
+							materialComponent.Albedo = CreateRef<Texture2D>();
+						}
+						materialComponent.Albedo->CreateFromFile(path);
+					}
+					ImGui::Separator();
+					ImGui::Checkbox("Use color", &materialComponent.UseColor);
 					ImGui::TreePop();
 				}
 			}
@@ -64,7 +88,7 @@ namespace TOE
 				if (ImGui::TreeNodeEx("Mesh", flags))
 				{
 					DrawRemove<MeshComponent>();
-					ImGui::Text("Don't know what to put here :(");
+					ImGui::Checkbox("Render", &meshComponent.Render);
 					ImGui::TreePop();
 				}
 			}
@@ -89,12 +113,14 @@ namespace TOE
 				{
 					if (ImGui::MenuItem("Transform") && !m_ScenePanel->m_SelectedEntity.HasComponent<TransformComponent>())
 						m_ScenePanel->m_SelectedEntity.AddComponent<TransformComponent>();
-					if (ImGui::MenuItem("Render") && !m_ScenePanel->m_SelectedEntity.HasComponent<RenderComponent>())
-						m_ScenePanel->m_SelectedEntity.AddComponent<RenderComponent>();
+					if (ImGui::MenuItem("Material") && !m_ScenePanel->m_SelectedEntity.HasComponent<MaterialComponent>())
+						m_ScenePanel->m_SelectedEntity.AddComponent<MaterialComponent>();
 					if (ImGui::BeginMenu("Mesh"))
 					{
 						if (ImGui::MenuItem("Quad") && !m_ScenePanel->m_SelectedEntity.HasComponent<MeshComponent>())
 							m_ScenePanel->m_SelectedEntity.AddComponent<MeshComponent>(Primitives::GetQuadVAO(), Primitives::GetQuadEBO(), PrimitiveType::Quad);
+						if (ImGui::MenuItem("Cube") && !m_ScenePanel->m_SelectedEntity.HasComponent<MeshComponent>())
+							m_ScenePanel->m_SelectedEntity.AddComponent<MeshComponent>(Primitives::GetCubeVAO(), Primitives::GetCubeEBO(), PrimitiveType::Cube);
 						ImGui::EndMenu();
 					}
 					if (ImGui::MenuItem("Camera") && !m_ScenePanel->m_SelectedEntity.HasComponent<CameraComponent>())

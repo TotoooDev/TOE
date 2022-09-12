@@ -1,9 +1,7 @@
+#include "pch.h"
 #include <TOE/Core/Window.h>
 #include <TOE/Core/GlobalConfig.h>
 #include <TOE/Event/Events.h>
-#include <TOE/Debug/Instrumentor.h>
-
-#include <spdlog/spdlog.h>
 
 #include <ImGui/imgui.h>
 #include <ImGui/imgui_impl_glfw.h>

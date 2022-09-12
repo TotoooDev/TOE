@@ -1,3 +1,4 @@
+#include "pch.h"
 #include <TOE/TOE.h>
 
 TOE::Application* CreateApplication()

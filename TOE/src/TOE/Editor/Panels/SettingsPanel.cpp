@@ -1,3 +1,4 @@
+#include "pch.h"
 #include <TOE/Editor/Panels/SettingsPanel.h>
 #include <TOE/Core/GlobalConfig.h>
 #include <ImGui/imgui.h>

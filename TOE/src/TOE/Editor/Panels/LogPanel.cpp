@@ -1,3 +1,4 @@
+#include "pch.h"
 #include <TOE/Editor/Panels/LogPanel.h>
 
 namespace TOE

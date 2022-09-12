@@ -1,3 +1,4 @@
+#include "pch.h"
 #include <TOE/Editor/Panels/ScenePanel.h>
 #include <TOE/Scene/Components.h>
 #include <ImGui/imgui.h>

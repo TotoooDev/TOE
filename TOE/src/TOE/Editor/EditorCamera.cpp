@@ -1,9 +1,9 @@
+#include "pch.h"
 #include <TOE/Editor/EditorCamera.h>
 #include <TOE/Event/Input.h>
 #include <TOE/Core/Application.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
-#include <spdlog/spdlog.h>
 
 namespace TOE
 {

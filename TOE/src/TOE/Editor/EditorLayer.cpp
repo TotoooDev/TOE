@@ -1,9 +1,9 @@
+#include "pch.h"
 #include <TOE/Editor/EditorLayer.h>
 #include <TOE/Core/Application.h>
 #include <TOE/Core/GlobalConfig.h>
 #include <TOE/Editor/EditorSink.h>
 #include <TOE/Event/Input.h>
-#include <TOE/Debug/Instrumentor.h>
 #include <TOE/Graphics/Renderer.h>
 #include <TOE/Scene/Components.h>
 #include <TOE/Scene/Serializer.h>
@@ -51,7 +51,7 @@ namespace TOE
 		data.Width = Application::Get().GetWindowData().Width;
 		data.Height = Application::Get().GetWindowData().Height;
 		m_Framebuffer->Create(data);
-	}
+}
 
 	void EditorLayer::OnUpdate(double timestep)
 	{
@@ -81,31 +81,7 @@ namespace TOE
 			{
 				if (ImGui::MenuItem("New Scene", "Ctrl+N"))
 				{
-					// ImGui::OpenPopup("New");
-					// Always center this window when appearing
-					ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-					ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
-					if (ImGui::BeginPopupModal("New", NULL, ImGuiWindowFlags_AlwaysAutoResize))
-					{
-						ImGui::Text("All those beautiful files will be deleted.\nThis operation cannot be undone!\n\n");
-						ImGui::Separator();
-
-						//static int unused_i = 0;
-						//ImGui::Combo("Combo", &unused_i, "Delete\0Delete harder\0");
-
-						static bool dont_ask_me_next_time = false;
-						ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
-						ImGui::Checkbox("Don't ask me next time", &dont_ask_me_next_time);
-						ImGui::PopStyleVar();
-
-						if (ImGui::Button("OK", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
-						ImGui::SetItemDefaultFocus();
-						ImGui::SameLine();
-						if (ImGui::Button("Cancel", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
-						ImGui::EndPopup();
-					}
-					New();
+					m_NewScene = true;
 				}
 				if (ImGui::MenuItem("Save", "Ctrl+S"))
 				{
@@ -117,7 +93,7 @@ namespace TOE
 				}
 				if (ImGui::MenuItem("Open...", "Ctrl+O"))
 				{
-					Open();
+					m_OpenScene = true;
 				}
 				ImGui::Separator();
 				if (ImGui::MenuItem("Close"))
@@ -149,6 +125,42 @@ namespace TOE
 			ImGui::EndMainMenuBar();
 		}
 
+		if (m_NewScene || m_OpenScene)
+			ImGui::OpenPopup("Warning");
+		// Always center this window when appearing
+		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+		if (ImGui::BeginPopupModal("Warning", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			ImGui::Text("All unsaved data will be deleted!\nThis operation cannot be undone!\n\n");
+			ImGui::Separator();
+
+			if (ImGui::Button("OK", ImVec2(120, 0)))
+			{
+				if (m_NewScene)
+				{
+					New();
+					m_NewScene = false;
+				}
+				if (m_OpenScene)
+				{
+					Open();
+					m_OpenScene = false;
+				}
+				ImGui::CloseCurrentPopup();
+			}
+			ImGui::SetItemDefaultFocus();
+			ImGui::SameLine();
+			if (ImGui::Button("Cancel", ImVec2(120, 0)))
+			{
+				ImGui::CloseCurrentPopup();
+				m_NewScene = false;
+				m_OpenScene = false;
+			}
+			ImGui::EndPopup();
+		}
+
 		// Viewport
 		if (m_ShowViewportPanel)
 			m_ViewportPanel.Draw(&m_ShowViewportPanel);
@@ -172,8 +184,6 @@ namespace TOE
 		// Settings panel
 		if (m_ShowSettingsPanel)
 			m_SettingsPanel.Draw(&m_ShowSettingsPanel);
-	
-		// ImGui::ShowDemoWindow(nullptr);
 	}
 
 	void EditorLayer::New()
@@ -186,7 +196,7 @@ namespace TOE
 	}
 	void EditorLayer::Save()
 	{
-		if (m_ScenePath == "")
+		if (m_ScenePath.empty())
 		{
 			SaveAs();
 		}
@@ -204,13 +214,17 @@ namespace TOE
 	}
 	void EditorLayer::Open()
 	{
-		m_Scene = CreateRef<Scene>();
-		m_ScenePath = Utils::OpenFileDialog("TOE Scene file (*.toe)\0*.toe\0");
-		SceneSerializer serializer(m_Scene);
-		serializer.Deserialize(m_ScenePath);
-		m_ScenePanel.SetCurrentScene(m_Scene);
-		m_ViewportPanel.Init(m_Scene, m_Framebuffer, m_Camera);
-		m_PropertiesPanel.SetScenePanel(&m_ScenePanel);
+		auto path = Utils::OpenFileDialog("TOE Scene file (*.toe)\0*.toe\0");
+		if (!path.empty())
+		{
+			m_ScenePath = path;
+			m_Scene = CreateRef<Scene>();
+			SceneSerializer serializer(m_Scene);
+			serializer.Deserialize(m_ScenePath);
+			m_ScenePanel.SetCurrentScene(m_Scene);
+			m_ViewportPanel.Init(m_Scene, m_Framebuffer, m_Camera);
+			m_PropertiesPanel.SetScenePanel(&m_ScenePanel);
+		}
 	}
 
 	void EditorLayer::OnKeyPressed(KeyDownEvent* event)
@@ -230,13 +244,13 @@ namespace TOE
 		case TOE_KEY_O:
 			if (Input::Key(TOE_KEY_LEFT_CONTROL) || Input::Key(TOE_KEY_RIGHT_CONTROL))
 			{
-				Open();
+				m_OpenScene = true;
 			}
 			break;
 		case TOE_KEY_N:
 			if (Input::Key(TOE_KEY_LEFT_CONTROL) || Input::Key(TOE_KEY_RIGHT_CONTROL))
 			{
-				New();
+				m_NewScene = true;
 			}
 			break;
 

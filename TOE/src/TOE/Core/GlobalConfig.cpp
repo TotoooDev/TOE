@@ -1,5 +1,5 @@
+#include "pch.h"
 #include <TOE/Core/GlobalConfig.h>
-#include <fstream>
 
 namespace TOE
 {
