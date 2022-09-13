@@ -34,6 +34,13 @@ namespace TOE
 		ebo->SetData(indices);
 		return ebo;
 	}
+	Ref<Model> Primitives::GetQuadModel()
+	{
+		std::vector<Mesh> meshes;
+		Mesh mesh(GetQuadVAO(), GetQuadEBO());
+		meshes.push_back(mesh);
+		return Ref<Model>();
+	}
 
 	Ref<VAO> Primitives::GetCubeVAO()
 	{

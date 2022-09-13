@@ -71,6 +71,12 @@ namespace TOE
 				}
 
 			}
+
+			auto otherView = m_Registry.view<ModelComponent>();
+			for (auto&& [entity, model] : otherView.each())
+			{
+				Renderer::DrawModel(glm::mat4(1.0f), model.Mod);
+			}
 		}
 	}
 

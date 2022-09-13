@@ -3,7 +3,7 @@
 #include <TOE/Graphics/PerspectiveCamera.h>
 #include <TOE/Core/Ref.h>
 #include <TOE/Graphics/Texture.h>
-#include <TOE/Graphics/VertexObjects.h>
+#include <TOE/Graphics/Model.h>
 #include <TOE/Graphics/Primitives.h>
 #include <string>
 #include <glm/glm.hpp>
@@ -42,13 +42,6 @@ namespace TOE
 		}
 	};
 
-	//
-	// TODO:
-	// Move bool Render into MeshComponent
-	// Complete MaterialComponent with everything we need
-	// Update the renderer to work accordingly
-	//
-
 	struct MaterialComponent
 	{
 		bool UseColor = false;
@@ -72,6 +65,16 @@ namespace TOE
 		MeshComponent(const Ref<VAO>& vao, const Ref<EBO>& ebo, PrimitiveType type)
 			: VertexArray(vao), ElementBuffer(ebo), Type(type) {}
 		MeshComponent(const MeshComponent&) = default;
+	};
+
+	// Temp: this should be the MeshComponent
+	struct ModelComponent
+	{
+		Ref<Model> Mod;
+
+		ModelComponent(Ref<Model> model)
+			: Mod(model) {}
+		ModelComponent(const ModelComponent&) = default;
 	};
 
 	struct CameraComponent

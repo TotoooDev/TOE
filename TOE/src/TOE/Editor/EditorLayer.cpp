@@ -9,9 +9,15 @@
 #include <TOE/Scene/Serializer.h>
 #include <TOE/Utils/WindowsUtils.h>
 
+#include <TOE/Scene/Importer.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 namespace TOE
 {
@@ -51,7 +57,11 @@ namespace TOE
 		data.Width = Application::Get().GetWindowData().Width;
 		data.Height = Application::Get().GetWindowData().Height;
 		m_Framebuffer->Create(data);
-}
+
+		Importer importer;
+		Entity entity = m_Scene->CreateEntity("Model test stuff");
+		entity.AddComponent<ModelComponent>(importer.LoadModelFromFile("models/cube.obj"));
+	}
 
 	void EditorLayer::OnUpdate(double timestep)
 	{
