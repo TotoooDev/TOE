@@ -3,8 +3,10 @@
 #include <TOE/Graphics/PerspectiveCamera.h>
 #include <TOE/Core/Ref.h>
 #include <TOE/Graphics/Texture.h>
-#include <TOE/Graphics/Model.h>
+#include <TOE/Graphics/Mesh.h>
 #include <TOE/Graphics/Primitives.h>
+#include <TOE/Graphics/Material.h>
+
 #include <string>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -45,36 +47,21 @@ namespace TOE
 	struct MaterialComponent
 	{
 		bool UseColor = false;
-		glm::vec3 AlbedoColor = glm::vec3(1.0f, 0.0f, 1.0f);
+		std::vector<Material> Materials;
 
-		Ref<Texture2D> Albedo;
-		Ref<Texture2D> Specular;
-		float Shininess = 32.0f;
-
-		MaterialComponent() {}
+		MaterialComponent(std::vector<Material> materials)
+		: Materials(materials) {}
 		MaterialComponent(const MaterialComponent&) = default;
 	};
 
 	struct MeshComponent
 	{
-		Ref<VAO> VertexArray;
-		Ref<EBO> ElementBuffer;
-		PrimitiveType Type;
+		Ref<TOE::Model> Model;
 		bool Render = true;
 
-		MeshComponent(const Ref<VAO>& vao, const Ref<EBO>& ebo, PrimitiveType type)
-			: VertexArray(vao), ElementBuffer(ebo), Type(type) {}
+		MeshComponent(Ref<TOE::Model> model)
+			: Model(model) {}
 		MeshComponent(const MeshComponent&) = default;
-	};
-
-	// Temp: this should be the MeshComponent
-	struct ModelComponent
-	{
-		Ref<Model> Mod;
-
-		ModelComponent(Ref<Model> model)
-			: Mod(model) {}
-		ModelComponent(const ModelComponent&) = default;
 	};
 
 	struct CameraComponent

@@ -58,24 +58,13 @@ namespace TOE
 				if (ent.HasComponent<MaterialComponent>())
 				{
 					auto& material = ent.GetComponent<MaterialComponent>();
-					if (material.Albedo && !material.UseColor)
-						Renderer::DrawVertexObject(transform.GetTransfrom(), mesh.VertexArray, mesh.ElementBuffer, material.Albedo);
-					else
-					{
-						Renderer::DrawVertexObject(transform.GetTransfrom(), mesh.VertexArray, mesh.ElementBuffer, material.AlbedoColor);
-					}
+					Renderer::DrawModel(transform.GetTransfrom(), mesh.Model, material.Materials);
 				}
 				else
 				{
-					Renderer::DrawVertexObject(transform.GetTransfrom(), mesh.VertexArray, mesh.ElementBuffer, glm::vec3(1.0f));
+					Renderer::DrawModel(transform.GetTransfrom(), mesh.Model, glm::vec3(1.0f));
 				}
 
-			}
-
-			auto otherView = m_Registry.view<ModelComponent>();
-			for (auto&& [entity, model] : otherView.each())
-			{
-				Renderer::DrawModel(glm::mat4(1.0f), model.Mod);
 			}
 		}
 	}
@@ -120,18 +109,12 @@ namespace TOE
 				if (ent.HasComponent<MaterialComponent>())
 				{
 					auto& material = ent.GetComponent<MaterialComponent>();
-					if (material.Albedo)
-						Renderer::DrawVertexObject(transform.GetTransfrom(), mesh.VertexArray, mesh.ElementBuffer, material.Albedo);
-					else
-					{
-						Renderer::DrawVertexObject(transform.GetTransfrom(), mesh.VertexArray, mesh.ElementBuffer, material.AlbedoColor);
-					}
+					Renderer::DrawModel(transform.GetTransfrom(), mesh.Model, material.Materials);
 				}
 				else
 				{
-					Renderer::DrawVertexObject(transform.GetTransfrom(), mesh.VertexArray, mesh.ElementBuffer, glm::vec3(1.0f));
+					Renderer::DrawModel(transform.GetTransfrom(), mesh.Model, glm::vec3(1.0f));
 				}
-
 			}
 		}
 	}

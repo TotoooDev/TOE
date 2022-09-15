@@ -75,21 +75,21 @@ namespace TOE
 			SerializeVec3(transformComp.Scale, entityJson["transform"]["scale"]);
 		}
 
-		if (entity.HasComponent<MaterialComponent>())
-		{
-			auto& materialComp = entity.GetComponent<MaterialComponent>();
-			SerializeVec3(materialComp.AlbedoColor, entityJson["material"]["albedo_color"]);
-			if (materialComp.Albedo)
-				entityJson["material"]["albedo"] = materialComp.Albedo->GetPath();
-			else
-				entityJson["material"]["albedo"] = "";
-			entityJson["material"]["use_color"] = materialComp.UseColor;
-		}
+		// if (entity.HasComponent<MaterialComponent>())
+		// {
+		// 	auto& materialComp = entity.GetComponent<MaterialComponent>();
+		// 	SerializeVec3(materialComp.AlbedoColor, entityJson["material"]["albedo_color"]);
+		// 	if (materialComp.Albedo)
+		// 		entityJson["material"]["albedo"] = materialComp.Albedo->GetPath();
+		// 	else
+		// 		entityJson["material"]["albedo"] = "";
+		// 	entityJson["material"]["use_color"] = materialComp.UseColor;
+		// }
 
 		if (entity.HasComponent<MeshComponent>())
 		{
 			auto& meshComp = entity.GetComponent<MeshComponent>();
-			entityJson["mesh"]["type"] = meshComp.Type;
+			// entityJson["mesh"]["type"] = meshComp.Type;
 		}
 	}
 
@@ -114,18 +114,18 @@ namespace TOE
 			transformComp.Scale = DeserializeVec3(entityJson["transform"]["scale"]);
 		}
 
-		if (entityJson.contains("material"))
-		{
-			auto& materialComp = entity.AddComponent<MaterialComponent>();
-			materialComp.AlbedoColor = DeserializeVec3(entityJson["material"]["albedo_color"]);
-			if (entityJson["material"]["albedo"] != "")
-			{
-				auto texture = CreateRef<Texture2D>();
-				texture->CreateFromFile(entityJson["material"]["albedo"]);
-				materialComp.Albedo = texture;
-			}
-			materialComp.UseColor = entityJson["material"]["use_color"];
-		}
+		// if (entityJson.contains("material"))
+		// {
+		// 	auto& materialComp = entity.AddComponent<MaterialComponent>();
+		// 	materialComp.AlbedoColor = DeserializeVec3(entityJson["material"]["albedo_color"]);
+		// 	if (entityJson["material"]["albedo"] != "")
+		// 	{
+		// 		auto texture = CreateRef<Texture2D>();
+		// 		texture->CreateFromFile(entityJson["material"]["albedo"]);
+		// 		materialComp.Albedo = texture;
+		// 	}
+		// 	materialComp.UseColor = entityJson["material"]["use_color"];
+		// }
 
 		if (entityJson.contains("mesh"))
 		{
@@ -134,15 +134,15 @@ namespace TOE
 			{
 			case PrimitiveType::Quad:
 			{
-				auto& meshComp = entity.AddComponent<MeshComponent>(Primitives::GetQuadVAO(), Primitives::GetQuadEBO(), PrimitiveType::Quad);
-				meshComp.Type = type;
+				// auto& meshComp = entity.AddComponent<MeshComponent>(Primitives::GetQuadVAO(), Primitives::GetQuadEBO(), PrimitiveType::Quad);
+				// meshComp.Type = type;
 				break;
 			}
 
 			case PrimitiveType::Cube:
 			{
-				auto& meshComp = entity.AddComponent<MeshComponent>(Primitives::GetCubeVAO(), Primitives::GetCubeEBO(), PrimitiveType::Cube);
-				meshComp.Type = type;
+				// auto& meshComp = entity.AddComponent<MeshComponent>(Primitives::GetCubeVAO(), Primitives::GetCubeEBO(), PrimitiveType::Cube);
+				// meshComp.Type = type;
 				break;
 			}
 

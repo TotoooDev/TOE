@@ -41,22 +41,58 @@ namespace TOE
 		m_ShaderColor.SetMat4("uProjection", camera.GetProjection());
 	}
 
-	void Renderer::DrawModel(const glm::mat4& transform, const Ref<Model>& model)
+	void Renderer::DrawModel(const glm::mat4& transform, const Ref<Model>& model, const std::vector<Material>& materials)
 	{
-		for (auto& mesh : model->GetMeshes())
+		for (unsigned int i = 0; i < model->GetMeshes().size(); i++)
 		{
-			DrawMesh(transform, mesh);
+			DrawMesh(transform, model->GetMeshes()[i], materials[i]);
 		}
 	}
 
-	void Renderer::DrawMesh(const glm::mat4& transform, const Mesh& mesh)
+	void Renderer::DrawModel(const glm::mat4& transform, const Ref<Model>& model, const glm::vec3& color)
+	{
+		for (unsigned int i = 0; i < model->GetMeshes().size(); i++)
+		{
+			DrawMesh(transform, model->GetMeshes()[i], color);
+		}
+	}
+
+	void Renderer::DrawMesh(const glm::mat4& transform, const Mesh& mesh, const Material& material)
+	{
+		auto vao = mesh.GetVAO();
+		auto ebo = mesh.GetEBO();
+
+		if (material.Diffuse)
+		{
+			m_ShaderTexture.Use();
+			m_ShaderTexture.SetMat4("uModel", transform);
+			m_ShaderTexture.SetInt("uTexture", 0);
+		}
+		else
+		{
+			m_ShaderColor.Use();
+			m_ShaderColor.SetMat4("uModel", transform);
+			m_ShaderColor.SetVec3("uColor", glm::vec3(1.0f));
+		}
+
+		vao->Use();
+		ebo->Use();
+
+		glDrawElements(GL_TRIANGLES, ebo->GetCount(), GL_UNSIGNED_INT, 0);
+
+		m_Stats.DrawCalls++;
+		m_Stats.VertexCount += vao->GetVertexCount();
+		m_Stats.IndexCount += ebo->GetCount();
+	}
+
+	void Renderer::DrawMesh(const glm::mat4& transform, const Mesh& mesh, const glm::vec3& color)
 	{
 		auto vao = mesh.GetVAO();
 		auto ebo = mesh.GetEBO();
 
 		m_ShaderColor.Use();
 		m_ShaderColor.SetMat4("uModel", transform);
-		m_ShaderColor.SetVec3("uColor", glm::vec3(1.0f));
+		m_ShaderColor.SetVec3("uColor", color);
 
 		vao->Use();
 		ebo->Use();

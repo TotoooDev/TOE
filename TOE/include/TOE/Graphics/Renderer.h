@@ -4,7 +4,8 @@
 #include <TOE/Graphics/PerspectiveCamera.h>
 #include <TOE/Graphics/Shader.h>
 #include <TOE/Graphics/Texture.h>
-#include <TOE/Graphics/Model.h>
+#include <TOE/Graphics/Mesh.h>
+#include <TOE/Graphics/Material.h>
 #include <TOE/Event/WindowEvents.h>
 #include <TOE/Scene/Scene.h>
 
@@ -44,8 +45,10 @@ namespace TOE
 		static void SetCurrentCamera(const Camera& camera);
 
 		// TODO: implement BeginScene method or something
-		static void DrawModel(const glm::mat4& transform, const Ref<Model>& model);
-		static void DrawMesh(const glm::mat4& transform, const Mesh& mesh);
+		static void DrawModel(const glm::mat4& transform, const Ref<Model>& model, const std::vector<Material>& materials);
+		static void DrawModel(const glm::mat4& transform, const Ref<Model>& model, const glm::vec3& color);
+		static void DrawMesh(const glm::mat4& transform, const Mesh& mesh, const Material& materials);
+		static void DrawMesh(const glm::mat4& transform, const Mesh& mesh, const glm::vec3& color);
 		static void DrawVertexObject(const glm::mat4& transform, const Ref<VAO>& vao, const Ref<EBO>& ebo, const glm::vec3& color);
 		static void DrawVertexObject(const glm::mat4& transform, const Ref<VAO>& vao, const Ref<EBO>& ebo, const Ref<Texture2D>& texture);
 

@@ -59,8 +59,10 @@ namespace TOE
 		m_Framebuffer->Create(data);
 
 		Importer importer;
+		auto&& [model, materials] = importer.LoadModelFromFile("models/source/Mushroom.fbx");
 		Entity entity = m_Scene->CreateEntity("Model test stuff");
-		entity.AddComponent<ModelComponent>(importer.LoadModelFromFile("models/cube.obj"));
+		entity.AddComponent<MeshComponent>(model);
+		entity.AddComponent<MaterialComponent>(materials);
 	}
 
 	void EditorLayer::OnUpdate(double timestep)

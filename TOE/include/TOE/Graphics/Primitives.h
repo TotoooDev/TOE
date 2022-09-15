@@ -1,7 +1,7 @@
 #pragma once
 
 #include <TOE/Core/Ref.h>
-#include <TOE/Graphics/Model.h>
+#include <TOE/Graphics/Mesh.h>
 
 namespace TOE
 {
@@ -17,10 +17,10 @@ namespace TOE
 	public:
 		static Ref<VAO> GetQuadVAO();
 		static Ref<EBO> GetQuadEBO();
-		static Ref<Model> GetQuadModel();
+		// static Ref<Model> GetQuadModel();
 
 		static Ref<VAO> GetCubeVAO();
 		static Ref<EBO> GetCubeEBO();
-		static Ref<Model> GetCubeModel();
+		// static Ref<Model> GetCubeModel();
 	};
 }

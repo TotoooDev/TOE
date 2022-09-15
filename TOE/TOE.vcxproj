@@ -249,8 +249,8 @@
     <ClInclude Include="include\TOE\Editor\EditorCamera.h" />
     <ClInclude Include="include\TOE\Event\Input.h" />
     <ClInclude Include="include\TOE\Graphics\Framebuffer.h" />
+    <ClInclude Include="include\TOE\Graphics\Material.h" />
     <ClInclude Include="include\TOE\Graphics\Mesh.h" />
-    <ClInclude Include="include\TOE\Graphics\Model.h" />
     <ClInclude Include="include\TOE\Graphics\Primitives.h" />
     <ClInclude Include="include\TOE\pch.h" />
     <ClInclude Include="include\TOE\Scene\Importer.h" />

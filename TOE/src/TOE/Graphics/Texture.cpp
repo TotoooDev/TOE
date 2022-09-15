@@ -37,7 +37,7 @@ namespace TOE
 			spdlog::error("Failed to load image {}!", path);
 			return;
 		}
-		m_Path = path;
+		Path = path;
 
 		GLenum glFormat = GL_RGB;
 		if (numChannels == 3)
@@ -52,11 +52,6 @@ namespace TOE
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		stbi_image_free(data);
-	}
-
-	std::string Texture2D::GetPath()
-	{
-		return m_Path;
 	}
 
 	void Texture2D::Use(unsigned int slot) const

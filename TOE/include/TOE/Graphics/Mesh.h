@@ -36,4 +36,16 @@ namespace TOE
 		Ref<VAO> m_VAO;
 		Ref<EBO> m_EBO;
 	};
+
+	class Model
+	{
+	public:
+		Model(std::vector<Mesh> meshes)
+			: m_Meshes(meshes) {}
+
+		std::vector<Mesh> GetMeshes() { return m_Meshes; }
+
+	private:
+		std::vector<Mesh> m_Meshes;
+	};
 }

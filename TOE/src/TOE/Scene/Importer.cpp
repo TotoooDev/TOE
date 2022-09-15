@@ -3,7 +3,7 @@
 
 namespace TOE
 {
-	Ref<Model> Importer::LoadModelFromFile(const std::string& path)
+	std::pair<Ref<Model>, std::vector<Material>> Importer::LoadModelFromFile(const std::string& path)
 	{
 		Assimp::Importer importer;
 		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -16,7 +16,8 @@ namespace TOE
 		m_Directory = path.substr(0, path.find_last_of('/'));
 
 		ProcessNode(scene->mRootNode, scene);
-		return CreateRef<Model>(m_Meshes, path);
+		auto model = CreateRef<Model>(m_Meshes);
+		return std::pair<Ref<Model>, std::vector<Material>>(model, m_Materials);
 	}
 
 	void Importer::ProcessNode(aiNode* node, const aiScene* scene)
@@ -51,11 +52,18 @@ namespace TOE
 			pos.z = mesh->mVertices[i].z;
 			vertex.Pos = pos;
 
-			glm::vec3 normal;
-			normal.x = mesh->mNormals[i].x;
-			normal.y = mesh->mNormals[i].y;
-			normal.z = mesh->mNormals[i].z;
-			vertex.Normal = normal;
+			if (mesh->mNormals)
+			{
+				glm::vec3 normal;
+				normal.x = mesh->mNormals[i].x;
+				normal.y = mesh->mNormals[i].y;
+				normal.z = mesh->mNormals[i].z;
+				vertex.Normal = normal;
+			}
+			else
+			{
+				vertex.Normal = glm::vec3(0.0f);
+			}
 
 			if (mesh->mTextureCoords[0])
 			{
@@ -82,6 +90,49 @@ namespace TOE
 			}
 		}
 
+		// Process materials
+		if (mesh->mMaterialIndex >= 0)
+		{
+			aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
+			ProcessTextures(mat, scene);
+		}
+
 		return Mesh(vertices, indices);
+	}
+
+	void Importer::ProcessTextures(aiMaterial* mat, const aiScene* scene)
+	{
+		Material material;
+
+		// Process diffuse texture
+		aiString str;
+		mat->GetTexture(aiTextureType_DIFFUSE, 0, &str);
+		bool skip = false;
+		for (unsigned int j = 0; j < m_LoadedTextures.size(); j++)
+		{
+			if (std::strcmp(m_LoadedTextures[j].Path.data(), str.C_Str()) == 0)
+			{
+				material.Diffuse = CreateRef<Texture2D>(m_LoadedTextures[j]);
+				skip = true;
+				break;
+			}
+		}
+		if (!skip)
+		{   // if texture hasn't been loaded already, load it
+			Texture2D texture;
+			std::string path = str.C_Str();
+			if (path != "")
+			{
+				auto found = path.find_last_of("/\\");
+				path = path.substr(found);
+				texture.CreateFromFile("textures/" + path);
+				texture.Type = TextureType::Diffuse;
+				texture.Path = str.C_Str();
+				m_LoadedTextures.push_back(texture); // add to loaded textures
+				material.Diffuse = CreateRef<Texture2D>(texture);
+			}
+		}
+
+		m_Materials.push_back(material);
 	}
 }

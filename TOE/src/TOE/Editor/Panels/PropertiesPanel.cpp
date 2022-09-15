@@ -51,35 +51,35 @@ namespace TOE
 
 			if (ent.HasComponent<MaterialComponent>())
 			{
-				auto& materialComponent = ent.GetComponent<MaterialComponent>();
-				if (ImGui::TreeNodeEx("Render", flags))
-				{
-					DrawRemove<MaterialComponent>();
-					
-					ImGui::ColorEdit3("Color", glm::value_ptr(materialComponent.AlbedoColor));
-					ImGui::Separator();
-					ImGui::Text("Albedo texture");
-					if (materialComponent.Albedo)
-					{
-						ImGui::Image((void*)materialComponent.Albedo->GetID(), ImVec2{ 128, 128 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-						if (ImGui::Button("Delete texture"))
-						{
-							materialComponent.Albedo = { };
-						}
-					}
-					if (ImGui::Button("Browse..."))
-					{
-						auto path = Utils::OpenFileDialog("Image files\0*.png;*.jpg;*.jpeg;*.bmp;*.gif");
-						if (!materialComponent.Albedo)
-						{
-							materialComponent.Albedo = CreateRef<Texture2D>();
-						}
-						materialComponent.Albedo->CreateFromFile(path);
-					}
-					ImGui::Separator();
-					ImGui::Checkbox("Use color", &materialComponent.UseColor);
-					ImGui::TreePop();
-				}
+				// auto& materialComponent = ent.GetComponent<MaterialComponent>();
+				// if (ImGui::TreeNodeEx("Render", flags))
+				// {
+				// 	DrawRemove<MaterialComponent>();
+				// 	
+				// 	ImGui::ColorEdit3("Color", glm::value_ptr(materialComponent.AlbedoColor));
+				// 	ImGui::Separator();
+				// 	ImGui::Text("Albedo texture");
+				// 	if (materialComponent.Albedo)
+				// 	{
+				// 		ImGui::Image((void*)materialComponent.Albedo->GetID(), ImVec2{ 128, 128 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+				// 		if (ImGui::Button("Delete texture"))
+				// 		{
+				// 			materialComponent.Albedo = { };
+				// 		}
+				// 	}
+				// 	if (ImGui::Button("Browse..."))
+				// 	{
+				// 		auto path = Utils::OpenFileDialog("Image files\0*.png;*.jpg;*.jpeg;*.bmp;*.gif");
+				// 		if (!materialComponent.Albedo)
+				// 		{
+				// 			materialComponent.Albedo = CreateRef<Texture2D>();
+				// 		}
+				// 		materialComponent.Albedo->CreateFromFile(path);
+				// 	}
+				// 	ImGui::Separator();
+				// 	ImGui::Checkbox("Use color", &materialComponent.UseColor);
+				// 	ImGui::TreePop();
+				// }
 			}
 
 			if (ent.HasComponent<MeshComponent>())
@@ -113,16 +113,16 @@ namespace TOE
 				{
 					if (ImGui::MenuItem("Transform") && !m_ScenePanel->m_SelectedEntity.HasComponent<TransformComponent>())
 						m_ScenePanel->m_SelectedEntity.AddComponent<TransformComponent>();
-					if (ImGui::MenuItem("Material") && !m_ScenePanel->m_SelectedEntity.HasComponent<MaterialComponent>())
-						m_ScenePanel->m_SelectedEntity.AddComponent<MaterialComponent>();
-					if (ImGui::BeginMenu("Mesh"))
-					{
-						if (ImGui::MenuItem("Quad") && !m_ScenePanel->m_SelectedEntity.HasComponent<MeshComponent>())
-							m_ScenePanel->m_SelectedEntity.AddComponent<MeshComponent>(Primitives::GetQuadVAO(), Primitives::GetQuadEBO(), PrimitiveType::Quad);
-						if (ImGui::MenuItem("Cube") && !m_ScenePanel->m_SelectedEntity.HasComponent<MeshComponent>())
-							m_ScenePanel->m_SelectedEntity.AddComponent<MeshComponent>(Primitives::GetCubeVAO(), Primitives::GetCubeEBO(), PrimitiveType::Cube);
-						ImGui::EndMenu();
-					}
+					// if (ImGui::MenuItem("Material") && !m_ScenePanel->m_SelectedEntity.HasComponent<MaterialComponent>())
+					// 	m_ScenePanel->m_SelectedEntity.AddComponent<MaterialComponent>();
+					// if (ImGui::BeginMenu("Mesh"))
+					// {
+					// 	if (ImGui::MenuItem("Quad") && !m_ScenePanel->m_SelectedEntity.HasComponent<MeshComponent>())
+					// 		m_ScenePanel->m_SelectedEntity.AddComponent<MeshComponent>(Primitives::GetQuadVAO(), Primitives::GetQuadEBO(), PrimitiveType::Quad);
+					// 	if (ImGui::MenuItem("Cube") && !m_ScenePanel->m_SelectedEntity.HasComponent<MeshComponent>())
+					// 		m_ScenePanel->m_SelectedEntity.AddComponent<MeshComponent>(Primitives::GetCubeVAO(), Primitives::GetCubeEBO(), PrimitiveType::Cube);
+					// 	ImGui::EndMenu();
+					// }
 					if (ImGui::MenuItem("Camera") && !m_ScenePanel->m_SelectedEntity.HasComponent<CameraComponent>())
 						m_ScenePanel->m_SelectedEntity.AddComponent<CameraComponent>(CreateRef<PerspectiveCamera>());
 					ImGui::EndMenu();

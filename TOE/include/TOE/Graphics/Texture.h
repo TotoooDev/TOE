@@ -5,6 +5,13 @@
 
 namespace TOE
 {
+	enum class TextureType
+	{
+		Diffuse,
+		Specular,
+		Normal
+	};
+
 	class Texture2D
 	{
 	public:
@@ -13,13 +20,13 @@ namespace TOE
 
 		void CreateFromFile(const std::string& path);
 
-		std::string GetPath();
-
 		void Use(unsigned int slot = 0) const;
 		unsigned int GetID() const;
 
+		TextureType Type;
+		std::string Path;
+
 	private:
 		unsigned int m_ID;
-		std::string m_Path;
 	};
 }
