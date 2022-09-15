@@ -3,17 +3,22 @@
 
 namespace TOE
 {
-	std::pair<Ref<Model>, std::vector<Material>> Importer::LoadModelFromFile(const std::string& path)
+	Importer::Importer(const std::string& path, const std::string& materialDir)
+		: m_Path(path), m_MaterialDir(materialDir)
+	{
+
+	}
+
+	std::pair<Ref<Model>, std::vector<Material>> Importer::LoadModelFromFile()
 	{
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+		const aiScene* scene = importer.ReadFile(m_Path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
-			spdlog::error("Failed to load model at {}!", path);
+			spdlog::error("Failed to load model at {}!", m_Path);
 			return { };
 		}
-		m_Directory = path.substr(0, path.find_last_of('/'));
 
 		ProcessNode(scene->mRootNode, scene);
 		auto model = CreateRef<Model>(m_Meshes);
@@ -110,26 +115,35 @@ namespace TOE
 		bool skip = false;
 		for (unsigned int j = 0; j < m_LoadedTextures.size(); j++)
 		{
-			if (std::strcmp(m_LoadedTextures[j].Path.data(), str.C_Str()) == 0)
+			if (std::strcmp(m_LoadedTextures[j]->Path.data(), str.C_Str()) == 0)
 			{
-				material.Diffuse = CreateRef<Texture2D>(m_LoadedTextures[j]);
+				material.Diffuse = m_LoadedTextures[j];
 				skip = true;
 				break;
 			}
 		}
 		if (!skip)
 		{   // if texture hasn't been loaded already, load it
-			Texture2D texture;
+			Ref<Texture2D> texture = CreateRef<Texture2D>();
 			std::string path = str.C_Str();
-			if (path != "")
+			if (!path.empty())
 			{
 				auto found = path.find_last_of("/\\");
-				path = path.substr(found);
-				texture.CreateFromFile("textures/" + path);
-				texture.Type = TextureType::Diffuse;
-				texture.Path = str.C_Str();
+				if (found != std::string::npos)
+					path = path.substr(found);
+				
+				found = path.find("\\");
+				while (found != std::string::npos)
+				{
+					path.erase(path.begin() + found);
+					found = path.find("/\\");
+				}
+
+				texture->CreateFromFile(m_MaterialDir + path);
+				texture->Type = TextureType::Diffuse;
+				texture->Path = m_MaterialDir + path;
 				m_LoadedTextures.push_back(texture); // add to loaded textures
-				material.Diffuse = CreateRef<Texture2D>(texture);
+				material.Diffuse = texture;
 			}
 		}
 

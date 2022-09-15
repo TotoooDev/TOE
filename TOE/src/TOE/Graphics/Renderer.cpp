@@ -67,6 +67,7 @@ namespace TOE
 			m_ShaderTexture.Use();
 			m_ShaderTexture.SetMat4("uModel", transform);
 			m_ShaderTexture.SetInt("uTexture", 0);
+			material.Diffuse->Use();
 		}
 		else
 		{

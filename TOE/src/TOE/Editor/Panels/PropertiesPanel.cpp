@@ -51,35 +51,39 @@ namespace TOE
 
 			if (ent.HasComponent<MaterialComponent>())
 			{
-				// auto& materialComponent = ent.GetComponent<MaterialComponent>();
-				// if (ImGui::TreeNodeEx("Render", flags))
-				// {
-				// 	DrawRemove<MaterialComponent>();
-				// 	
-				// 	ImGui::ColorEdit3("Color", glm::value_ptr(materialComponent.AlbedoColor));
-				// 	ImGui::Separator();
-				// 	ImGui::Text("Albedo texture");
-				// 	if (materialComponent.Albedo)
-				// 	{
-				// 		ImGui::Image((void*)materialComponent.Albedo->GetID(), ImVec2{ 128, 128 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-				// 		if (ImGui::Button("Delete texture"))
-				// 		{
-				// 			materialComponent.Albedo = { };
-				// 		}
-				// 	}
-				// 	if (ImGui::Button("Browse..."))
-				// 	{
-				// 		auto path = Utils::OpenFileDialog("Image files\0*.png;*.jpg;*.jpeg;*.bmp;*.gif");
-				// 		if (!materialComponent.Albedo)
-				// 		{
-				// 			materialComponent.Albedo = CreateRef<Texture2D>();
-				// 		}
-				// 		materialComponent.Albedo->CreateFromFile(path);
-				// 	}
-				// 	ImGui::Separator();
-				// 	ImGui::Checkbox("Use color", &materialComponent.UseColor);
-				// 	ImGui::TreePop();
-				// }
+				auto& materialComponent = ent.GetComponent<MaterialComponent>();
+				if (ImGui::TreeNodeEx("Render", flags))
+				{
+					DrawRemove<MaterialComponent>();
+
+					for (auto& material : materialComponent.Materials)
+					{
+						ImGui::ColorEdit3("Color", glm::value_ptr(material.DiffuseColor));
+						ImGui::Separator();
+						ImGui::Text("Diffuse texture");
+						if (material.Diffuse)
+						{
+							ImGui::Image((void*)material.Diffuse->GetID(), ImVec2{ 128, 128 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+							if (ImGui::Button("Delete texture"))
+							{
+								material.Diffuse = { };
+							}
+						}
+						if (ImGui::Button("Browse..."))
+						{
+							auto path = Utils::OpenFileDialog("Image files\0*.png;*.jpg;*.jpeg;*.bmp;*.gif");
+							if (!material.Diffuse)
+							{
+								material.Diffuse = CreateRef<Texture2D>();
+							}
+							material.Diffuse->CreateFromFile(path);
+						}
+					}
+					
+					ImGui::Separator();
+					ImGui::Checkbox("Use color", &materialComponent.UseColor);
+					ImGui::TreePop();
+				}
 			}
 
 			if (ent.HasComponent<MeshComponent>())
@@ -88,7 +92,16 @@ namespace TOE
 				if (ImGui::TreeNodeEx("Mesh", flags))
 				{
 					DrawRemove<MeshComponent>();
-					ImGui::Checkbox("Render", &meshComponent.Render);
+					// if (ImGui::Button("Browse..."))
+					// {
+					// 	auto path = Utils::OpenFileDialog("Model files\0*.obj;*.fbx;*.gltf");
+					// 	if (!meshComponent.Model)
+					// 	{
+					// 		meshComponent = CreateRef<Model>();
+					// 	}
+					// 	// material.Diffuse->CreateFromFile(path);
+					// }
+					// ImGui::Checkbox("Render", &meshComponent.Render);
 					ImGui::TreePop();
 				}
 			}

@@ -58,11 +58,14 @@ namespace TOE
 		data.Height = Application::Get().GetWindowData().Height;
 		m_Framebuffer->Create(data);
 
-		Importer importer;
-		auto&& [model, materials] = importer.LoadModelFromFile("models/source/Mushroom.fbx");
-		Entity entity = m_Scene->CreateEntity("Model test stuff");
-		entity.AddComponent<MeshComponent>(model);
-		entity.AddComponent<MaterialComponent>(materials);
+		Importer importer("models/Slayer.fbx", "textures/slayer/");
+		auto&& [model, materials] = importer.LoadModelFromFile();
+		if (model)
+		{
+			Entity entity = m_Scene->CreateEntity("Model test stuff");
+			entity.AddComponent<MeshComponent>(model);
+			entity.AddComponent<MaterialComponent>(materials);
+		}
 	}
 
 	void EditorLayer::OnUpdate(double timestep)

@@ -13,7 +13,8 @@ namespace TOE
 	class Importer
 	{
 	public:
-		std::pair<Ref<Model>, std::vector<Material>> LoadModelFromFile(const std::string& path);
+		Importer(const std::string& path, const std::string& materialDir);
+		std::pair<Ref<Model>, std::vector<Material>> LoadModelFromFile();
 
 	private:
 		void ProcessNode(aiNode* node, const aiScene* scene);
@@ -22,7 +23,9 @@ namespace TOE
 
 		std::vector<Mesh> m_Meshes;
 		std::vector<Material> m_Materials;
-		std::vector<Texture2D> m_LoadedTextures;
-		std::string m_Directory;
+		std::vector<Ref<Texture2D>> m_LoadedTextures;
+
+		std::string m_Path;
+		std::string m_MaterialDir;
 	};
 }
