@@ -132,8 +132,15 @@ namespace TOE
 				{
 					if (ImGui::MenuItem("Transform") && !m_ScenePanel->m_SelectedEntity.HasComponent<TransformComponent>())
 						m_ScenePanel->m_SelectedEntity.AddComponent<TransformComponent>();
-					// if (ImGui::MenuItem("Material") && !m_ScenePanel->m_SelectedEntity.HasComponent<MaterialComponent>())
-					// 	m_ScenePanel->m_SelectedEntity.AddComponent<MaterialComponent>();
+					if (ImGui::MenuItem("Material") && !m_ScenePanel->m_SelectedEntity.HasComponent<MaterialComponent>())
+					{
+						Material mat;
+						std::vector<Material> materials =
+						{
+							mat
+						};
+						m_ScenePanel->m_SelectedEntity.AddComponent<MaterialComponent>(materials);
+					}
 					if (ImGui::BeginMenu("Mesh"))
 					{
 						if (ImGui::MenuItem("Quad") && !m_ScenePanel->m_SelectedEntity.HasComponent<MeshComponent>())
