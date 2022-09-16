@@ -57,15 +57,6 @@ namespace TOE
 		data.Width = Application::Get().GetWindowData().Width;
 		data.Height = Application::Get().GetWindowData().Height;
 		m_Framebuffer->Create(data);
-
-		Importer importer("models/Slayer.fbx", "textures/slayer/");
-		auto&& [model, materials] = importer.LoadModelFromFile();
-		if (model)
-		{
-			Entity entity = m_Scene->CreateEntity("Model test stuff");
-			entity.AddComponent<MeshComponent>(model);
-			entity.AddComponent<MaterialComponent>(materials);
-		}
 	}
 
 	void EditorLayer::OnUpdate(double timestep)

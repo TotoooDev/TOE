@@ -8,8 +8,7 @@ namespace TOE
 	enum class PrimitiveType
 	{
 		Model,
-		Quad,
-		Cube
+		Quad
 	};
 
 	class Primitives
@@ -17,10 +16,6 @@ namespace TOE
 	public:
 		static Ref<VAO> GetQuadVAO();
 		static Ref<EBO> GetQuadEBO();
-		// static Ref<Model> GetQuadModel();
-
-		static Ref<VAO> GetCubeVAO();
-		static Ref<EBO> GetCubeEBO();
-		// static Ref<Model> GetCubeModel();
+		static Ref<Model> GetQuadModel();
 	};
 }

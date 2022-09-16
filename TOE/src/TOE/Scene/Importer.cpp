@@ -9,11 +9,14 @@ namespace TOE
 
 	}
 
-	std::pair<Ref<Model>, std::vector<Material>> Importer::LoadModelFromFile()
+	std::pair<Ref<Model>, std::vector<Material>> Importer::LoadModelFromFile(bool flipUVs)
 	{
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(m_Path, aiProcess_Triangulate | aiProcess_FlipUVs);
+		aiPostProcessSteps flags = aiProcess_Triangulate;
+		if (flipUVs)
+			flags = (aiPostProcessSteps)(flags | aiProcess_FlipUVs);
 
+		const aiScene* scene = importer.ReadFile(m_Path, flags);
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
 			spdlog::error("Failed to load model at {}!", m_Path);
@@ -21,7 +24,7 @@ namespace TOE
 		}
 
 		ProcessNode(scene->mRootNode, scene);
-		auto model = CreateRef<Model>(m_Meshes);
+		auto model = CreateRef<Model>(m_Meshes, m_Path);
 		return std::pair<Ref<Model>, std::vector<Material>>(model, m_Materials);
 	}
 

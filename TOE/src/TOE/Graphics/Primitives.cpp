@@ -9,14 +9,15 @@ namespace TOE
 
 		std::vector<float> vertices =
 		{
-			// positions        // texture coords
-			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
-			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
-			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
-			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f  // top left 
+			// positions        // normals        // texture coords
+			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // top right
+			 0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, // bottom right
+			-0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, // bottom left
+			-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f  // top left 
 		};
 		VertexLayout layout;
 		layout.AddAttribute(Type::Float, 3); // Pos
+		layout.AddAttribute(Type::Float, 3); // Normals
 		layout.AddAttribute(Type::Float, 2); // Tex Coords
 
 		vao->SetData(vertices, layout);
@@ -34,81 +35,14 @@ namespace TOE
 		ebo->SetData(indices);
 		return ebo;
 	}
-	// Ref<Model> Primitives::GetQuadModel()
-	// {
-	// 	std::vector<Mesh> meshes;
-	// 	Mesh mesh(GetQuadVAO(), GetQuadEBO());
-	// 	meshes.push_back(mesh);
-	// 	return Ref<Model>();
-	// }
-
-	Ref<VAO> Primitives::GetCubeVAO()
+	Ref<Model> Primitives::GetQuadModel()
 	{
-		Ref<VAO> vao = CreateRef<VAO>();
-
-		std::vector<float> vertices =
+		Mesh mesh(GetQuadVAO(), GetQuadEBO());
+		std::vector<Mesh> meshes =
 		{
-			// positions        // texture coords
-			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-			 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-			 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-			-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-			-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+			mesh
 		};
-		VertexLayout layout;
-		layout.AddAttribute(Type::Float, 3); // Pos
-		layout.AddAttribute(Type::Float, 2); // Tex Coords
-
-		vao->SetData(vertices, layout);
-		return vao;
-	}
-	Ref<EBO> Primitives::GetCubeEBO()
-	{
-		Ref<EBO> ebo = CreateRef<EBO>();
-
-		std::vector<unsigned int> indices;
-		for (unsigned int i = 0; i < 36; i++)
-		{
-			indices.push_back(i);
-		}
-
-		ebo->SetData(indices);
-		return ebo;
+		Ref<Model> model = CreateRef<Model>(meshes);
+		return model;
 	}
 }

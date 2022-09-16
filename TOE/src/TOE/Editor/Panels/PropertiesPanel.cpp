@@ -1,6 +1,7 @@
 #include "pch.h"
 #include <TOE/Editor/Panels/PropertiesPanel.h>
 #include <TOE/Scene/Components.h>
+#include <TOE/Scene/Importer.h>
 #include <TOE/Graphics/Primitives.h>
 #include <TOE/Utils/WindowsUtils.h>
 
@@ -76,12 +77,10 @@ namespace TOE
 							{
 								material.Diffuse = CreateRef<Texture2D>();
 							}
-							material.Diffuse->CreateFromFile(path);
+							if (!path.empty())
+								material.Diffuse->CreateFromFile(path);
 						}
 					}
-					
-					ImGui::Separator();
-					ImGui::Checkbox("Use color", &materialComponent.UseColor);
 					ImGui::TreePop();
 				}
 			}
@@ -92,16 +91,23 @@ namespace TOE
 				if (ImGui::TreeNodeEx("Mesh", flags))
 				{
 					DrawRemove<MeshComponent>();
-					// if (ImGui::Button("Browse..."))
-					// {
-					// 	auto path = Utils::OpenFileDialog("Model files\0*.obj;*.fbx;*.gltf");
-					// 	if (!meshComponent.Model)
-					// 	{
-					// 		meshComponent = CreateRef<Model>();
-					// 	}
-					// 	// material.Diffuse->CreateFromFile(path);
-					// }
-					// ImGui::Checkbox("Render", &meshComponent.Render);
+					ImGui::Text("Path: %s", meshComponent.Model->GetPath().c_str());
+					ImGui::Separator();
+					if (ImGui::Button("Browse..."))
+					{
+						auto path = Utils::OpenFileDialog("Model files\0*.obj;*.fbx;*.gltf");
+						if (!path.empty())
+						{
+							Importer importer(path);
+							auto&& [model, materials] = importer.LoadModelFromFile();
+							meshComponent.Model = model;
+							if (!ent.HasComponent<MaterialComponent>())
+								ent.AddComponent<MaterialComponent>(materials);
+							else
+								ent.GetComponent<MaterialComponent>().Materials = materials;
+						}
+					}
+					ImGui::Checkbox("Render", &meshComponent.Render);
 					ImGui::TreePop();
 				}
 			}
@@ -128,14 +134,27 @@ namespace TOE
 						m_ScenePanel->m_SelectedEntity.AddComponent<TransformComponent>();
 					// if (ImGui::MenuItem("Material") && !m_ScenePanel->m_SelectedEntity.HasComponent<MaterialComponent>())
 					// 	m_ScenePanel->m_SelectedEntity.AddComponent<MaterialComponent>();
-					// if (ImGui::BeginMenu("Mesh"))
-					// {
-					// 	if (ImGui::MenuItem("Quad") && !m_ScenePanel->m_SelectedEntity.HasComponent<MeshComponent>())
-					// 		m_ScenePanel->m_SelectedEntity.AddComponent<MeshComponent>(Primitives::GetQuadVAO(), Primitives::GetQuadEBO(), PrimitiveType::Quad);
-					// 	if (ImGui::MenuItem("Cube") && !m_ScenePanel->m_SelectedEntity.HasComponent<MeshComponent>())
-					// 		m_ScenePanel->m_SelectedEntity.AddComponent<MeshComponent>(Primitives::GetCubeVAO(), Primitives::GetCubeEBO(), PrimitiveType::Cube);
-					// 	ImGui::EndMenu();
-					// }
+					if (ImGui::BeginMenu("Mesh"))
+					{
+						if (ImGui::MenuItem("Quad") && !m_ScenePanel->m_SelectedEntity.HasComponent<MeshComponent>())
+							m_ScenePanel->m_SelectedEntity.AddComponent<MeshComponent>(Primitives::GetQuadModel());
+						if (ImGui::MenuItem("Browse...") && !m_ScenePanel->m_SelectedEntity.HasComponent<MeshComponent>())
+						{
+							auto path = Utils::OpenFileDialog("Model files\0*.obj;*.fbx;*.gltf");
+							auto& meshComponent = ent.AddComponent<MeshComponent>();
+							if (!path.empty())
+							{
+								Importer importer(path);
+								auto&& [model, materials] = importer.LoadModelFromFile();
+								meshComponent.Model = model;
+								if (!ent.HasComponent<MaterialComponent>())
+									ent.AddComponent<MaterialComponent>(materials);
+								else
+									ent.GetComponent<MaterialComponent>().Materials = materials;
+							}
+						}
+						ImGui::EndMenu();
+					}
 					if (ImGui::MenuItem("Camera") && !m_ScenePanel->m_SelectedEntity.HasComponent<CameraComponent>())
 						m_ScenePanel->m_SelectedEntity.AddComponent<CameraComponent>(CreateRef<PerspectiveCamera>());
 					ImGui::EndMenu();

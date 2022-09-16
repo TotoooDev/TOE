@@ -139,13 +139,6 @@ namespace TOE
 				break;
 			}
 
-			case PrimitiveType::Cube:
-			{
-				// auto& meshComp = entity.AddComponent<MeshComponent>(Primitives::GetCubeVAO(), Primitives::GetCubeEBO(), PrimitiveType::Cube);
-				// meshComp.Type = type;
-				break;
-			}
-
 			case PrimitiveType::Model:
 			default:
 				break;

@@ -20,19 +20,12 @@ namespace TOE
 	{
 	public:
 		Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
-
-		std::vector<Vertex> GetVertices() const { return m_Vertices; }
-		std::vector<unsigned int> GetIndices() const { return m_Indices; }
+		Mesh(Ref<VAO> vao, Ref<EBO> ebo);
 
 		Ref<VAO> GetVAO() const { return m_VAO; }
 		Ref<EBO> GetEBO() const { return m_EBO; }
 
 	private:
-		void SetupMesh();
-
-		std::vector<Vertex> m_Vertices;
-		std::vector<unsigned int> m_Indices;
-
 		Ref<VAO> m_VAO;
 		Ref<EBO> m_EBO;
 	};
@@ -40,12 +33,14 @@ namespace TOE
 	class Model
 	{
 	public:
-		Model(std::vector<Mesh> meshes)
-			: m_Meshes(meshes) {}
+		Model(std::vector<Mesh> meshes, const std::string& path = "")
+			: m_Meshes(meshes), m_Path(path) {}
 
 		std::vector<Mesh> GetMeshes() { return m_Meshes; }
+		std::string GetPath() { return m_Path; }
 
 	private:
 		std::vector<Mesh> m_Meshes;
+		std::string m_Path;
 	};
 }

@@ -50,7 +50,7 @@ namespace TOE
 		std::vector<Material> Materials;
 
 		MaterialComponent(std::vector<Material> materials)
-		: Materials(materials) {}
+			: Materials(materials) {}
 		MaterialComponent(const MaterialComponent&) = default;
 	};
 
@@ -59,7 +59,7 @@ namespace TOE
 		Ref<TOE::Model> Model;
 		bool Render = true;
 
-		MeshComponent(Ref<TOE::Model> model)
+		MeshComponent(Ref<TOE::Model> model = {})
 			: Model(model) {}
 		MeshComponent(const MeshComponent&) = default;
 	};
