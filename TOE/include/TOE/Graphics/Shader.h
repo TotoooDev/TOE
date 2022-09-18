@@ -22,8 +22,8 @@ namespace TOE
 		void Reload();
 		void Delete();
 
-		void Use();
-		unsigned int GetID();
+		void Use() const;
+		unsigned int GetID() const;
 
 		// Uniform utility methods
 		void SetInt(const std::string& name, int value) const;

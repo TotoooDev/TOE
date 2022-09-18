@@ -149,12 +149,12 @@ namespace TOE
 		glDeleteShader(m_ID);
 	}
 
-	void Shader::Use()
+	void Shader::Use() const
 	{
 		glUseProgram(m_ID);
 	}
 
-	unsigned int Shader::GetID()
+	unsigned int Shader::GetID() const
 	{
 		return m_ID;
 	}

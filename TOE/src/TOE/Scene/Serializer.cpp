@@ -2,6 +2,7 @@
 #include <TOE/Scene/Serializer.h>
 #include <TOE/Scene/Entity.h>
 #include <TOE/Scene/Components.h>
+#include <TOE/Scene/Importer.h>
 #include <TOE/Graphics/Primitives.h>
 
 #include <fstream>
@@ -89,7 +90,22 @@ namespace TOE
 		if (entity.HasComponent<MeshComponent>())
 		{
 			auto& meshComp = entity.GetComponent<MeshComponent>();
-			// entityJson["mesh"]["type"] = meshComp.Type;
+			entityJson["mesh"]["path"] = meshComp.Model->GetPath();
+			entityJson["mesh"]["render"] = meshComp.Render;
+		}
+
+		if (entity.HasComponent<LightComponent>())
+		{
+			auto& lightComp = entity.GetComponent<LightComponent>();
+			entityJson["light"]["type"] = lightComp.Light.Type;
+			SerializeVec3(lightComp.Light.Ambient, entityJson["light"]["ambient"]);
+			SerializeVec3(lightComp.Light.Diffuse, entityJson["light"]["diffuse"]);
+			SerializeVec3(lightComp.Light.Specular, entityJson["light"]["specular"]);
+			entityJson["light"]["constant"] = lightComp.Light.Constant;
+			entityJson["light"]["linear"] = lightComp.Light.Linear;
+			entityJson["light"]["quadratic"] = lightComp.Light.Quadratic;
+			entityJson["light"]["cut_off"] = lightComp.Light.CutOff;
+			entityJson["light"]["outer_cut_off"] = lightComp.Light.OuterCutOff;
 		}
 	}
 
@@ -129,20 +145,33 @@ namespace TOE
 
 		if (entityJson.contains("mesh"))
 		{
-			PrimitiveType type = entityJson["mesh"]["type"];
-			switch (type)
-			{
-			case PrimitiveType::Quad:
-			{
-				// auto& meshComp = entity.AddComponent<MeshComponent>(Primitives::GetQuadVAO(), Primitives::GetQuadEBO(), PrimitiveType::Quad);
-				// meshComp.Type = type;
-				break;
-			}
+			std::string path = entityJson["mesh"]["path"];
+			Importer importer(path);
+			auto&& [model, materials] = importer.LoadModelAndMaterialFromFile();
 
-			case PrimitiveType::Model:
-			default:
-				break;
-			}
+			auto& meshComp = entity.AddComponent<MeshComponent>(model);
+			if (materials.size() > 0)
+				auto& materialComp = entity.AddComponent<MaterialComponent>(materials);
+
+			meshComp.Render = entityJson["mesh"]["render"];
+ 		}
+
+		if (entityJson.contains("light"))
+		{
+			Light light =
+			{
+				entityJson["light"]["type"],
+				DeserializeVec3(entityJson["light"]["ambient"]),
+				DeserializeVec3(entityJson["light"]["diffuse"]),
+				DeserializeVec3(entityJson["light"]["specular"]),
+				entityJson["light"]["constant"],
+				entityJson["light"]["linear"],
+				entityJson["light"]["quadratic"],
+				entityJson["light"]["cut_off"],
+				entityJson["light"]["outer_cut_off"],
+			};
+			auto& comp = entity.AddComponent<LightComponent>();
+			comp.Light = light;
 		}
 	}
 

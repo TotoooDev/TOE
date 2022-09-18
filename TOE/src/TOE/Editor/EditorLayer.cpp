@@ -136,7 +136,6 @@ namespace TOE
 		// Always center this window when appearing
 		ImVec2 center = ImGui::GetMainViewport()->GetCenter();
 		ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
 		if (ImGui::BeginPopupModal("Warning", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 		{
 			ImGui::Text("All unsaved data will be deleted!\nThis operation cannot be undone!\n\n");

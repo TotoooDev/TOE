@@ -37,7 +37,6 @@ namespace TOE
 			spdlog::error("Failed to load image {}!", path);
 			return;
 		}
-		Path = path;
 
 		GLenum glFormat = GL_RGB;
 		if (numChannels == 3)

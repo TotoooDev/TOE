@@ -16,6 +16,7 @@ namespace TOE
 
 		void SetViewportFocus(bool focus) { m_ViewportFocus = focus; }
 
+		glm::vec3 CalculatePosition();
 		glm::mat4 GetProjection() const { return m_Projection; }
 		glm::mat4 GetView() const { return m_View; }
 
@@ -33,7 +34,6 @@ namespace TOE
 		float GetRotationSpeed();
 		float GetZoomSpeed();
 
-		glm::vec3 CalculatePosition();
 		glm::vec3 GetForwardDirection();
 		glm::vec3 GetRightDirection();
 		glm::vec3 GetUpDirection();

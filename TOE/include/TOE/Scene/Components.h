@@ -6,6 +6,7 @@
 #include <TOE/Graphics/Mesh.h>
 #include <TOE/Graphics/Primitives.h>
 #include <TOE/Graphics/Material.h>
+#include <TOE/Graphics/Light.h>
 
 #include <string>
 #include <glm/glm.hpp>
@@ -62,6 +63,15 @@ namespace TOE
 		MeshComponent(Ref<TOE::Model> model = {})
 			: Model(model) {}
 		MeshComponent(const MeshComponent&) = default;
+	};
+
+	struct LightComponent
+	{
+		TOE::Light Light;
+		bool Emit = true;
+
+		LightComponent() = default;
+		LightComponent(const LightComponent&) = default;
 	};
 
 	struct CameraComponent

@@ -26,26 +26,42 @@ namespace TOE
 		TOE_PROFILE_FUNCTION();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		m_Stats = { 0, 0, 0 };
+		m_NumLights = 0;
+		m_Timer.Reset();
+		m_Stats = { 0, 0, 0, 0 };
 	}
 
-	void Renderer::SetCurrentCamera(const Camera& camera)
+	void Renderer::SetCurrentCamera(const Camera& camera, const glm::vec3& pos)
 	{
 		TOE_PROFILE_FUNCTION();
 
 		m_ShaderTexture.Use();
 		m_ShaderTexture.SetMat4("uView", camera.GetView());
 		m_ShaderTexture.SetMat4("uProjection", camera.GetProjection());
+		m_ShaderTexture.SetVec3("uCameraPos", pos);
+
 		m_ShaderColor.Use();
 		m_ShaderColor.SetMat4("uView", camera.GetView());
 		m_ShaderColor.SetMat4("uProjection", camera.GetProjection());
+		m_ShaderTexture.SetVec3("uCameraPos", pos);
+	}
+
+	void Renderer::SetLight(const glm::vec3& pos, const glm::vec3& rotation, const Light& light)
+	{
+		SetLight(m_ShaderTexture, light, pos, rotation);
+		SetLight(m_ShaderColor, light, pos, rotation);
+		m_NumLights++;
+		m_ShaderColor.Use();
+		m_ShaderColor.SetInt("uNumLights", m_NumLights);
+		m_ShaderTexture.Use();
+		m_ShaderTexture.SetInt("uNumLights", m_NumLights);
 	}
 
 	void Renderer::DrawModel(const glm::mat4& transform, const Ref<Model>& model, const std::vector<Material>& materials)
 	{
 		for (unsigned int i = 0; i < model->GetMeshes().size(); i++)
 		{
-			DrawMesh(transform, model->GetMeshes()[i], materials[i]);
+			DrawMesh(transform, model->GetMeshes()[i], materials);
 		}
 	}
 
@@ -57,52 +73,46 @@ namespace TOE
 		}
 	}
 
-	void Renderer::DrawMesh(const glm::mat4& transform, const Mesh& mesh, const Material& material)
+	void Renderer::DrawMesh(const glm::mat4& transform, const Mesh& mesh, const std::vector<Material>& materials)
 	{
-		auto vao = mesh.GetVAO();
-		auto ebo = mesh.GetEBO();
-
-		if (material.Diffuse)
-		{
-			m_ShaderTexture.Use();
-			m_ShaderTexture.SetMat4("uModel", transform);
-			m_ShaderTexture.SetInt("uTexture", 0);
-			material.Diffuse->Use();
-		}
-		else
-		{
-			m_ShaderColor.Use();
-			m_ShaderColor.SetMat4("uModel", transform);
-			m_ShaderColor.SetVec3("uColor", glm::vec3(1.0f));
-		}
-
-		vao->Use();
-		ebo->Use();
-
-		glDrawElements(GL_TRIANGLES, ebo->GetCount(), GL_UNSIGNED_INT, 0);
-
-		m_Stats.DrawCalls++;
-		m_Stats.VertexCount += vao->GetVertexCount();
-		m_Stats.IndexCount += ebo->GetCount();
+		auto material = materials[mesh.GetMaterialIndex()];
+		DrawVertexObject(transform, mesh.GetVAO(), mesh.GetEBO(), material);
 	}
 
 	void Renderer::DrawMesh(const glm::mat4& transform, const Mesh& mesh, const glm::vec3& color)
 	{
-		auto vao = mesh.GetVAO();
-		auto ebo = mesh.GetEBO();
+		DrawVertexObject(transform, mesh.GetVAO(), mesh.GetEBO(), color);
+	}
 
-		m_ShaderColor.Use();
-		m_ShaderColor.SetMat4("uModel", transform);
-		m_ShaderColor.SetVec3("uColor", color);
+	void Renderer::DrawVertexObject(const glm::mat4& transform, const Ref<VAO>& vao, const Ref<EBO>& ebo, const Material& material)
+	{
+		TOE_PROFILE_FUNCTION();
+
+		m_ShaderTexture.Use();
+		m_ShaderTexture.SetMat4("uModel", transform);
+
+		unsigned int diffuseSlot = 0;
+		unsigned int specularSlot = 1;
+		unsigned int normalSlot = 2;
+
+		m_ShaderTexture.SetInt("uMaterial.Diffuse", diffuseSlot);
+		m_ShaderTexture.SetInt("uMaterial.Specular", specularSlot);
+		m_ShaderTexture.SetInt("uMaterial.Normal", normalSlot);
+		m_ShaderTexture.SetFloat("uMaterial.Shininess", material.Shininess);
+
+		if (material.Diffuse)
+			material.Diffuse->Use(diffuseSlot);
+		if (material.Specular)
+			material.Specular->Use(specularSlot);
+		if (material.Normal)
+			material.Normal->Use(normalSlot);
 
 		vao->Use();
 		ebo->Use();
 
 		glDrawElements(GL_TRIANGLES, ebo->GetCount(), GL_UNSIGNED_INT, 0);
 
-		m_Stats.DrawCalls++;
-		m_Stats.VertexCount += vao->GetVertexCount();
-		m_Stats.IndexCount += ebo->GetCount();
+		UpdateStats(vao->GetVertexCount(), ebo->GetCount());
 	}
 
 	void Renderer::DrawVertexObject(const glm::mat4& transform, const Ref<VAO>& vao, const Ref<EBO>& ebo, const glm::vec3& color)
@@ -111,6 +121,7 @@ namespace TOE
 
 		m_ShaderColor.Use();
 		m_ShaderColor.SetMat4("uModel", transform);
+
 		m_ShaderColor.SetVec3("uColor", color);
 
 		vao->Use();
@@ -118,33 +129,41 @@ namespace TOE
 
 		glDrawElements(GL_TRIANGLES, ebo->GetCount(), GL_UNSIGNED_INT, 0);
 
-		m_Stats.DrawCalls++;
-		m_Stats.VertexCount += vao->GetVertexCount();
-		m_Stats.IndexCount += ebo->GetCount();
-	}
-
-	void Renderer::DrawVertexObject(const glm::mat4& transform, const Ref<VAO>& vao, const Ref<EBO>& ebo, const Ref<Texture2D>& texture)
-	{
-		TOE_PROFILE_FUNCTION();
-
-		m_ShaderTexture.Use();
-		m_ShaderTexture.SetMat4("uModel", transform);
-		m_ShaderTexture.SetInt("uTexture", 0);
-
-		texture->Use();
-
-		vao->Use();
-		ebo->Use();
-
-		glDrawElements(GL_TRIANGLES, ebo->GetCount(), GL_UNSIGNED_INT, 0);
-
-		m_Stats.DrawCalls++;
-		m_Stats.VertexCount += vao->GetVertexCount();
-		m_Stats.IndexCount += ebo->GetCount();
+		UpdateStats(vao->GetVertexCount(), ebo->GetCount());
 	}
 
 	Renderer::Stats Renderer::GetStats()
 	{
 		return m_Stats;
+	}
+
+	void Renderer::SetLight(const Shader& shader, const Light& light, const glm::vec3& pos, const glm::vec3& rotation)
+	{
+		std::string lightStr = "uLights[" + std::to_string(m_NumLights) + "]";
+
+		shader.Use();
+		shader.SetInt(lightStr + ".Type", light.Type);
+
+		shader.SetVec3(lightStr + ".Pos", pos);
+		shader.SetVec3(lightStr + ".Direction", rotation);
+
+		shader.SetVec3(lightStr + ".Ambient", light.Ambient);
+		shader.SetVec3(lightStr + ".Diffuse", light.Diffuse);
+		shader.SetVec3(lightStr + ".Specular", light.Specular);
+
+		shader.SetFloat(lightStr + ".Constant", light.Constant);
+		shader.SetFloat(lightStr + ".Linear", light.Linear);
+		shader.SetFloat(lightStr + ".Quadratic", light.Quadratic);
+
+		shader.SetFloat(lightStr + ".CutOff", light.CutOff);
+		shader.SetFloat(lightStr + ".OuterCutOff", light.OuterCutOff);
+	}
+
+	void Renderer::UpdateStats(unsigned int vertexCount, unsigned int indexCount)
+	{
+		m_Stats.DrawCalls++;
+		m_Stats.VertexCount += vertexCount;
+		m_Stats.IndexCount += indexCount;
+		m_Stats.RenderTime += m_Timer.ElapsedMillis();
 	}
 }

@@ -42,7 +42,17 @@ namespace TOE
 	{
 		Renderer::SetClearColor(0.1f, 0.1f, 0.1f);
 		Renderer::Clear();
-		Renderer::SetCurrentCamera(Camera(camera->GetProjection(), camera->GetView()));
+		Renderer::SetCurrentCamera(Camera(camera->GetProjection(), camera->GetView()), camera->CalculatePosition());
+
+		// Loop through all light components
+		{
+			auto view = m_Registry.view<TransformComponent, LightComponent>();
+			for (auto&& [entity, transform, light] : view.each())
+			{
+				if (light.Emit)
+					Renderer::SetLight(transform.Translation, transform.Rotation, light.Light);
+			}
+		}
 
 		// Loop through all renderable entities
 		{
@@ -90,7 +100,7 @@ namespace TOE
 					glm::mat4 view = glm::lookAt(pos, pos + cam->Front, cam->Up);
 					glm::mat4 projection = glm::perspective(cam->FOV, cam->ViewportWidth / cam->ViewportHeight, cam->Near, cam->Far);
 
-					Renderer::SetCurrentCamera(Camera(projection, view));
+					Renderer::SetCurrentCamera(Camera(projection, view), transform.Translation);
 				}
 			}
 		}

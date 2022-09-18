@@ -10,10 +10,10 @@ namespace TOE
 		std::vector<float> vertices =
 		{
 			// positions        // normals        // texture coords
-			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, // top right
-			 0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, // bottom right
-			-0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, // bottom left
-			-0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f  // top left 
+			 0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, // top right
+			 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
+			-0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, // bottom left
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left 
 		};
 		VertexLayout layout;
 		layout.AddAttribute(Type::Float, 3); // Pos
@@ -37,7 +37,7 @@ namespace TOE
 	}
 	Ref<Model> Primitives::GetQuadModel()
 	{
-		Mesh mesh(GetQuadVAO(), GetQuadEBO());
+		Mesh mesh(GetQuadVAO(), GetQuadEBO(), -1);
 		std::vector<Mesh> meshes =
 		{
 			mesh

@@ -24,7 +24,6 @@ namespace TOE
 		unsigned int GetID() const;
 
 		TextureType Type;
-		std::string Path;
 
 	private:
 		unsigned int m_ID;

@@ -236,6 +236,7 @@
     <ClInclude Include="include\ImGui\imstb_truetype.h" />
     <ClInclude Include="include\TOE\Core\GlobalConfig.h" />
     <ClInclude Include="include\TOE\Core\Ref.h" />
+    <ClInclude Include="include\TOE\Core\Timer.h" />
     <ClInclude Include="include\TOE\Debug\Instrumentor.h" />
     <ClInclude Include="include\TOE\Editor\EditorLayer.h" />
     <ClInclude Include="include\TOE\Editor\ImGuiLayer.h" />
@@ -249,6 +250,7 @@
     <ClInclude Include="include\TOE\Editor\EditorCamera.h" />
     <ClInclude Include="include\TOE\Event\Input.h" />
     <ClInclude Include="include\TOE\Graphics\Framebuffer.h" />
+    <ClInclude Include="include\TOE\Graphics\Light.h" />
     <ClInclude Include="include\TOE\Graphics\Material.h" />
     <ClInclude Include="include\TOE\Graphics\Mesh.h" />
     <ClInclude Include="include\TOE\Graphics\Primitives.h" />

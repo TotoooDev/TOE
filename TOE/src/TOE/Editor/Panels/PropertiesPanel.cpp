@@ -31,7 +31,7 @@ namespace TOE
 					char input[256];
 					memset(input, 0, sizeof(input));
 					memcpy(input, tagComponent.Tag.c_str(), tagComponent.Tag.size());
-					if (ImGui::InputText(" ", input, sizeof(input)))
+					if (ImGui::InputText("##", input, sizeof(input)))
 						tagComponent.Tag = input;
 					ImGui::TreePop();
 				}
@@ -45,7 +45,7 @@ namespace TOE
 					DrawRemove<TransformComponent>();
 					ImGui::DragFloat3("Position", glm::value_ptr(transformComponent.Translation), 0.1f);
 					ImGui::DragFloat3("Rotation", glm::value_ptr(transformComponent.Rotation), 0.1f);
-					ImGui::DragFloat3("Scale", glm::value_ptr(transformComponent.Scale), 0.1f);
+					ImGui::DragFloat3("Scale", glm::value_ptr(transformComponent.Scale), 0.01f);
 					ImGui::TreePop();
 				}
 			}
@@ -53,32 +53,34 @@ namespace TOE
 			if (ent.HasComponent<MaterialComponent>())
 			{
 				auto& materialComponent = ent.GetComponent<MaterialComponent>();
-				if (ImGui::TreeNodeEx("Render", flags))
+				if (ImGui::TreeNodeEx("Textures", flags))
 				{
 					DrawRemove<MaterialComponent>();
 
 					for (auto& material : materialComponent.Materials)
 					{
-						ImGui::ColorEdit3("Color", glm::value_ptr(material.DiffuseColor));
-						ImGui::Separator();
-						ImGui::Text("Diffuse texture");
-						if (material.Diffuse)
+						if (ImGui::TreeNode(material.Name.c_str()))
 						{
-							ImGui::Image((void*)material.Diffuse->GetID(), ImVec2{ 128, 128 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-							if (ImGui::Button("Delete texture"))
+							ImGui::Text("Diffuse texture");
+							if (material.Diffuse)
 							{
-								material.Diffuse = { };
+								ImGui::Image((void*)material.Diffuse->GetID(), ImVec2{ 128, 128 }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+								if (ImGui::Button("Delete texture"))
+								{
+									material.Diffuse = { };
+								}
 							}
-						}
-						if (ImGui::Button("Browse..."))
-						{
-							auto path = Utils::OpenFileDialog("Image files\0*.png;*.jpg;*.jpeg;*.bmp;*.gif");
-							if (!material.Diffuse)
+							if (ImGui::Button("Browse..."))
 							{
-								material.Diffuse = CreateRef<Texture2D>();
+								auto path = Utils::OpenFileDialog("Image files\0*.png;*.jpg;*.jpeg;*.bmp;*.gif");
+								if (!material.Diffuse)
+								{
+									material.Diffuse = CreateRef<Texture2D>();
+								}
+								if (!path.empty())
+									material.Diffuse->CreateFromFile(path);
 							}
-							if (!path.empty())
-								material.Diffuse->CreateFromFile(path);
+							ImGui::TreePop();
 						}
 					}
 					ImGui::TreePop();
@@ -99,7 +101,7 @@ namespace TOE
 						if (!path.empty())
 						{
 							Importer importer(path);
-							auto&& [model, materials] = importer.LoadModelFromFile();
+							auto&& [model, materials] = importer.LoadModelAndMaterialFromFile();
 							meshComponent.Model = model;
 							if (!ent.HasComponent<MaterialComponent>())
 								ent.AddComponent<MaterialComponent>(materials);
@@ -108,6 +110,31 @@ namespace TOE
 						}
 					}
 					ImGui::Checkbox("Render", &meshComponent.Render);
+					ImGui::TreePop();
+				}
+			}
+
+			if (ent.HasComponent<LightComponent>())
+			{
+				auto& lightComponent = ent.GetComponent<LightComponent>();
+				if (ImGui::TreeNodeEx("Light", flags))
+				{
+					DrawRemove<LightComponent>();
+					const char* types[] = {"Directionnal light", "Point light", "Spot light"};
+					ImGui::Combo("Light type", &lightComponent.Light.Type, types, 3);
+					ImGui::Separator();
+					ImGui::ColorEdit3("Ambient", glm::value_ptr(lightComponent.Light.Ambient));
+					ImGui::ColorEdit3("Diffuse", glm::value_ptr(lightComponent.Light.Diffuse));
+					ImGui::ColorEdit3("Specular", glm::value_ptr(lightComponent.Light.Specular));
+					ImGui::Separator();
+					ImGui::DragFloat("Constant", &lightComponent.Light.Constant, 0.001f, 0.0f, 0.0f, "%.5f");
+					ImGui::DragFloat("Linear", &lightComponent.Light.Linear, 0.001f, 0.0f, 0.0f, "%.5f");
+					ImGui::DragFloat("Quadratic", &lightComponent.Light.Quadratic, 0.001f, 0.0f, 0.0f, "%.5f");
+					ImGui::Separator();
+					ImGui::DragFloat("Cut off", &lightComponent.Light.CutOff, 0.01f);
+					ImGui::DragFloat("Outer cut off", &lightComponent.Light.OuterCutOff, 0.01f);
+					ImGui::Separator();
+					ImGui::Checkbox("Emit", &lightComponent.Emit);
 					ImGui::TreePop();
 				}
 			}
@@ -143,8 +170,16 @@ namespace TOE
 					}
 					if (ImGui::BeginMenu("Mesh"))
 					{
-						if (ImGui::MenuItem("Quad") && !m_ScenePanel->m_SelectedEntity.HasComponent<MeshComponent>())
-							m_ScenePanel->m_SelectedEntity.AddComponent<MeshComponent>(Primitives::GetQuadModel());
+						if (ImGui::MenuItem("Plane") && !m_ScenePanel->m_SelectedEntity.HasComponent<MeshComponent>())
+						{
+							Importer importer("assets/plane.fbx");
+							m_ScenePanel->m_SelectedEntity.AddComponent<MeshComponent>(importer.LoadModelFromFile());
+						}
+						if (ImGui::MenuItem("Cube") && !m_ScenePanel->m_SelectedEntity.HasComponent<MeshComponent>())
+						{
+							Importer importer("assets/cube.fbx");
+							m_ScenePanel->m_SelectedEntity.AddComponent<MeshComponent>(importer.LoadModelFromFile());
+						}
 						if (ImGui::MenuItem("Browse...") && !m_ScenePanel->m_SelectedEntity.HasComponent<MeshComponent>())
 						{
 							auto path = Utils::OpenFileDialog("Model files\0*.obj;*.fbx;*.gltf");
@@ -152,16 +187,18 @@ namespace TOE
 							if (!path.empty())
 							{
 								Importer importer(path);
-								auto&& [model, materials] = importer.LoadModelFromFile();
+								auto&& [model, materials] = importer.LoadModelAndMaterialFromFile();
 								meshComponent.Model = model;
 								if (!ent.HasComponent<MaterialComponent>())
 									ent.AddComponent<MaterialComponent>(materials);
-								else
-									ent.GetComponent<MaterialComponent>().Materials = materials;
+								if (ent.HasComponent<MaterialComponent>() && materials.size() == 0)
+									ent.RemoveComponent<MaterialComponent>();
 							}
 						}
 						ImGui::EndMenu();
 					}
+					if (ImGui::MenuItem("Light") && !m_ScenePanel->m_SelectedEntity.HasComponent<LightComponent>())
+						m_ScenePanel->m_SelectedEntity.AddComponent<LightComponent>();
 					if (ImGui::MenuItem("Camera") && !m_ScenePanel->m_SelectedEntity.HasComponent<CameraComponent>())
 						m_ScenePanel->m_SelectedEntity.AddComponent<CameraComponent>(CreateRef<PerspectiveCamera>());
 					ImGui::EndMenu();

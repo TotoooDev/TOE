@@ -16,6 +16,7 @@ namespace TOE
 	private:
 		Ref<Scene> m_CurrentScene;
 		Entity m_SelectedEntity;
+		bool m_RenameScene = false;
 
 		friend class PropertiesPanel;
 	};

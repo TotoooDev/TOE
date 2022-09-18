@@ -9,8 +9,19 @@ namespace TOE
 
 	}
 
-	std::pair<Ref<Model>, std::vector<Material>> Importer::LoadModelFromFile(bool flipUVs)
+	Ref<Model> Importer::LoadModelFromFile()
 	{
+		// Yes I know this loads the material too but I don't care lol
+		return LoadModelAndMaterialFromFile().first;
+	}
+
+	std::pair<Ref<Model>, std::vector<Material>> Importer::LoadModelAndMaterialFromFile(bool flipUVs)
+	{
+		if (m_MaterialDir.empty())
+		{
+			m_MaterialDir = m_Path.substr(0, m_Path.find_last_of("\\")) + '\\';
+		}
+
 		Assimp::Importer importer;
 		aiPostProcessSteps flags = aiProcess_Triangulate;
 		if (flipUVs)
@@ -105,51 +116,78 @@ namespace TOE
 			ProcessTextures(mat, scene);
 		}
 
-		return Mesh(vertices, indices);
+		return Mesh(vertices, indices, mesh->mMaterialIndex);
 	}
 
 	void Importer::ProcessTextures(aiMaterial* mat, const aiScene* scene)
 	{
 		Material material;
 
-		// Process diffuse texture
-		aiString str;
-		mat->GetTexture(aiTextureType_DIFFUSE, 0, &str);
-		bool skip = false;
-		for (unsigned int j = 0; j < m_LoadedTextures.size(); j++)
+		// Don't process the material if it is already loaded
+		for (unsigned int j = 0; j < m_LoadedMaterials.size(); j++)
 		{
-			if (std::strcmp(m_LoadedTextures[j]->Path.data(), str.C_Str()) == 0)
+			if (m_LoadedMaterials[j].Name == mat->GetName().C_Str())
 			{
-				material.Diffuse = m_LoadedTextures[j];
-				skip = true;
-				break;
+				return;
 			}
 		}
-		if (!skip)
-		{   // if texture hasn't been loaded already, load it
-			Ref<Texture2D> texture = CreateRef<Texture2D>();
-			std::string path = str.C_Str();
-			if (!path.empty())
-			{
-				auto found = path.find_last_of("/\\");
-				if (found != std::string::npos)
-					path = path.substr(found);
-				
-				found = path.find("\\");
-				while (found != std::string::npos)
-				{
-					path.erase(path.begin() + found);
-					found = path.find("/\\");
-				}
 
-				texture->CreateFromFile(m_MaterialDir + path);
-				texture->Type = TextureType::Diffuse;
-				texture->Path = m_MaterialDir + path;
-				m_LoadedTextures.push_back(texture); // add to loaded textures
-				material.Diffuse = texture;
-			}
-		}
+		auto diffuse = ProcessTexture(mat, TextureType::Diffuse);
+		auto specular = ProcessTexture(mat, TextureType::Specular);
+		auto normal = ProcessTexture(mat, TextureType::Normal);
+
+		if (!diffuse && !specular && !normal)
+			return;
+
+		material.Diffuse = diffuse;
+		material.Specular = specular;
+		material.Normal = normal;
+		material.Name = mat->GetName().C_Str();
+		aiGetMaterialFloat(mat, AI_MATKEY_SHININESS, &material.Shininess);
+		m_LoadedMaterials.push_back(material); // add to loaded materials
 
 		m_Materials.push_back(material);
+	}
+
+	Ref<Texture2D> Importer::ProcessTexture(aiMaterial* mat, TextureType type)
+	{
+		// Diffuse texture
+		aiString str;
+		aiTextureType assimpType;
+		switch (type)
+		{
+		case TextureType::Specular:
+			assimpType = aiTextureType_SPECULAR;
+			break;
+
+		case TextureType::Normal:
+			assimpType = aiTextureType_HEIGHT;
+			break;
+
+		case TextureType::Diffuse:
+		default:
+			assimpType = aiTextureType_DIFFUSE;
+			break;
+		}
+		mat->GetTexture(assimpType, 0, &str);
+
+		if (str.length == 0)
+			return {};
+
+		std::string texturePath = str.C_Str();
+		// Only keep the name of the texture file
+		auto found = texturePath.find_last_of("/\\");
+		if (found != std::string::npos)
+			texturePath = texturePath.substr(found);
+		// Remove all / and \ characters
+		texturePath.erase(std::remove(texturePath.begin(), texturePath.end(), '/'), texturePath.end());
+		texturePath.erase(std::remove(texturePath.begin(), texturePath.end(), '\\'), texturePath.end());
+
+		Ref<Texture2D> texture = CreateRef<Texture2D>();
+
+		texture->CreateFromFile(m_MaterialDir + texturePath);
+		texture->Type = type;
+
+		return texture;
 	}
 }

@@ -3,7 +3,7 @@
 
 namespace TOE
 {
-	Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices)
+	Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, unsigned int materialIndex)
 	{
 		m_VAO = CreateRef<VAO>();
 		m_EBO = CreateRef<EBO>();
@@ -17,8 +17,8 @@ namespace TOE
 
 		m_EBO->SetData(indices);
 	}
-	Mesh::Mesh(Ref<VAO> vao, Ref<EBO> ebo)
-		: m_VAO(vao), m_EBO(ebo)
+	Mesh::Mesh(Ref<VAO> vao, Ref<EBO> ebo, unsigned int materialIndex)
+		: m_VAO(vao), m_EBO(ebo), m_MaterialIndex(materialIndex)
 	{
 
 	}

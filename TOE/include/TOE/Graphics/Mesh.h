@@ -19,15 +19,17 @@ namespace TOE
 	class Mesh
 	{
 	public:
-		Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
-		Mesh(Ref<VAO> vao, Ref<EBO> ebo);
+		Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, unsigned int materialIndex);
+		Mesh(Ref<VAO> vao, Ref<EBO> ebo, unsigned int materialIndex);
 
 		Ref<VAO> GetVAO() const { return m_VAO; }
 		Ref<EBO> GetEBO() const { return m_EBO; }
+		unsigned int GetMaterialIndex() const { return m_MaterialIndex; }
 
 	private:
 		Ref<VAO> m_VAO;
 		Ref<EBO> m_EBO;
+		unsigned int m_MaterialIndex = 0;
 	};
 
 	class Model

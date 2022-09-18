@@ -35,6 +35,7 @@
 #include <assimp/postprocess.h>
 
 
+#include <TOE/Core/Timer.h>
 #include <TOE/Debug/Instrumentor.h>
 
 #include <windows.h>
