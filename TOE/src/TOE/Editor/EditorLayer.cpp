@@ -43,7 +43,11 @@ namespace TOE
 		m_ShowViewportPanel = GlobalConfig::Get()["editor"]["show_viewport"];
 		m_ShowPropertiesPanel = GlobalConfig::Get()["editor"]["show_properties"];
 
-		m_Framebuffer = CreateRef<Framebuffer>();
+		FramebufferSpecification spec;
+		spec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth24Stencil8 };
+		spec.Width = 1280;
+		spec.Height = 720;
+		m_Framebuffer = CreateRef<Framebuffer>(spec);
 		m_Scene = CreateRef<Scene>();
 		m_Camera = CreateRef<EditorCamera>();
 		m_Camera->Sensibility = GlobalConfig::Get()["editor"]["camera"]["sensibility"];
@@ -52,18 +56,13 @@ namespace TOE
 		m_ViewportPanel.Init(m_Scene, m_Framebuffer, m_Camera);
 		m_PropertiesPanel.SetScenePanel(&m_ScenePanel);
 		m_SettingsPanel.Init(m_Camera);
-
-		FramebufferData data;
-		data.Width = Application::Get().GetWindowData().Width;
-		data.Height = Application::Get().GetWindowData().Height;
-		m_Framebuffer->Create(data);
 	}
 
 	void EditorLayer::OnUpdate(double timestep)
 	{
 		m_Camera->OnUpdate(timestep);
 
-		auto& data = m_Framebuffer->GetFramebufferData();
+		auto& data = m_Framebuffer->GetSpecification();
 		if ((data.Width != m_ViewportSize.x || data.Height != m_ViewportSize.y) &&
 			(m_ViewportSize.x != 0 || m_ViewportSize.y != 0))
 		{
