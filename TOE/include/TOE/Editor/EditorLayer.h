@@ -54,6 +54,8 @@ namespace TOE
 		bool m_ShowViewportPanel;
 		bool m_ShowPropertiesPanel;
 		bool m_ShowSettingsPanel;
+		bool m_ShowPerformanceOverlay = true;
+
 		LogPanel m_ConsolePanel;
 		ScenePanel m_ScenePanel;
 		RenderStatsPanel m_StatsPanel;

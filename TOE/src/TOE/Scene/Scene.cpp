@@ -54,6 +54,8 @@ namespace TOE
 			}
 		}
 
+		Renderer::Begin();
+
 		// Loop through all renderable entities
 		{
 			TOE_PROFILE_SCOPE("Scene::Update::RenderEntities");
@@ -72,11 +74,13 @@ namespace TOE
 				}
 				else
 				{
-					Renderer::DrawModel(transform.GetTransfrom(), mesh.Model, glm::vec3(1.0f));
+					// Renderer::DrawModel(transform.GetTransfrom(), mesh.Model, glm::vec3(1.0f));
 				}
 
 			}
 		}
+
+		Renderer::End();
 	}
 
 	void Scene::UpdateRuntime(double timestep)
@@ -123,7 +127,7 @@ namespace TOE
 				}
 				else
 				{
-					Renderer::DrawModel(transform.GetTransfrom(), mesh.Model, glm::vec3(1.0f));
+					// Renderer::DrawModel(transform.GetTransfrom(), mesh.Model, glm::vec3(1.0f));
 				}
 			}
 		}

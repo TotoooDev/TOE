@@ -29,6 +29,7 @@ namespace TOE
 
 		WindowData GetWindowData();
 		Window GetWindow();
+		double GetTimestep();
 
 		EventBus EventBus;
 

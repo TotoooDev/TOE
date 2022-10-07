@@ -11,14 +11,6 @@
 
 #include <TOE/Scene/Importer.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
 namespace TOE
 {
 	void EditorLayer::OnCreate()
@@ -42,15 +34,18 @@ namespace TOE
 		m_ShowScenePanel = GlobalConfig::Get()["editor"]["show_scene_hierarchy"];
 		m_ShowViewportPanel = GlobalConfig::Get()["editor"]["show_viewport"];
 		m_ShowPropertiesPanel = GlobalConfig::Get()["editor"]["show_properties"];
+		m_ShowPerformanceOverlay = GlobalConfig::Get()["editor"]["show_performance_overlay"];
 
 		FramebufferSpecification spec;
-		spec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth24Stencil8 };
+		spec.AddTexture(FramebufferTexture::RGBA8);
+		spec.AddTexture(FramebufferTexture::Depth24Stencil8);
 		spec.Width = 1280;
 		spec.Height = 720;
 		m_Framebuffer = CreateRef<Framebuffer>(spec);
 		m_Scene = CreateRef<Scene>();
 		m_Camera = CreateRef<EditorCamera>();
 		m_Camera->Sensibility = GlobalConfig::Get()["editor"]["camera"]["sensibility"];
+		Renderer::SetTargetFramebuffer(m_Framebuffer);
 
 		m_ScenePanel.SetCurrentScene(m_Scene);
 		m_ViewportPanel.Init(m_Scene, m_Framebuffer, m_Camera);
@@ -62,14 +57,14 @@ namespace TOE
 	{
 		m_Camera->OnUpdate(timestep);
 
-		auto& data = m_Framebuffer->GetSpecification();
+		auto data = m_Framebuffer->GetSpec();
 		if ((data.Width != m_ViewportSize.x || data.Height != m_ViewportSize.y) &&
 			(m_ViewportSize.x != 0 || m_ViewportSize.y != 0))
 		{
 			m_Framebuffer->Resize((unsigned int)m_ViewportSize.x, (unsigned int)m_ViewportSize.y);
 		}
 
-		m_Framebuffer->Use();
+		m_Framebuffer->Bind();
 		m_Scene->UpdateEditor(timestep, m_Camera);
 		m_Framebuffer->Unbind();
 	}
@@ -117,6 +112,9 @@ namespace TOE
 					GlobalConfig::Get()["editor"]["show_viewport"] = m_ShowViewportPanel;
 				if (ImGui::MenuItem("Properties", nullptr, &m_ShowPropertiesPanel))
 					GlobalConfig::Get()["editor"]["show_properties"] = m_ShowPropertiesPanel;
+				ImGui::Separator();
+				if (ImGui::MenuItem("Performance Overlay", nullptr, &m_ShowPerformanceOverlay))
+					GlobalConfig::Get()["editor"]["show_performance_overlay"] = m_ShowPerformanceOverlay;
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Preferences"))
@@ -188,6 +186,26 @@ namespace TOE
 		// Settings panel
 		if (m_ShowSettingsPanel)
 			m_SettingsPanel.Draw(&m_ShowSettingsPanel);
+
+		// Performance overlay
+		if (m_ShowPerformanceOverlay)
+		{
+			ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
+			ImGui::SetNextWindowBgAlpha(0.35f); // Transparent background
+			if (ImGui::Begin("Example: Simple overlay", &m_ShowPerformanceOverlay, window_flags))
+			{
+				double ts = Application::Get().GetTimestep();
+				ImGui::Text("Timestep: %f", ts);
+				ImGui::Text("Frames per second: %f", 1.0f / ts);
+				if (ImGui::BeginPopupContextWindow())
+				{
+					if (ImGui::MenuItem("Hide"))
+						m_ShowPerformanceOverlay = false;
+					ImGui::EndPopup();
+				}
+			}
+			ImGui::End();
+		}
 	}
 
 	void EditorLayer::New()

@@ -2,9 +2,6 @@
 #include <TOE/Graphics/PerspectiveCamera.h>
 #include <TOE/Core/Application.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
 namespace TOE
 {
 	PerspectiveCamera::PerspectiveCamera(float yaw, float pitch, float roll, float fov, float viewportWidth, float viewportHeight, float near, float far)

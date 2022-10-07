@@ -1,78 +1,101 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 namespace TOE
 {
-	// Like we say in France j'ai volé ce code sans aucune vergogne
-	// https://github.com/TheCherno/Hazel/blob/master/Hazel/src/Hazel/Renderer/Framebuffer.h
+	/*
+	
+	FramebufferSpecification spec;
+	spec.AddTexture(FramebufferTexture::RGBA16F);
+	spec.AddTexture(FramebufferTexture::RGBA16F);
+	spec.AddTexture(FramebufferTexture::RGBA8F);
+	spec.AddTexture(FramebufferTexture::Depth24Stencil8);
+	spec.Width = 1280;
+	spec.Height = 720;
+	spec.Resizable = true;
 
-	enum class FramebufferTextureFormat
+	Framebuffer fb(spec);
+
+	fb.Bind();
+	// Cool render stuff here
+	fb.Unbind();
+
+	unsigned int posID = fb.RetrieveTexture(0);
+	fb.UseTexture(0, 0);
+
+	spec.Width = 69;
+	fb.Recreate(spec);
+
+	unsigned int fbID = fb.GetID();
+
+	*/
+
+	enum class FramebufferTexture
 	{
-		None,
-		// Color
+		// Colors
 		RGBA8,
-		RedInteger,
-		// Depth / Stencil
-		Depth24Stencil8,
-		// Defaults
-		Default = Depth24Stencil8
+		RGBA16,
+		RGBA16F,
+		// Depth
+		Depth24Stencil8
 	};
 
-	struct FramebufferTextureSpecification
+	class FramebufferSpecification
 	{
-		FramebufferTextureFormat TextureFormat = FramebufferTextureFormat::None;
+	public:
+		FramebufferSpecification() = default;
 
-		FramebufferTextureSpecification() = default;
-		FramebufferTextureSpecification(FramebufferTextureFormat format)
-			: TextureFormat(format) {}
-	};
+		void AddTexture(FramebufferTexture texture)
+		{ 
+			if (texture != FramebufferTexture::Depth24Stencil8)
+				m_Textures.push_back(texture);
+			else
+				m_HasDepthTexture = true;
+		}
 
-	struct FramebufferAttachementSpecification
-	{
-		std::vector<FramebufferTextureSpecification> Attachments;
+		unsigned int Width = 0;
+		unsigned int Height = 0;
+		bool Resizable = true;
 
-		FramebufferAttachementSpecification() = default;
-		FramebufferAttachementSpecification(std::initializer_list<FramebufferTextureSpecification> attachments)
-			: Attachments(attachments) {}
-	};
+	private:
+		std::vector<FramebufferTexture> m_Textures;
+		bool m_HasDepthTexture;
 
-	struct FramebufferSpecification
-	{
-		unsigned int Width = 0, Height = 0;
-		FramebufferAttachementSpecification Attachments;
-		unsigned int Samples = 1;
+		friend class Framebuffer;
 	};
 
 	class Framebuffer
 	{
 	public:
-		// Framebuffer() = default;
-		Framebuffer(const FramebufferSpecification& specs);
-		~Framebuffer();
+		Framebuffer(const FramebufferSpecification& spec);
 
+		void Bind();
+		void Unbind();
+
+		void SetSpecification(const FramebufferSpecification& spec) { m_Spec = spec; }
 		void Recreate();
 		void Resize(unsigned int width, unsigned int height);
 
-		void Use();
-		void Unbind();
+		unsigned int RetrieveTexture(unsigned int id);
+		void BindTexture(unsigned int id, unsigned int slot = 0);
+		void BindAllTextures();
+		
+		void ClearAttachmentTexture(unsigned int id, unsigned int value);
+		void ClearAllAttachmentTextures(unsigned int value);
 
-		int ReadPixel(unsigned int attachmentIndex, unsigned int x, unsigned int y);
-		void ClearAttachment(unsigned int attachmentIndex, int value);
-
-		unsigned int GetColorAttachmentID(unsigned int index = 0) const;
-
-		const FramebufferSpecification& GetSpecification() { return m_Specification; }
-		unsigned int GetID() { return m_ID; }
+		FramebufferSpecification GetSpec() const { return m_Spec; }
+		unsigned int GetID() const { return m_ID; }
 
 	private:
-		FramebufferSpecification m_Specification;
-		unsigned int m_ID = 0;
+		void FramebufferTextureFormatToGL(FramebufferTexture texture, unsigned int* format, unsigned int* type, bool* isDepth);
 
-		std::vector<FramebufferTextureSpecification> m_ColorAttachmentSpecifications;
-		FramebufferTextureSpecification m_DepthAttachmentSpecification = FramebufferTextureFormat::None;
+		FramebufferSpecification m_Spec;
 
 		std::vector<unsigned int> m_ColorAttachments;
-		unsigned int m_DepthAttachment = 0;
+		unsigned int m_DepthAttachment = -1;
+
+		unsigned int m_ID = -1;
 	};
 }

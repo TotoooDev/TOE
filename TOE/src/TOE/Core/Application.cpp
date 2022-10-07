@@ -129,6 +129,11 @@ namespace TOE
 		return m_Window;
 	}
 
+	double Application::GetTimestep()
+	{
+		return m_Timestep;
+	}
+
 	void Application::OnWindowClosedEvent(WindowClosedEvent* event)
 	{
 		Stop();

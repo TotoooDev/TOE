@@ -13,7 +13,7 @@ namespace TOE
 
 	struct Light
 	{
-		int Type;
+		LightType Type;
 
 		glm::vec3 Ambient = glm::vec3(0.2f);
 		glm::vec3 Diffuse = glm::vec3(0.5f);

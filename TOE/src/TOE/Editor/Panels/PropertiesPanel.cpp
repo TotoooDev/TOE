@@ -121,7 +121,7 @@ namespace TOE
 				{
 					DrawRemove<LightComponent>();
 					const char* types[] = {"Directionnal light", "Point light", "Spot light"};
-					ImGui::Combo("Light type", &lightComponent.Light.Type, types, 3);
+					ImGui::Combo("Light type", (int*)&lightComponent.Light.Type, types, 3);
 					ImGui::Separator();
 					ImGui::ColorEdit3("Ambient", glm::value_ptr(lightComponent.Light.Ambient));
 					ImGui::ColorEdit3("Diffuse", glm::value_ptr(lightComponent.Light.Diffuse));
