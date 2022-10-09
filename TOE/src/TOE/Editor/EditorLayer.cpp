@@ -45,7 +45,7 @@ namespace TOE
 		m_Scene = CreateRef<Scene>();
 		m_Camera = CreateRef<EditorCamera>();
 		m_Camera->Sensibility = GlobalConfig::Get()["editor"]["camera"]["sensibility"];
-		Renderer::SetTargetFramebuffer(m_Framebuffer);
+		Renderer::Get().SetTargetFramebuffer(m_Framebuffer);
 
 		m_ScenePanel.SetCurrentScene(m_Scene);
 		m_ViewportPanel.Init(m_Scene, m_Framebuffer, m_Camera);
@@ -80,22 +80,16 @@ namespace TOE
 			if (ImGui::BeginMenu("File"))
 			{
 				if (ImGui::MenuItem("New Scene", "Ctrl+N"))
-				{
 					m_NewScene = true;
-				}
 				if (ImGui::MenuItem("Save", "Ctrl+S"))
-				{
 					Save();
-				}
 				if (ImGui::MenuItem("Save as...", "Ctrl+Shift+S"))
-				{
 					SaveAs();
-				}
 				if (ImGui::MenuItem("Open...", "Ctrl+O"))
-				{
 					m_OpenScene = true;
-				}
 				ImGui::Separator();
+				if (ImGui::MenuItem("About..."))
+					m_ShowAboutPanel = true;
 				if (ImGui::MenuItem("Close"))
 					Application::Get().Stop();
 				ImGui::EndMenu();
@@ -204,6 +198,15 @@ namespace TOE
 					ImGui::EndPopup();
 				}
 			}
+			ImGui::End();
+		}
+
+		// About window
+		if (m_ShowAboutPanel)
+		{
+			ImGui::Begin("About TOE", &m_ShowAboutPanel);
+			ImGui::Text("Toto's Obscure Engine");
+			ImGui::Text("The engine you don't need");
 			ImGui::End();
 		}
 	}

@@ -1,4 +1,4 @@
 
 # Toto's Obscure Engine
-
-Still in developpement
+## Note: OpenGL debug context slows down applications. If the applications is too slow, try to run it in release mode!
+### Still in developpement

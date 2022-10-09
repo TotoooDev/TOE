@@ -34,6 +34,7 @@ namespace TOE
 
 	enum class FramebufferTexture
 	{
+		None,
 		// Colors
 		RGBA8,
 		RGBA16,
@@ -52,7 +53,7 @@ namespace TOE
 			if (texture != FramebufferTexture::Depth24Stencil8)
 				m_Textures.push_back(texture);
 			else
-				m_HasDepthTexture = true;
+				m_DepthTexture = texture;
 		}
 
 		unsigned int Width = 0;
@@ -61,7 +62,7 @@ namespace TOE
 
 	private:
 		std::vector<FramebufferTexture> m_Textures;
-		bool m_HasDepthTexture;
+		FramebufferTexture m_DepthTexture = FramebufferTexture::None;
 
 		friend class Framebuffer;
 	};
@@ -89,7 +90,7 @@ namespace TOE
 		unsigned int GetID() const { return m_ID; }
 
 	private:
-		void FramebufferTextureFormatToGL(FramebufferTexture texture, unsigned int* format, unsigned int* type, bool* isDepth);
+		void FramebufferTextureFormatToGL(FramebufferTexture texture, unsigned int* format, unsigned int* type);
 
 		FramebufferSpecification m_Spec;
 

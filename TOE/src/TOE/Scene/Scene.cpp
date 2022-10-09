@@ -40,9 +40,9 @@ namespace TOE
 
 	void Scene::UpdateEditor(double timestep, Ref<EditorCamera> camera)
 	{
-		Renderer::SetClearColor(0.1f, 0.1f, 0.1f);
-		Renderer::Clear();
-		Renderer::SetCurrentCamera(Camera(camera->GetProjection(), camera->GetView()), camera->CalculatePosition());
+		Renderer::Get().SetClearColor(0.1f, 0.1f, 0.1f);
+		Renderer::Get().Clear();
+		Renderer::Get().SetCurrentCamera(Camera(camera->GetProjection(), camera->GetView()), camera->CalculatePosition());
 
 		// Loop through all light components
 		{
@@ -50,11 +50,11 @@ namespace TOE
 			for (auto&& [entity, transform, light] : view.each())
 			{
 				if (light.Emit)
-					Renderer::SetLight(transform.Translation, transform.Rotation, light.Light);
+					Renderer::Get().SetLight(transform.Translation, transform.Rotation, light.Light);
 			}
 		}
 
-		Renderer::Begin();
+		Renderer::Get().Begin();
 
 		// Loop through all renderable entities
 		{
@@ -70,7 +70,7 @@ namespace TOE
 				if (ent.HasComponent<MaterialComponent>())
 				{
 					auto& material = ent.GetComponent<MaterialComponent>();
-					Renderer::DrawModel(transform.GetTransfrom(), mesh.Model, material.Materials);
+					Renderer::Get().DrawModel(transform.GetTransfrom(), mesh.Model, material.Materials);
 				}
 				else
 				{
@@ -80,15 +80,15 @@ namespace TOE
 			}
 		}
 
-		Renderer::End();
+		Renderer::Get().End();
 	}
 
 	void Scene::UpdateRuntime(double timestep)
 	{
 		TOE_PROFILE_FUNCTION();
 
-		Renderer::SetClearColor(0.1f, 0.1f, 0.1f);
-		Renderer::Clear();
+		Renderer::Get().SetClearColor(0.1f, 0.1f, 0.1f);
+		Renderer::Get().Clear();
 
 		// Loop through all the camera components
 		{
@@ -104,7 +104,7 @@ namespace TOE
 					glm::mat4 view = glm::lookAt(pos, pos + cam->Front, cam->Up);
 					glm::mat4 projection = glm::perspective(cam->FOV, cam->ViewportWidth / cam->ViewportHeight, cam->Near, cam->Far);
 
-					Renderer::SetCurrentCamera(Camera(projection, view), transform.Translation);
+					Renderer::Get().SetCurrentCamera(Camera(projection, view), transform.Translation);
 				}
 			}
 		}
@@ -123,7 +123,7 @@ namespace TOE
 				if (ent.HasComponent<MaterialComponent>())
 				{
 					auto& material = ent.GetComponent<MaterialComponent>();
-					Renderer::DrawModel(transform.GetTransfrom(), mesh.Model, material.Materials);
+					Renderer::Get().DrawModel(transform.GetTransfrom(), mesh.Model, material.Materials);
 				}
 				else
 				{

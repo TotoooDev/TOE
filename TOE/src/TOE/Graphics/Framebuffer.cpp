@@ -34,11 +34,9 @@ namespace TOE
 		std::vector<GLenum> attachments;
 		for (unsigned int i = 0; i < m_Spec.m_Textures.size(); i++)
 		{
-			GLenum format;
-			GLenum type;
-			bool isDepth = false;
+			GLenum format, type;
 
-			FramebufferTextureFormatToGL(m_Spec.m_Textures[i], &format, &type, &isDepth);
+			FramebufferTextureFormatToGL(m_Spec.m_Textures[i], &format, &type);
 
 			unsigned int textureID;
 			glGenTextures(1, &textureID);
@@ -52,7 +50,7 @@ namespace TOE
 			m_ColorAttachments.push_back(textureID);
 		}
 
-		if (m_Spec.m_HasDepthTexture)
+		if (m_Spec.m_DepthTexture != FramebufferTexture::None)
 		{
 			unsigned int id;
 			glGenTextures(1, &id);
@@ -104,28 +102,27 @@ namespace TOE
 	void Framebuffer::ClearAttachmentTexture(unsigned int id, unsigned int value)
 	{
 		unsigned int format, type;
-		bool isDepth;
-		FramebufferTextureFormatToGL(m_Spec.m_Textures[id], &format, &type, &isDepth);
+		FramebufferTextureFormatToGL(m_Spec.m_Textures[id], &format, &type);
 		glClearTexImage(m_ColorAttachments[id], 0, GL_RGBA, type, &value);
 	}
 
 	void Framebuffer::ClearAllAttachmentTextures(unsigned int value)
 	{
-		for (unsigned int i = 0; i < m_ColorAttachments.size(); i++)
-		{
-			ClearAttachmentTexture(i, value);
-		}
+		Bind();
+		glClearColor(value >> 24, value >> 16, value >> 8, value);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		Unbind();
 	}
 
-	void Framebuffer::FramebufferTextureFormatToGL(FramebufferTexture texture, unsigned int* format, unsigned int* type, bool* isDepth)
+	void Framebuffer::FramebufferTextureFormatToGL(FramebufferTexture texture, unsigned int* format, unsigned int* type)
 	{
 		switch (texture)
 		{
-		default:								  *format = GL_RGBA8;            *type = GL_UNSIGNED_BYTE;                  break;
-		case FramebufferTexture::RGBA8:           *format = GL_RGBA8;            *type = GL_UNSIGNED_BYTE;                  break;
-		case FramebufferTexture::RGBA16:          *format = GL_RGBA16;           *type = GL_FLOAT;                          break;
-		case FramebufferTexture::RGBA16F:         *format = GL_RGBA16F;          *type = GL_FLOAT;                          break;
-		case FramebufferTexture::Depth24Stencil8: *format = GL_DEPTH24_STENCIL8; *type = GL_FLOAT;         *isDepth = true; break;
+		default:								  *format = GL_RGBA8;            *type = GL_UNSIGNED_BYTE; break;
+		case FramebufferTexture::RGBA8:           *format = GL_RGBA8;            *type = GL_UNSIGNED_BYTE; break;
+		case FramebufferTexture::RGBA16:          *format = GL_RGBA16;           *type = GL_FLOAT;         break;
+		case FramebufferTexture::RGBA16F:         *format = GL_RGBA16F;          *type = GL_FLOAT;         break;
+		case FramebufferTexture::Depth24Stencil8: *format = GL_DEPTH24_STENCIL8; *type = GL_FLOAT;         break;
 		}
 	}
 }

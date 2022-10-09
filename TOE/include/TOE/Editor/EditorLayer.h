@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include <TOE/Core/Layer.h>
@@ -54,6 +55,7 @@ namespace TOE
 		bool m_ShowViewportPanel;
 		bool m_ShowPropertiesPanel;
 		bool m_ShowSettingsPanel;
+		bool m_ShowAboutPanel = false;
 		bool m_ShowPerformanceOverlay = true;
 
 		LogPanel m_ConsolePanel;

@@ -149,7 +149,7 @@ namespace TOE
 		glDeleteShader(m_ID);
 	}
 
-	void Shader::Use() const
+	void Shader::Bind() const
 	{
 		glUseProgram(m_ID);
 	}

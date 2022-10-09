@@ -4,7 +4,7 @@
 
 namespace TOE
 {
-	void Renderer::Init()
+	Renderer::Renderer()
 	{
 		// Compile shaders
 		m_ShaderTexture.LoadFromFolder("shaders/texture/", "texture");
@@ -15,25 +15,26 @@ namespace TOE
 		glEnable(GL_CULL_FACE);
 
 		// Deferred shading stuff
-		GenSphere();
 		// Setup plane VAO
-		float quadVertices[] = {
-			// positions        // texture Coords
-			-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+		std::vector<float> quadVertices =
+		{
+			// Pos              // Tex coords
 			-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+			-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
 			 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-			 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+			 1.0f, -1.0f, 0.0f, 1.0f, 0.0f
 		};
-		glGenVertexArrays(1, &m_QuadVAO);
-		glGenBuffers(1, &m_QuadVBO);
-		glBindVertexArray(m_QuadVAO);
-		glBindBuffer(GL_ARRAY_BUFFER, m_QuadVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-		 
+		std::vector<unsigned int> quadIndices =
+		{
+			0, 1, 2,
+			0, 2, 3
+		};
+		VertexLayout layout;
+		layout.AddAttribute(Type::Float, 3); // Pos
+		layout.AddAttribute(Type::Float, 2); // Tex coords
+		m_QuadVAO.SetData(quadVertices, layout);
+		m_QuadEBO.SetData(quadIndices);
+		
 		// Create framebuffer
 		glGenFramebuffers(1, &m_gBuffer);
 		glBindFramebuffer(GL_FRAMEBUFFER, m_gBuffer);
@@ -80,15 +81,14 @@ namespace TOE
 
 	void Renderer::Begin()
 	{
-		m_ShaderTexture.Use();
+		m_ShaderTexture.Bind();
 		m_ShaderTexture.SetInt("uNumLights", m_NumLights);
-		m_ShaderLighting.Use();
+		m_ShaderLighting.Bind();
 		m_ShaderLighting.SetInt("uNumLights", m_NumLights);
 	}
 
 	void Renderer::End()
 	{
-
 		glBindFramebuffer(GL_FRAMEBUFFER, m_Target);
 
 		glActiveTexture(GL_TEXTURE0);
@@ -98,14 +98,14 @@ namespace TOE
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, m_AlbedoTexture);
 
-		m_ShaderLighting.Use();
-		m_ShaderLighting.SetInt("gPosition", 0);
-		m_ShaderLighting.SetInt("gNormal", 1);
-		m_ShaderLighting.SetInt("gAlbedoSpec", 2);
+		m_ShaderLighting.Bind();
+		m_ShaderLighting.SetInt("ugPosition", 0);
+		m_ShaderLighting.SetInt("ugNormal", 1);
+		m_ShaderLighting.SetInt("ugAlbedoSpec", 2);
 
-		glBindVertexArray(m_QuadVAO);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		glBindVertexArray(0);
+		m_QuadVAO.Bind();
+		m_QuadEBO.Bind();
+		glDrawElements(GL_TRIANGLES, m_QuadEBO.GetCount(), GL_UNSIGNED_INT, 0);
 
 		m_NumLights = 0;
 		m_Timer.Reset();
@@ -138,17 +138,17 @@ namespace TOE
 	{
 		TOE_PROFILE_FUNCTION();
 
-		m_ShaderTexture.Use();
+		m_ShaderTexture.Bind();
 		m_ShaderTexture.SetMat4("uView", camera.GetView());
 		m_ShaderTexture.SetMat4("uProjection", camera.GetProjection());
 		m_ShaderTexture.SetVec3("uCameraPos", pos);
 
-		m_ShaderGBuffer.Use();
+		m_ShaderGBuffer.Bind();
 		m_ShaderGBuffer.SetMat4("uView", camera.GetView());
 		m_ShaderGBuffer.SetMat4("uProjection", camera.GetProjection());
 		m_ShaderGBuffer.SetVec3("uCameraPos", pos);
 
-		m_ShaderLighting.Use();
+		m_ShaderLighting.Bind();
 		m_ShaderLighting.SetVec3("uCameraPos", pos);
 	}
 
@@ -169,7 +169,7 @@ namespace TOE
 
 	void Renderer::DrawMesh(const glm::mat4& transform, const Mesh& mesh, const std::vector<Material>& materials)
 	{
-		auto material = materials[mesh.GetMaterialIndex()];
+		auto& material = materials[mesh.GetMaterialIndex()];
 		DrawVertexObject(transform, mesh.GetVAO(), mesh.GetEBO(), material);
 	}
 
@@ -179,7 +179,7 @@ namespace TOE
 
 		glBindFramebuffer(GL_FRAMEBUFFER, m_gBuffer);
 
-		m_ShaderGBuffer.Use();
+		m_ShaderGBuffer.Bind();
 		m_ShaderGBuffer.SetMat4("uModel", transform);
 
 		unsigned int diffuseSlot = 0;
@@ -192,20 +192,16 @@ namespace TOE
 		m_ShaderGBuffer.SetFloat("uMaterial.Shininess", material.Shininess);
 
 		if (material.Diffuse)
-			material.Diffuse->Use(diffuseSlot);
+			material.Diffuse->Bind(diffuseSlot);
 		if (material.Specular)
-			material.Specular->Use(specularSlot);
+			material.Specular->Bind(specularSlot);
 		if (material.Normal)
-			material.Normal->Use(normalSlot);
+			material.Normal->Bind(normalSlot);
 
-		vao->Use();
-		ebo->Use();
+		vao->Bind();
+		ebo->Bind();
 
 		glDrawElements(GL_TRIANGLES, ebo->GetCount(), GL_UNSIGNED_INT, 0);
-
-		glBindVertexArray(m_SphereVAO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_SphereEBO);
-		glDrawElements(GL_TRIANGLES, m_SphereNumIndices, GL_UNSIGNED_INT, 0);
 
 		UpdateStats(vao->GetVertexCount(), ebo->GetCount());
 	}
@@ -223,7 +219,7 @@ namespace TOE
 		float lightMax = std::fmaxf(std::fmaxf(light.Diffuse.r, light.Diffuse.g), light.Diffuse.b);
 		float radius = (-light.Linear + std::sqrtf(light.Linear * light.Linear - 4 * light.Quadratic * (light.Constant - (256.0f / 5.0f) * lightMax))) / (2.0f * light.Quadratic);
 
-		shader.Use();
+		shader.Bind();
 		shader.SetInt(lightStr + ".Type", light.Type);
 
 		shader.SetVec3(lightStr + ".Pos", pos);
@@ -231,7 +227,6 @@ namespace TOE
 
 		shader.SetVec3(lightStr + ".Ambient", light.Ambient);
 		shader.SetVec3(lightStr + ".Diffuse", light.Diffuse);
-		shader.SetVec3(lightStr + ".Color", light.Diffuse);
 		shader.SetVec3(lightStr + ".Specular", light.Specular);
 
 		shader.SetFloat(lightStr + ".Constant", light.Constant);
@@ -249,79 +244,5 @@ namespace TOE
 		m_Stats.VertexCount += vertexCount;
 		m_Stats.IndexCount += indexCount;
 		m_Stats.RenderTime += m_Timer.ElapsedMillis();
-	}
-
-	void Renderer::GenSphere()
-	{
-		// http://www.songho.ca/opengl/gl_sphere.html
-
-		std::vector<float> vertices;
-		std::vector<unsigned int> indices;
-
-		float radius = 1.0f;
-		float x, y, z, xy;
-		unsigned int sectorCount = 32;
-		unsigned int stackCount = 16;
-		
-		float sectorStep = 2 * glm::pi<float>() / sectorCount;
-		float stackStep = glm::pi<float>() / stackCount;
-		float sectorAngle, stackAngle;
-
-		for (unsigned int i = 0; i <= stackCount; i++)
-		{
-			stackAngle = glm::pi<float>() / 2.0f - i * stackStep;
-			xy = radius * std::cosf(stackAngle);
-			z = radius * std::sinf(stackAngle);
-
-			for (unsigned int j = 0; i <= sectorCount; i++)
-			{
-				sectorAngle = j * sectorStep;
-
-				x = xy * std::cosf(sectorAngle);
-				y = xy * std::sinf(sectorAngle);
-
-				vertices.push_back(x);
-				vertices.push_back(y);
-				vertices.push_back(z);
-			}
-		}
-
-		unsigned int k1, k2;
-		for (unsigned int i = 0; i < stackCount; i++)
-		{
-			k1 = i * (sectorCount + 1);
-			k2 = k1 + sectorCount + 1;
-
-			for (unsigned int j = 0; j < sectorCount; j++, k1++, k2++)
-			{
-				if (i != 0)
-				{
-					indices.push_back(k1);
-					indices.push_back(k2);
-					indices.push_back(k1 + 1);
-				}
-
-				if (i != (stackCount - 1))
-				{
-					indices.push_back(k1 + 1);
-					indices.push_back(k2);
-					indices.push_back(k2 + 1);
-				}
-			}
-		}
-
-		glGenVertexArrays(1, &m_SphereVAO);
-		glGenBuffers(1, &m_SphereVBO);
-		glBindVertexArray(m_SphereVAO);
-		glBindBuffer(GL_ARRAY_BUFFER, m_SphereVBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
-		glGenBuffers(1, &m_SphereEBO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_SphereEBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices[0]) * indices.size(), indices.data(), GL_STATIC_DRAW);
-
-		m_SphereNumIndices = indices.size();
 	}
 }

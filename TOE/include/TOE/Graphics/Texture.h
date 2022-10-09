@@ -20,7 +20,7 @@ namespace TOE
 
 		void CreateFromFile(const std::string& path);
 
-		void Use(unsigned int slot = 0) const;
+		void Bind(unsigned int slot = 0) const;
 		unsigned int GetID() const;
 
 		TextureType Type;

@@ -53,7 +53,7 @@ namespace TOE
 		stbi_image_free(data);
 	}
 
-	void Texture2D::Use(unsigned int slot) const
+	void Texture2D::Bind(unsigned int slot) const
 	{
 		TOE_PROFILE_FUNCTION();
 

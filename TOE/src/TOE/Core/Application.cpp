@@ -42,9 +42,6 @@ namespace TOE
 		m_Window.CreateNewWindow(data);
 		m_Window.SetEventBus(&EventBus);
 
-		// Initialize renderer
-		Renderer::Init();
-
 		// Sub to the window events
 		EventBus.Subscribe(this, &Application::OnWindowClosedEvent);
 		EventBus.Subscribe(this, &Application::OnWindowResizedEvent);

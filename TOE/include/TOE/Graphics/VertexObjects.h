@@ -52,7 +52,7 @@ namespace TOE
 		}
 		void SetData(void* data, int size, const VertexLayout& layout);
 		unsigned int GetID() const;
-		void Use() const;
+		void Bind() const;
 		unsigned int GetVertexCount() const;
 
 	private:
@@ -70,7 +70,7 @@ namespace TOE
 		void SetData(const std::vector<unsigned int>& indices);
 		unsigned int GetID() const;
 		unsigned int GetCount() const;
-		void Use() const;
+		void Bind() const;
 
 	private:
 		unsigned int m_ID = 0;

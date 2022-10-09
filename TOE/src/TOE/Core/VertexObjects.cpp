@@ -82,7 +82,7 @@ namespace TOE
 			glEnableVertexAttribArray(i);
 		}
 	}
-	void VAO::Use() const
+	void VAO::Bind() const
 	{
 		glBindVertexArray(m_ID);
 	}
@@ -115,7 +115,7 @@ namespace TOE
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Count * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
 	}
-	void EBO::Use() const
+	void EBO::Bind() const
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ID);
 	}

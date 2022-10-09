@@ -22,7 +22,7 @@ namespace TOE
 		void Reload();
 		void Delete();
 
-		void Use() const;
+		void Bind() const;
 		unsigned int GetID() const;
 
 		// Uniform utility methods
