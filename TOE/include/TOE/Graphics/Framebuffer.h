@@ -70,12 +70,13 @@ namespace TOE
 	class Framebuffer
 	{
 	public:
+		Framebuffer();
 		Framebuffer(const FramebufferSpecification& spec);
 
 		void Bind();
 		void Unbind();
 
-		void SetSpecification(const FramebufferSpecification& spec) { m_Spec = spec; }
+		void SetSpecification(const FramebufferSpecification& spec) { m_Spec = spec; Recreate(); }
 		void Recreate();
 		void Resize(unsigned int width, unsigned int height);
 

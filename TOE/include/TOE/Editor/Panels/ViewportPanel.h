@@ -11,13 +11,13 @@ namespace TOE
 	class ViewportPanel
 	{
 	public:
-		void Init(Ref<Scene> scene, Ref<Framebuffer> framebuffer, Ref<EditorCamera> camera);
+		void Init(ImVec2* viewportSize, Ref<Scene> scene, Ref<Framebuffer> framebuffer, Ref<EditorCamera> camera);
 		void Draw(bool* isOpen);
 
 	private:
 		Ref<Scene> m_CurrentScene;
 		Ref<Framebuffer> m_Source;
 		Ref<EditorCamera> m_Camera;
-		ImVec2 m_ViewportSize;
+		ImVec2* m_ViewportSize;
 	};
 }

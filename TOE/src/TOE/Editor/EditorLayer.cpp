@@ -45,10 +45,10 @@ namespace TOE
 		m_Scene = CreateRef<Scene>();
 		m_Camera = CreateRef<EditorCamera>();
 		m_Camera->Sensibility = GlobalConfig::Get()["editor"]["camera"]["sensibility"];
-		Renderer::Get().SetTargetFramebuffer(m_Framebuffer);
+		Renderer::Get().SetTargetFramebuffer(m_Framebuffer.get());
 
 		m_ScenePanel.SetCurrentScene(m_Scene);
-		m_ViewportPanel.Init(m_Scene, m_Framebuffer, m_Camera);
+		m_ViewportPanel.Init(&m_ViewportSize, m_Scene, m_Framebuffer, m_Camera);
 		m_PropertiesPanel.SetScenePanel(&m_ScenePanel);
 		m_SettingsPanel.Init(m_Camera);
 	}
@@ -59,9 +59,12 @@ namespace TOE
 
 		auto data = m_Framebuffer->GetSpec();
 		if ((data.Width != m_ViewportSize.x || data.Height != m_ViewportSize.y) &&
-			(m_ViewportSize.x != 0 || m_ViewportSize.y != 0))
+			m_ViewportSize.x > 0.0f && m_ViewportSize.y > 0.0f)
 		{
+			m_Scene->OnViewportResize((unsigned int)m_ViewportSize.x, (unsigned int)m_ViewportSize.y);
+			m_Camera->OnViewportResize((unsigned int)m_ViewportSize.x, (unsigned int)m_ViewportSize.y);
 			m_Framebuffer->Resize((unsigned int)m_ViewportSize.x, (unsigned int)m_ViewportSize.y);
+			Renderer::Get().OnViewportResize((unsigned int)m_ViewportSize.x, (unsigned int)m_ViewportSize.y);
 		}
 
 		m_Framebuffer->Bind();
@@ -189,7 +192,7 @@ namespace TOE
 			if (ImGui::Begin("Example: Simple overlay", &m_ShowPerformanceOverlay, window_flags))
 			{
 				double ts = Application::Get().GetTimestep();
-				ImGui::Text("Timestep: %f", ts);
+				ImGui::Text("Timestep: %f ms", ts);
 				ImGui::Text("Frames per second: %f", 1.0f / ts);
 				if (ImGui::BeginPopupContextWindow())
 				{
@@ -215,7 +218,7 @@ namespace TOE
 	{
 		m_Scene = CreateRef<Scene>();
 		m_ScenePanel.SetCurrentScene(m_Scene);
-		m_ViewportPanel.Init(m_Scene, m_Framebuffer, m_Camera);
+		m_ViewportPanel.Init(&m_ViewportSize, m_Scene, m_Framebuffer, m_Camera);
 		m_PropertiesPanel.SetScenePanel(&m_ScenePanel);
 		m_ScenePath = "";
 	}
@@ -247,7 +250,7 @@ namespace TOE
 			SceneSerializer serializer(m_Scene);
 			serializer.Deserialize(m_ScenePath);
 			m_ScenePanel.SetCurrentScene(m_Scene);
-			m_ViewportPanel.Init(m_Scene, m_Framebuffer, m_Camera);
+			m_ViewportPanel.Init(&m_ViewportSize, m_Scene, m_Framebuffer, m_Camera);
 			m_PropertiesPanel.SetScenePanel(&m_ScenePanel);
 		}
 	}

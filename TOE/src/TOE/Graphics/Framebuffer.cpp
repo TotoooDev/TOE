@@ -5,6 +5,11 @@
 
 namespace TOE
 {
+	Framebuffer::Framebuffer()
+	{
+		glGenFramebuffers(1, &m_ID);
+	}
+
 	Framebuffer::Framebuffer(const FramebufferSpecification& spec)
 		: m_Spec(spec)
 	{
@@ -75,6 +80,11 @@ namespace TOE
 
 	void Framebuffer::Resize(unsigned int width, unsigned int height)
 	{
+		if (!m_Spec.Resizable)
+		{
+			spdlog::warn("Attempting to resize unresizable framebuffer!");
+			return;
+		}
 		m_Spec.Width = width;
 		m_Spec.Height = height;
 		Recreate();

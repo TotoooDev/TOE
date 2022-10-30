@@ -37,10 +37,10 @@ namespace TOE
 	public:
 		struct Stats
 		{
-			unsigned int DrawCalls;
-			unsigned int VertexCount;
-			unsigned int IndexCount;
-			float RenderTime;
+			unsigned int DrawCalls = 0;
+			unsigned int VertexCount = 0;
+			unsigned int IndexCount = 0;
+			float RenderTime = 0.0f;
 		};
 
 		static Renderer& Get()
@@ -54,7 +54,9 @@ namespace TOE
 		void Begin();
 		void End();
 
-		void SetTargetFramebuffer(Ref<Framebuffer> target);
+		void OnViewportResize(unsigned int width, unsigned int height);
+
+		void SetTargetFramebuffer(Framebuffer* target);
 		void SetClearColor(float r, float g, float b);
 		void Clear();
 
@@ -88,13 +90,9 @@ namespace TOE
 		Shader m_ShaderGBuffer;
 		Shader m_ShaderLighting;
 		// Framebuffer
-		unsigned int m_gBuffer;
-		unsigned int m_PosTexture;
-		unsigned int m_NormalTexture;
-		unsigned int m_AlbedoTexture;
-		unsigned int m_DepthTexture;
+		Framebuffer m_gBuffer;
 		// Target
-		unsigned int m_Target = 0;
+		Framebuffer* m_Target;
 		// Quad we are rendering to
 		VAO m_QuadVAO;
 		EBO m_QuadEBO;

@@ -3,8 +3,9 @@
 
 namespace TOE
 {
-	void ViewportPanel::Init(Ref<Scene> scene, Ref<Framebuffer> framebuffer, Ref<EditorCamera> camera)
+	void ViewportPanel::Init(ImVec2* viewportSize, Ref<Scene> scene, Ref<Framebuffer> framebuffer, Ref<EditorCamera> camera)
 	{
+		m_ViewportSize = viewportSize;
 		m_CurrentScene = scene;
 		m_Source = framebuffer;
 		m_Camera = camera;
@@ -15,13 +16,7 @@ namespace TOE
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0.0f, 0.0f });
 		ImGui::Begin(m_CurrentScene->Name.empty() ? "Scene" : m_CurrentScene->Name.c_str(), isOpen);
 		m_Camera->SetViewportFocus(ImGui::IsWindowHovered());
-		ImVec2 currentViewportSize = ImGui::GetContentRegionAvail();
-		if (currentViewportSize.x != m_ViewportSize.x || currentViewportSize.y != m_ViewportSize.y)
-		{
-			m_ViewportSize = currentViewportSize;
-			m_CurrentScene->OnViewportResize((unsigned int)m_ViewportSize.x, (unsigned int)m_ViewportSize.y);
-			m_Camera->OnViewportResize((unsigned int)m_ViewportSize.x, (unsigned int)m_ViewportSize.y);
-		}
+		*m_ViewportSize = ImGui::GetContentRegionAvail();
 		ImGui::Image((void*)m_Source->RetrieveTexture(0), ImGui::GetContentRegionAvail(), ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 		ImGui::End();
 		ImGui::PopStyleVar();

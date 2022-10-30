@@ -11,9 +11,6 @@ namespace TOE
 		m_ShaderGBuffer.LoadFromFolder("shaders/gBuffer/", "gBuffer");
 		m_ShaderLighting.LoadFromFolder("shaders/lighting/", "lighting");
 
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_CULL_FACE);
-
 		// Deferred shading stuff
 		// Setup plane VAO
 		std::vector<float> quadVertices =
@@ -36,40 +33,16 @@ namespace TOE
 		m_QuadEBO.SetData(quadIndices);
 		
 		// Create framebuffer
-		glGenFramebuffers(1, &m_gBuffer);
-		glBindFramebuffer(GL_FRAMEBUFFER, m_gBuffer);
+		FramebufferSpecification spec;
+		spec.Width = 1280;
+		spec.Height = 720;
+		spec.Resizable = true;
+		spec.AddTexture(FramebufferTexture::RGBA16F);
+		spec.AddTexture(FramebufferTexture::RGBA16F);
+		spec.AddTexture(FramebufferTexture::RGBA8);
+		spec.AddTexture(FramebufferTexture::Depth24Stencil8);
 
-		// Create framebuffer textures
-		// Position texture
-		glGenTextures(1, &m_PosTexture);
-		glBindTexture(GL_TEXTURE_2D, m_PosTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 1280, 720, 0, GL_RGBA, GL_FLOAT, nullptr);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_PosTexture, 0);
-		// Normal texture
-		glGenTextures(1, &m_NormalTexture);
-		glBindTexture(GL_TEXTURE_2D, m_NormalTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 1280, 720, 0, GL_RGBA, GL_FLOAT, nullptr);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_NormalTexture, 0);
-		// Albedo + Specular texture
-		glGenTextures(1, &m_AlbedoTexture);
-		glBindTexture(GL_TEXTURE_2D, m_AlbedoTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1280, 720, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, m_AlbedoTexture, 0);
-		// Depth texture
-		glGenTextures(1, &m_DepthTexture);
-		glBindTexture(GL_TEXTURE_2D, m_DepthTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 1280, 720, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_DepthTexture, 0);
-		// Tell OpenGL which attachments we will use
-		unsigned int attachments[4] = { GL_COLOR_ATTACHMENT0 , GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
-		glDrawBuffers(4, attachments);
-		// Don't check for errors because I'm a god programmer
+		m_gBuffer.SetSpecification(spec);
 	}
 
 	void Renderer::Recompile()
@@ -81,6 +54,10 @@ namespace TOE
 
 	void Renderer::Begin()
 	{
+		m_Stats = { 0, 0, 0, 0 };
+
+		glEnable(GL_DEPTH_TEST);
+
 		m_ShaderTexture.Bind();
 		m_ShaderTexture.SetInt("uNumLights", m_NumLights);
 		m_ShaderLighting.Bind();
@@ -89,14 +66,11 @@ namespace TOE
 
 	void Renderer::End()
 	{
-		glBindFramebuffer(GL_FRAMEBUFFER, m_Target);
+		glDisable(GL_DEPTH_TEST);
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, m_PosTexture);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, m_NormalTexture);
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, m_AlbedoTexture);
+		m_Target->Bind();
+
+		m_gBuffer.BindAllTextures();
 
 		m_ShaderLighting.Bind();
 		m_ShaderLighting.SetInt("ugPosition", 0);
@@ -109,12 +83,16 @@ namespace TOE
 
 		m_NumLights = 0;
 		m_Timer.Reset();
-		m_Stats = { 0, 0, 0, 0 };
 	}
 
-	void Renderer::SetTargetFramebuffer(Ref<Framebuffer> target)
+	void Renderer::OnViewportResize(unsigned int width, unsigned int height)
 	{
-		m_Target = target->GetID();
+		m_gBuffer.Resize(width, height);
+	}
+
+	void Renderer::SetTargetFramebuffer(Framebuffer* target)
+	{
+		m_Target = target;
 	}
 
 	void Renderer::SetClearColor(float r, float g, float b)
@@ -126,12 +104,13 @@ namespace TOE
 	{
 		TOE_PROFILE_FUNCTION();
 
-		glBindFramebuffer(GL_FRAMEBUFFER, m_Target);
+		m_Target->Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glBindFramebuffer(GL_FRAMEBUFFER, m_gBuffer);
+		m_gBuffer.Bind();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		m_gBuffer.Unbind();
 	}
 
 	void Renderer::SetCurrentCamera(const Camera& camera, const glm::vec3& pos)
@@ -177,7 +156,7 @@ namespace TOE
 	{
 		TOE_PROFILE_FUNCTION();
 
-		glBindFramebuffer(GL_FRAMEBUFFER, m_gBuffer);
+		m_gBuffer.Bind();
 
 		m_ShaderGBuffer.Bind();
 		m_ShaderGBuffer.SetMat4("uModel", transform);
